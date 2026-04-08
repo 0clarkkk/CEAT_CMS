@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $metaDescription ?? 'University of Perpetual Help System DALTA - College of Engineering, Architecture, and Technology' }}">
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
     <title>{{ $title ?? config('app.name') }} | UPH Engineering</title>
 
@@ -18,105 +17,71 @@
 </head>
 <body class="font-sans antialiased bg-white text-gray-900 custom-scrollbar">
     <div class="min-h-screen flex flex-col">
-        <!-- Navigation -->
-        <nav x-data="{ mobileOpen: false, scrolled: false }"
-             x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
-             :class="scrolled ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100/50' : 'bg-white/50 backdrop-blur-lg'"
-             class="fixed top-0 z-50 w-full transition-all duration-500">
+        <!-- Unified Glass Header + Navigation -->
+        <nav x-data="{ mobileOpen: false, isScrolled: false }" 
+             @scroll.window="isScrolled = window.scrollY > 100"
+             :style="`position: fixed; top: 0; z-index: 50; width: 100%; transition: all 0.3s ease; ${isScrolled ? 'background: linear-gradient(135deg, rgba(127, 20, 22, 0.95) 0%, rgba(127, 20, 22, 0.85) 100%); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25); border-bottom: 1px solid rgba(255, 255, 255, 0.1);' : 'background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(127, 20, 22, 0.1);'}`">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16 lg:h-18">
-                    <!-- Logo -->
-                    <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                        <div class="relative">
-                            <div class="w-10 h-10 bg-gradient-to-br from-maroon-500 to-maroon-700 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
-                                UPH
-                            </div>
-                            <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-primary-500 rounded-full border-2 border-white"></div>
-                        </div>
+                <div class="flex justify-between items-center h-auto lg:h-24 py-4 lg:py-2 flex-wrap lg:flex-nowrap gap-4 lg:gap-0">
+                    <!-- Logo Section -->
+                    <a href="{{ route('home') }}" class="flex items-center gap-3 group flex-shrink-0">
+                        <img src="{{ asset('images/coe-logo.png') }}" alt="CEAT Logo" class="h-16 w-auto group-hover:scale-110 transition-transform duration-300">
                         <div class="hidden sm:block">
-                            <span class="font-bold text-maroon-700 text-sm tracking-tight">UPH Engineering</span>
-                            <span class="block text-[10px] text-gray-400 font-medium tracking-wider uppercase">CEAT</span>
+                            <h1 :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" class="font-bold text-sm lg:text-base tracking-tight leading-tight transition-colors duration-300">COLLEGE OF ENGINEERING,</h1>
+                            <h1 :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" class="font-bold text-sm lg:text-base tracking-tight leading-tight transition-colors duration-300">ARCHITECTURE & TECHNOLOGY</h1>
                         </div>
                     </a>
-
-                    <!-- Desktop Navigation -->
-                    <div class="hidden lg:flex items-center gap-1">
-                        <a href="{{ route('view.about') }}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-maroon-600 hover:bg-maroon-50 rounded-lg transition-all duration-200 {{ request()->routeIs('view.about') ? 'text-maroon-600 bg-maroon-50' : '' }}">
-                            About
-                        </a>
-                        <a href="{{ route('view.departments') }}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-maroon-600 hover:bg-maroon-50 rounded-lg transition-all duration-200 {{ request()->routeIs('view.departments*') ? 'text-maroon-600 bg-maroon-50' : '' }}">
-                            Departments
-                        </a>
-                        <a href="{{ route('view.programs') }}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-maroon-600 hover:bg-maroon-50 rounded-lg transition-all duration-200 {{ request()->routeIs('view.programs*') ? 'text-maroon-600 bg-maroon-50' : '' }}">
-                            Programs
-                        </a>
-                        <a href="{{ route('view.faculty') }}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-maroon-600 hover:bg-maroon-50 rounded-lg transition-all duration-200 {{ request()->routeIs('view.faculty*') ? 'text-maroon-600 bg-maroon-50' : '' }}">
-                            Faculty
-                        </a>
-
-                        <a href="{{ route('view.news') }}" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-maroon-600 hover:bg-maroon-50 rounded-lg transition-all duration-200 {{ request()->routeIs('view.news*') ? 'text-maroon-600 bg-maroon-50' : '' }}">
-                            News
-                        </a>
+                    <!-- Desktop Menu -->
+                    <div class="hidden lg:flex items-center gap-6 flex-1 justify-center" style="font-family: 'Inter', 'Segoe UI', sans-serif;">
+                        <a href="{{ route('view.departments') }}" :style="`transition: all 0.3s ease; ${isScrolled ? 'color: white;' : 'color: #7f1416;'}`" style="font-weight: 400; font-size: 14px; padding: 8px 12px; display: inline-block; letter-spacing: 0.3px;" :class="isScrolled ? 'hover:bg-white/20 hover:shadow-lg hover:scale-105' : 'hover:shadow-2xl hover:scale-105'" class="px-3 py-2 rounded-lg">About</a>
+                        <a href="{{ route('view.faculty') }}" :style="`transition: all 0.3s ease; ${isScrolled ? 'color: white;' : 'color: #7f1416;'}`" style="font-weight: 400; font-size: 14px; padding: 8px 12px; display: inline-block; letter-spacing: 0.3px;" :class="isScrolled ? 'hover:bg-white/20 hover:shadow-lg hover:scale-105' : 'hover:shadow-2xl hover:scale-105'" class="px-3 py-2 rounded-lg">Academics</a>
+                        <a href="{{ route('view.news') }}" :style="`transition: all 0.3s ease; ${isScrolled ? 'color: white;' : 'color: #7f1416;'}`" style="font-weight: 400; font-size: 14px; padding: 8px 12px; display: inline-block; letter-spacing: 0.3px;" :class="isScrolled ? 'hover:bg-white/20 hover:shadow-lg hover:scale-105' : 'hover:shadow-2xl hover:scale-105'" class="px-3 py-2 rounded-lg">Faculty & Staff</a>
+                        <a href="#" :style="`transition: all 0.3s ease; ${isScrolled ? 'color: white;' : 'color: #7f1416;'}`" style="font-weight: 400; font-size: 14px; padding: 8px 12px; display: inline-block; letter-spacing: 0.3px;" :class="isScrolled ? 'hover:bg-white/20 hover:shadow-lg hover:scale-105' : 'hover:shadow-2xl hover:scale-105'" class="px-3 py-2 rounded-lg">Students</a>
+                        <a href="#" :style="`transition: all 0.3s ease; ${isScrolled ? 'color: white;' : 'color: #7f1416;'}`" style="font-weight: 400; font-size: 14px; padding: 8px 12px; display: inline-block; letter-spacing: 0.3px;" :class="isScrolled ? 'hover:bg-white/20 hover:shadow-lg hover:scale-105' : 'hover:shadow-2xl hover:scale-105'" class="px-3 py-2 rounded-lg">Links</a>
                     </div>
 
-                    <!-- Auth Buttons -->
-                    <div class="hidden lg:flex items-center gap-3">
+                    <!-- Auth Buttons (right side) -->
+                    <div class="hidden lg:flex items-center gap-3 ml-auto">
                         @auth
-                            <a href="{{ route('dashboard') }}" class="px-5 py-2.5 bg-gradient-to-r from-maroon-500 to-maroon-600 text-white rounded-xl hover:from-maroon-600 hover:to-maroon-700 transition-all duration-300 text-sm font-semibold shadow-md hover:shadow-lg hover:scale-[1.02]">
-                                Dashboard
-                            </a>
+                        <a href="{{ route('dashboard') }}" style="background-color: #ffc700; color: #7f1416; font-weight: 700; font-size: 14px; padding: 8px 16px; display: inline-block; border-radius: 6px; transition: all 0.3s ease;" class="hover:shadow-lg hover:shadow-yellow-400 hover:scale-110">Dashboard</a>
                         @else
-                            <a href="{{ route('login') }}" class="px-4 py-2 text-maroon-600 hover:text-maroon-700 transition-colors text-sm font-semibold">
-                                Sign In
-                            </a>
-                            <a href="{{ route('register') }}" class="px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-400 text-maroon-900 rounded-xl hover:from-primary-400 hover:to-primary-300 transition-all duration-300 text-sm font-bold shadow-md hover:shadow-lg hover:scale-[1.02]">
-                                Register
-                            </a>
+                        <a href="{{ route('login') }}" :style="`${isScrolled ? 'color: white;' : 'color: #7f1416;'} transition: all 0.3s ease;`" style="font-weight: 600; font-size: 14px; padding: 8px 16px; display: inline-block;" :class="isScrolled ? 'hover:bg-white/20 hover:rounded-lg hover:scale-105' : 'hover:shadow-2xl hover:rounded-lg hover:scale-105'">Sign In</a>
+                        <a href="{{ route('register') }}" style="background-color: #ffc700; color: #7f1416; font-weight: 700; font-size: 14px; padding: 8px 16px; display: inline-block; border-radius: 6px; transition: all 0.3s ease;" class="hover:shadow-lg hover:shadow-yellow-400 hover:scale-110">Register</a>
                         @endauth
                     </div>
 
                     <!-- Mobile Menu Button -->
-                    <button @click="mobileOpen = !mobileOpen" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors">
+                    <button @click="mobileOpen = !mobileOpen" class="lg:hidden p-2.5 rounded-lg" :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" style="transition-colors duration-300;">
                         <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                         <svg x-show="mobileOpen" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
 
-                <!-- Mobile Navigation -->
-                <div x-show="mobileOpen" x-cloak
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 -translate-y-2"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100 translate-y-0"
-                     x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="lg:hidden pb-4 border-t border-gray-100 mt-2">
-                    <div class="pt-4 space-y-1">
-                        <a href="{{ route('view.about') }}" class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-maroon-50 hover:text-maroon-600 font-medium transition-colors">About</a>
-                        <a href="{{ route('view.departments') }}" class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-maroon-50 hover:text-maroon-600 font-medium transition-colors">Departments</a>
-                        <a href="{{ route('view.programs') }}" class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-maroon-50 hover:text-maroon-600 font-medium transition-colors">Programs</a>
-                        <a href="{{ route('view.faculty') }}" class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-maroon-50 hover:text-maroon-600 font-medium transition-colors">Faculty</a>
-
-                        <a href="{{ route('view.news') }}" class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-maroon-50 hover:text-maroon-600 font-medium transition-colors">News & Events</a>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 space-y-2 px-4">
+                <!-- Mobile Menu -->
+                <div x-show="mobileOpen" x-transition class="lg:hidden w-full pb-4" :style="isScrolled ? 'border-top: 1px solid rgba(255, 255, 255, 0.1); color: white;' : 'border-top: 1px solid rgba(127, 20, 22, 0.1); color: #7f1416;'" style="font-family: 'Inter', 'Segoe UI', sans-serif;">
+                    <a href="{{ route('view.departments') }}" :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" style="font-weight: 400; font-size: 14px; padding: 12px 16px; display: block; letter-spacing: 0.3px; transition-colors duration-300;">About</a>
+                    <a href="{{ route('view.faculty') }}" :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" style="font-weight: 400; font-size: 14px; padding: 12px 16px; display: block; letter-spacing: 0.3px; transition-colors duration-300;">Academics</a>
+                    <a href="{{ route('view.news') }}" :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" style="font-weight: 400; font-size: 14px; padding: 12px 16px; display: block; letter-spacing: 0.3px; transition-colors duration-300;">Faculty & Staff</a>
+                    <a href="#" :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" style="font-weight: 400; font-size: 14px; padding: 12px 16px; display: block; letter-spacing: 0.3px; transition-colors duration-300;">Students</a>
+                    <a href="#" :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" style="font-weight: 400; font-size: 14px; padding: 12px 16px; display: block; letter-spacing: 0.3px; transition-colors duration-300;">Links</a>
+                    <div :style="isScrolled ? 'padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 16px;' : 'padding-top: 16px; border-top: 1px solid rgba(127, 20, 22, 0.1); margin-top: 16px;'" style="display: flex; flex-direction: column; gap: 8px;">
                         @auth
-                            <a href="{{ route('dashboard') }}" class="block w-full text-center px-4 py-3 bg-maroon-500 text-white rounded-xl font-semibold">Dashboard</a>
+                        <a href="{{ route('dashboard') }}" style="background-color: #ffc700; color: #7f1416; font-weight: 700; font-size: 14px; padding: 10px 16px; display: block; text-align: center; border-radius: 6px;">Dashboard</a>
                         @else
-                            <a href="{{ route('login') }}" class="block w-full text-center px-4 py-3 border-2 border-maroon-500 text-maroon-600 rounded-xl font-semibold">Sign In</a>
-                            <a href="{{ route('register') }}" class="block w-full text-center px-4 py-3 bg-primary-500 text-maroon-900 rounded-xl font-bold">Register</a>
+                        <a href="{{ route('login') }}" :style="isScrolled ? 'color: white;' : 'color: #7f1416;'" style="font-weight: 600; font-size: 14px; padding: 10px 16px; display: block; text-align: center; transition-colors duration-300;">Sign In</a>
+                        <a href="{{ route('register') }}" style="background-color: #ffc700; color: #7f1416; font-weight: 700; font-size: 14px; padding: 10px 16px; display: block; text-align: center; border-radius: 6px;">Register</a>
                         @endauth
                     </div>
                 </div>
             </div>
         </nav>
-
+        
         <!-- Page Content -->
-        <main class="flex-grow">
+        <main class="flex-grow mt-20 lg:mt-32">
             {{ $slot }}
         </main>
 
@@ -134,24 +99,21 @@
                     <!-- Brand -->
                     <div class="lg:col-span-2">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 bg-gradient-to-br from-maroon-500 to-maroon-700 rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-lg">
-                                UPH
-                            </div>
+                            <img src="{{ asset('images/coe-logo.png') }}" alt="CEAT Logo" class="h-16 w-auto">
                             <div>
-                                <span class="font-bold text-white text-lg">UPH Engineering</span>
-                                <span class="block text-xs text-gray-500 tracking-wider uppercase">College of Engineering</span>
+                                <h3 class="font-bold text-white text-sm">COLLEGE OF ENGINEERING,</h3>
+                                <h3 class="font-bold text-white text-sm">ARCHITECTURE & TECHNOLOGY</h3>
                             </div>
                         </div>
                         <p class="text-sm text-gray-500 leading-relaxed max-w-xs">
-                            Building the future through excellence in engineering education and community service.
+                            Building the future through excellence in engineering education, innovative research, and community service.
                         </p>
                     </div>
 
                     <!-- Quick Links -->
                     <div>
-                        <h4 class="font-semibold text-white mb-5 text-sm tracking-wider uppercase">Quick Links</h4>
+                        <h4 class="font-semibold text-white mb-5 text-sm tracking-wider uppercase">Academic</h4>
                         <ul class="space-y-3 text-sm">
-                            <li><a href="{{ route('view.about') }}" class="hover:text-primary-400 transition-colors duration-200 flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-maroon-500"></span>About</a></li>
                             <li><a href="{{ route('view.departments') }}" class="hover:text-primary-400 transition-colors duration-200 flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-maroon-500"></span>Departments</a></li>
                             <li><a href="{{ route('view.programs') }}" class="hover:text-primary-400 transition-colors duration-200 flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-maroon-500"></span>Programs</a></li>
                             <li><a href="{{ route('view.faculty') }}" class="hover:text-primary-400 transition-colors duration-200 flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-maroon-500"></span>Faculty</a></li>
@@ -162,7 +124,6 @@
                         <h4 class="font-semibold text-white mb-5 text-sm tracking-wider uppercase">Resources</h4>
                         <ul class="space-y-3 text-sm">
                             <li><a href="{{ route('view.news') }}" class="hover:text-primary-400 transition-colors duration-200 flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-primary-500"></span>News & Events</a></li>
-
                             <li><a href="#" class="hover:text-primary-400 transition-colors duration-200 flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-primary-500"></span>Support</a></li>
                         </ul>
                     </div>
