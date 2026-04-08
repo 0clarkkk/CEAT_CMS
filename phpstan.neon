@@ -1,0 +1,57 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+    - .phpstan.baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - routes
+        - config
+    bootstrapFiles:
+        - _ide_helper.php
+    scanDirectories:
+        - bootstrap
+    excludePaths:
+        - bootstrap/cache
+        - storage
+        - vendor
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsFinal: false
+    reportUnmatchedIgnoredErrors: false
+    reportUnusedCacheKey: false
+    reportUnusedIgnoredErrors: false
+    treatMissingClosureParamTypeAsAny: true
+    allowPartialRelaxedRules: true
+    
+    ignoreErrors:
+        # Laravel specific ignores
+        - '#Call to an undefined method (?:Illuminate\\Testing\\TestResponse|Illuminate\\Foundation\\Testing\\TestResponse)::#'
+        - '#Access to an undefined property .*\$[a-zA-Z_]#'
+        - '#Undefined variable: \$this#'
+        - '#Call to an undefined method .*::make\(\)#'
+        - '#Cannot access offset .* on Illuminate\\Http\\ParameterBag#'
+        - '#Method .*::__construct\(\) has parameter .* with no type hint specified#'
+        
+        # Filament specific ignores
+        - '#Call to an undefined method.*Filament#'
+        - '#Access to an undefined property.*Filament#'
+        - '#Call to an undefined static method Filament#'
+        
+        # Spatie Permission ignores
+        - '#Call to an undefined method.*HasRoles#'
+        - '#Access to an undefined property.*HasRoles#'
+        
+        # Dynamic method calls
+        - '#Call to an undefined method .*::where.*#'
+        - '#Call to an undefined method .*::get#'
+        - '#Call to an undefined method .*::first#'
+        - '#Call to an undefined method .*::pluck#'
+        - '#Call to an undefined method .*::load#'
+        
+        # Model relationships
+        - '#Call to an undefined method .*::hasMany#'
+        - '#Call to an undefined method .*::belongsTo#'
+        - '#Call to an undefined method .*::belongsToMany#'
+        - '#Call to an undefined method .*::hasOne#'
