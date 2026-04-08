@@ -34,4 +34,19 @@ class PublicFacultyController extends Controller
             'faculty' => $faculty,
         ]);
     }
+
+    /**
+     * Display faculty consultation hours.
+     */
+    public function consultation(): View
+    {
+        $faculty = FacultyMember::where('is_active', true)
+            ->with('department')
+            ->get();
+
+        return view('public.faculty.consultation', [
+            'faculty' => $faculty,
+            'title' => 'Consultation Hours',
+        ]);
+    }
 }

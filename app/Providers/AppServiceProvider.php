@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Register the navigation view composer
-        View::composer('components.public-layout', NavigationComposer::class);
+        // Register the navigation view composer with the navigation menu component
+        View::composer('components.navigation-menu', NavigationComposer::class);
     }
 }

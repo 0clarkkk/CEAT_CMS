@@ -9,6 +9,7 @@ use App\Http\Controllers\PublicProgramController;
 use App\Http\Controllers\PublicFacultyController;
 use App\Http\Controllers\PublicNewsEventController;
 use App\Http\Controllers\PublicAboutController;
+use App\Http\Controllers\PublicCurriculumController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,7 +20,31 @@ Route::get('/', function () {
 Route::get('/departments', [PublicDepartmentController::class, 'index'])->name('view.departments');
 Route::get('/departments/{department:slug}', [PublicDepartmentController::class, 'show'])->name('view.departments.show');
 
+// About Section Routes
+Route::get('/about/college', [PublicAboutController::class, 'college'])->name('view.about.college');
+Route::get('/about/history', [PublicAboutController::class, 'history'])->name('view.about.history');
+Route::get('/about/mission', [PublicAboutController::class, 'mission'])->name('view.about.mission');
+
+// Academics Routes
+Route::get('/academics/programs', [PublicProgramController::class, 'index'])->name('view.academics.programs');
+Route::get('/academics/departments', [PublicDepartmentController::class, 'index'])->name('view.academics.departments');
+Route::get('/academics/curriculum', [PublicCurriculumController::class, 'index'])->name('view.academics.curriculum');
+
+// Faculty & Staff Routes
+Route::get('/faculty/directory', [PublicFacultyController::class, 'index'])->name('view.faculty.directory');
+Route::get('/faculty/departments', [PublicDepartmentController::class, 'index'])->name('view.faculty.departments');
+Route::get('/faculty/consultation', [PublicFacultyController::class, 'consultation'])->name('view.faculty.consultation');
+
+// Student Routes
+Route::get('/student/rules', [PublicAboutController::class, 'rules'])->name('view.student.rules');
+Route::get('/student/downloads', [PublicAboutController::class, 'downloads'])->name('view.student.downloads');
+Route::get('/student/portal', function () {
+    return redirect('https://portal.uphsl.edu.ph', 301);
+})->name('view.student.portal');
+
+// Legacy routes (kept for backward compatibility)
 Route::get('/about', [PublicAboutController::class, 'index'])->name('view.about');
+
 
 Route::get('/programs', [PublicProgramController::class, 'index'])->name('view.programs');
 Route::get('/programs/{program:slug}', [PublicProgramController::class, 'show'])->name('view.programs.show');

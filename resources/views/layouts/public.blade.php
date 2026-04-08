@@ -19,9 +19,6 @@
     </style>
 </head>
 <body class="font-sans antialiased bg-white text-gray-900 custom-scrollbar">
-    <!-- Global Header and Navigation -->
-    @include('layouts.public-header')
-    
     <x-public-layout>
         @yield('content')
     </x-public-layout>
