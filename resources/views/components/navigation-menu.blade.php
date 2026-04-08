@@ -44,8 +44,8 @@
                                  x-transition:leave-start="opacity-100 translate-y-0"
                                  x-transition:leave-end="opacity-0 -translate-y-2"
                                  @click.away="closeDropdown()"
-                                 class="absolute left-0 top-full mt-0 w-56 shadow-2xl overflow-hidden z-50"
-                                 :style="`${isScrolled ? 'background: linear-gradient(135deg, rgba(127, 20, 22, 0.98) 0%, rgba(127, 20, 22, 0.95) 100%);' : 'background: white; border: 1px solid rgba(127, 20, 22, 0.1);'}`">
+                                 class="absolute left-0 top-full mt-0 w-56 shadow-2xl overflow-hidden z-50 dropdown-content"
+                                 :style="`${isScrolled ? 'background: linear-gradient(135deg, rgba(127, 20, 22, 0.98) 0%, rgba(127, 20, 22, 0.95) 100%);' : 'background: white; border: 1px solid rgba(127, 20, 22, 0.1);'}; ${(activeDropdown === '{{ $itemKey }}' && !isScrolling) ? 'visibility: visible; opacity: 1;' : 'visibility: hidden; opacity: 0;'}`">
                                 
                                 @foreach($item['items'] as $subItem)
                                     <a href="{{ $subItem['url'] }}" 
@@ -177,13 +177,17 @@ function navigationMenu() {
             this.scrollListener = () => {
                 const scrollY = window.scrollY;
                 
+                // Update scroll state for background color (only if threshold crossed)
+                const wasScrolled = this.isScrolled;
+                const nowScrolled = scrollY > 100;
+                if (wasScrolled !== nowScrolled) {
+                    this.isScrolled = nowScrolled;
+                }
+                
                 // Mark as scrolling
                 this.isScrolling = true;
                 
-                // Update scroll state for background color
-                this.isScrolled = scrollY > 100;
-                
-                // Close dropdown if position changed
+                // CRITICAL: Close dropdown on any scroll movement
                 if (scrollY !== this.lastScrollY) {
                     this.activeDropdown = null;
                 }
@@ -194,7 +198,7 @@ function navigationMenu() {
                 clearTimeout(this.scrollTimeout);
                 this.scrollTimeout = setTimeout(() => {
                     this.isScrolling = false;
-                }, 200);
+                }, 300);
             };
             
             // Attach listener with passive flag for better performance
