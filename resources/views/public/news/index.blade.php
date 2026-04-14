@@ -67,8 +67,8 @@
     <!-- Latest News Section -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-gray-100">
         <div class="mb-12">
-            <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-2">Latest News</h2>
-            <p class="text-gray-600">Stay updated with the latest announcements and news.</p>
+            <h2 class="text-4xl sm:text-5xl font-black text-gray-900 mb-4">Latest News</h2>
+            <p class="text-gray-600 text-lg">Stay updated with the latest announcements and news.</p>
         </div>
 
         @if ($latestNews->isEmpty())
