@@ -21,7 +21,7 @@ class FilamentAdminAuthorize
         }
 
         $userRole = $request->user()->role;
-        
+
         if (! in_array($userRole, ['admin', 'superadmin'], true)) {
             abort(403, 'You do not have permission to access the admin panel.');
         }
