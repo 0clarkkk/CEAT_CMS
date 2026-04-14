@@ -57,10 +57,10 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                FilamentAdminAuthorize::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
+                FilamentAdminAuthorize::class,
             ])
             ->navigationGroups([
                 'Content Management',
