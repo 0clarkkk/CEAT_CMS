@@ -24,7 +24,9 @@
     }
 
     .year-badge {
-        @apply text-4xl font-black bg-gradient-to-br bg-clip-text text-transparent;
+        @apply font-black bg-gradient-to-br bg-clip-text text-transparent;
+        font-size: 40px;
+        line-height: 1;
     }
 </style>
 
@@ -44,14 +46,14 @@
         <!-- Modern Stepped Timeline -->
         <div class="space-y-8 relative" style="padding-left: 80px;">
             <!-- Timeline Vertical Line -->
-            <div class="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-maroon-600 via-primary-500 to-maroon-600 z-0" style="left: 22px;"></div>
+            <div class="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-maroon-600 via-primary-500 to-maroon-600" style="left: 22px; z-index: 0;"></div>
 
             <!-- Timeline Items -->
-            <div class="space-y-16 relative z-10">
+            <div class="space-y-16 relative" style="z-index: 10;">
                 <!-- 1975 -->
                 <div class="history-card" style="animation-delay: 0.1s;">
-                    <div class="flex items-start gap-6">
-                        <div class="absolute w-4 h-4 bg-maroon-600 rounded-full border-2 border-white shadow-md z-20" style="left: 15px; top: 3px;"></div>
+                    <div class="flex items-start gap-6 relative">
+                        <div class="absolute w-5 h-5 bg-maroon-600 rounded-full border-4 border-white shadow-lg" style="left: 12px; top: 3px; z-index: 20;"></div>
                         <div class="pt-1" style="margin-left: 50px;">
                             <div class="year-badge from-maroon-600 to-maroon-700 mb-1">1975</div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-3">Foundation</h3>
@@ -64,8 +66,8 @@
 
                 <!-- 1990s -->
                 <div class="history-card" style="animation-delay: 0.2s;">
-                    <div class="flex items-start gap-6">
-                        <div class="absolute w-4 h-4 bg-primary-500 rounded-full border-2 border-white shadow-md z-20" style="left: 15px; top: 3px;"></div>
+                    <div class="flex items-start gap-6 relative">
+                        <div class="absolute w-5 h-5 bg-maroon-600 rounded-full border-4 border-white shadow-lg" style="left: 12px; top: 3px; z-index: 20;"></div>
                         <div class="pt-1" style="margin-left: 50px;">
                             <div class="year-badge from-primary-500 to-primary-600 mb-1">1990s</div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-3">Early Development</h3>
@@ -78,8 +80,8 @@
 
                 <!-- Early 2000s -->
                 <div class="history-card" style="animation-delay: 0.3s;">
-                    <div class="flex items-start gap-6">
-                        <div class="absolute w-4 h-4 bg-maroon-600 rounded-full border-2 border-white shadow-md z-20" style="left: 15px; top: 3px;"></div>
+                    <div class="flex items-start gap-6 relative">
+                        <div class="absolute w-5 h-5 bg-maroon-600 rounded-full border-4 border-white shadow-lg" style="left: 12px; top: 3px; z-index: 20;"></div>
                         <div class="pt-1" style="margin-left: 50px;">
                             <div class="year-badge from-maroon-600 to-maroon-700 mb-1">Early 2000s</div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-3">Expansion</h3>
@@ -92,8 +94,8 @@
 
                 <!-- Mid-Late 2000s -->
                 <div class="history-card" style="animation-delay: 0.4s;">
-                    <div class="flex items-start gap-6">
-                        <div class="absolute w-4 h-4 bg-primary-500 rounded-full border-2 border-white shadow-md z-20" style="left: 15px; top: 3px;"></div>
+                    <div class="flex items-start gap-6 relative">
+                        <div class="absolute w-5 h-5 bg-maroon-600 rounded-full border-4 border-white shadow-lg" style="left: 12px; top: 3px; z-index: 20;"></div>
                         <div class="pt-1" style="margin-left: 50px;">
                             <div class="year-badge from-primary-500 to-primary-600 mb-1">2000s (Mid-Late)</div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-3">Multidisciplinary Growth</h3>
@@ -106,8 +108,8 @@
 
                 <!-- 2010s -->
                 <div class="history-card" style="animation-delay: 0.5s;">
-                    <div class="flex items-start gap-6">
-                        <div class="absolute w-4 h-4 bg-maroon-600 rounded-full border-2 border-white shadow-md z-20" style="left: 15px; top: 3px;"></div>
+                    <div class="flex items-start gap-6 relative">
+                        <div class="absolute w-5 h-5 bg-maroon-600 rounded-full border-4 border-white shadow-lg" style="left: 12px; top: 3px; z-index: 20;"></div>
                         <div class="pt-1" style="margin-left: 50px;">
                             <div class="year-badge from-maroon-600 to-maroon-700 mb-1">2010s</div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-3">Official Recognition</h3>
@@ -120,15 +122,15 @@
 
                 <!-- 2020s -->
                 <div class="history-card" style="animation-delay: 0.6s;">
-                    <div class="flex items-start gap-6">
-                        <div class="absolute w-4 h-4 bg-primary-500 rounded-full border-2 border-white shadow-md z-20" style="left: 15px; top: 3px;"></div>
+                    <div class="flex items-start gap-6 relative">
+                        <div class="absolute w-5 h-5 bg-maroon-600 rounded-full border-4 border-white shadow-lg" style="left: 12px; top: 3px; z-index: 20;"></div>
                         <div class="pt-1" style="margin-left: 50px;">
                             <div class="year-badge from-primary-600 to-maroon-600 mb-1">2020s – Present</div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-3">Modern Era</h3>
                             <p class="text-gray-600 leading-relaxed mb-3 max-w-2xl">
                                 CEAT continues to modernize its curriculum by integrating emerging technologies, strengthening internship and industry linkages, and supporting innovation and student research.
                             </p>
-                            <p class="text-sm font-semibold text-maroon-700 italic">
+                            <p class="font-semibold text-maroon-700 italic" style="font-size: 25px;">
                                 "Character Building is Nation Building"
                             </p>
                         </div>
