@@ -10,19 +10,11 @@ use App\Http\Controllers\PublicFacultyController;
 use App\Http\Controllers\PublicNewsEventController;
 use App\Http\Controllers\PublicAboutController;
 use App\Http\Controllers\PublicCurriculumController;
-use App\Models\NewsEvent;
+use App\Http\Controllers\OAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $latestNewsEvents = NewsEvent::where('status', 'published')
-        ->with('department')
-        ->orderBy('published_at', 'desc')
-        ->limit(3)
-        ->get();
-    
-    return view('welcome', [
-        'latestNewsEvents' => $latestNewsEvents,
-    ]);
+    return view('welcome');
 })->name('home');
 
 // Public Routes (accessible without authentication)
@@ -54,6 +46,9 @@ Route::get('/student/portal', function () {
 // Legacy routes (kept for backward compatibility)
 Route::get('/about', [PublicAboutController::class, 'index'])->name('view.about');
 
+// OAuth routes
+Route::get('/auth/{provider}/redirect', [OAuthController::class, 'redirect'])->name('oauth.redirect');
+Route::get('/auth/{provider}/callback', [OAuthController::class, 'callback'])->name('oauth.callback');
 
 Route::get('/programs', [PublicProgramController::class, 'index'])->name('view.programs');
 Route::get('/programs/{program:slug}', [PublicProgramController::class, 'show'])->name('view.programs.show');
@@ -64,7 +59,6 @@ Route::get('/faculty/{faculty}', [PublicFacultyController::class, 'show'])->name
 
 
 Route::get('/news', [PublicNewsEventController::class, 'index'])->name('view.news');
-Route::get('/news/all', [PublicNewsEventController::class, 'all'])->name('view.news.all');
 Route::get('/news/{newsEvent:slug}', [PublicNewsEventController::class, 'show'])->name('view.news.show');
 
 // Authenticated routes

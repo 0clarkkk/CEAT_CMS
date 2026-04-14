@@ -43,7 +43,7 @@
     }
 </style>
 
-<div class="bg-white" style="margin-bottom: 10px; margin-top: 85px;">
+<div class="bg-white" style="margin-bottom: 10px; margin-top: 120px;">
     <!-- Video Hero Section -->
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <!-- Video Container -->

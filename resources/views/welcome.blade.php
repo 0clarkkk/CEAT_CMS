@@ -32,13 +32,13 @@
 @section('content')
 
     <!-- Carousel Section -->
-    <section x-data="{ currentSlide: 0 }" class="relative bg-gray-900 overflow-hidden" style="margin-top: 6rem;">
+    <section x-data="{ currentSlide: 0 }" class="relative bg-gray-900 overflow-hidden">
         <div class="relative h-96 sm:h-[500px] lg:h-[600px]">
             <!-- Slide 1 -->
-            <div x-show="currentSlide === 0" x-transition class="absolute inset-0 w-full h-full" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('{{ asset('images/sample1.jpg') }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+            <div x-show="currentSlide === 0" x-transition class="absolute inset-0 w-full h-full" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('{{ asset('images/sample1.jpg') }}'); background-size: cover; background-position: center;"></div>
             
             <!-- Slide 2 -->
-            <div x-show="currentSlide === 1" x-transition class="absolute inset-0 w-full h-full" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('{{ asset('images/sample2.jpg') }}'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+            <div x-show="currentSlide === 1" x-transition class="absolute inset-0 w-full h-full" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('{{ asset('images/sample2.jpg') }}'); background-size: cover; background-position: center;"></div>
             
             <!-- Slide 3 -->
             <div x-show="currentSlide === 2" x-transition class="absolute inset-0 w-full h-full" style="background-color: #7f1416;"></div>
@@ -75,15 +75,14 @@
                     <div class="space-y-4">
                         <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 rounded-full border border-primary-200">
                             <span class="w-2 h-2 bg-primary-600 rounded-full"></span>
-                            <span class="text-sm font-semibold text-primary-700">Welcome to UPH Engineering</span>
+                            <span class="text-sm font-semibold text-primary-700">UPHSD DALTA - College of Engineering, Architecture & Technology</span>
                         </div>
                         <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-tight">
-                            Excellence in
-                            <span class="block bg-gradient-to-r from-maroon-600 to-maroon-800 bg-clip-text text-transparent">Engineering</span>
-                            Education
+                            Leading Excellence in
+                            <span class="block bg-gradient-to-r from-maroon-600 to-maroon-800 bg-clip-text text-transparent">Engineering Education</span>
                         </h1>
                         <p class="text-lg sm:text-xl text-gray-600 max-w-xl leading-relaxed">
-                            Discover world-class programs, distinguished faculty expertise, and cutting-edge research at the University of Perpetual Help System DALTA's College of Engineering, Architecture, and Technology.
+                            Discover premier engineering programs, world-class faculty expertise, and innovative research opportunities at the University of Perpetual Help System DALTA's College of Engineering, Architecture, and Technology.
                         </p>
                     </div>
 
@@ -96,7 +95,7 @@
                             </svg>
                         </a>
                         <a href="{{ route('view.news') }}" class="inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-xl hover:border-maroon-600 hover:bg-maroon-50 hover:shadow-lg hover:shadow-maroon-300 hover:scale-110 transition-all duration-300">
-                            Latest News & Events
+                            Latest News
                         </a>
                     </div>
 
@@ -140,42 +139,55 @@
                     Latest News & Events
                 </h2>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Keep informed about important announcements and upcoming events in UPH Engineering.
+                    Keep informed about important announcements and upcoming events at UPHSD DALTA's College of Engineering, Architecture, and Technology.
                 </p>
             </div>
 
             <!-- News Cards -->
             <div class="grid md:grid-cols-3 gap-8 mb-12">
-                @forelse ($latestNewsEvents as $index => $newsEvent)
-                    <a href="{{ route('view.news.show', $newsEvent) }}" class="group" style="animation: fadeInUp 0.6s ease-out {{ $index * 0.1 }}s both;">
-                        <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
-                            @if ($newsEvent->featured_image)
-                                <div class="h-48 overflow-hidden">
-                                    <img src="{{ $newsEvent->featured_image }}" alt="{{ $newsEvent->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                </div>
-                            @else
-                                <div class="h-48 bg-gradient-to-br {{ $index % 3 === 0 ? 'from-maroon-600 to-maroon-800' : ($index % 3 === 1 ? 'from-primary-500 to-primary-600' : 'from-maroon-700 to-maroon-900') }} flex items-center justify-center">
-                                    <div class="text-6xl">{{ $newsEvent->type === 'event' ? '◈' : '▬' }}</div>
-                                </div>
-                            @endif
-                            <div class="p-6">
-                                <span class="inline-block px-3 py-1 {{ $newsEvent->type === 'news' ? 'bg-maroon-100 text-maroon-700' : ($newsEvent->type === 'event' ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-700') }} rounded-full text-xs font-bold mb-3">{{ ucfirst($newsEvent->type) }}</span>
-                                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-700 line-clamp-2">{{ $newsEvent->title }}</h3>
-                                <p class="text-gray-500 text-xs font-medium mb-2">{{ $newsEvent->department->name }}</p>
-                                <p class="text-gray-600 text-sm line-clamp-3">{{ $newsEvent->excerpt }}</p>
-                            </div>
+                <a href="{{ route('view.news') }}" class="group">
+                    <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
+                        <div class="h-48 bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                            <div class="text-6xl">▬</div>
                         </div>
-                    </a>
-                @empty
-                    <div class="md:col-span-3 text-center py-12">
-                        <p class="text-gray-500 text-lg font-medium">No recent news or events available.</p>
+                        <div class="p-6">
+                            <span class="inline-block px-3 py-1 bg-maroon-100 text-maroon-700 rounded-full text-xs font-bold mb-3">News</span>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-700">New Engineering Lab Opens</h3>
+                            <p class="text-gray-600 text-sm line-clamp-3">State-of-the-art robotics and AI laboratory now available for student research.</p>
+                        </div>
                     </div>
-                @endforelse
+                </a>
+
+                <a href="{{ route('view.news') }}" class="group">
+                    <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
+                        <div class="h-48 bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
+                            <div class="text-6xl">▬</div>
+                        </div>
+                        <div class="p-6">
+                            <span class="inline-block px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-bold mb-3">Event</span>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-700">Annual Engineering Symposium</h3>
+                            <p class="text-gray-600 text-sm line-clamp-3">Join industry leaders for the 25th annual Engineering Symposium.</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{{ route('view.news') }}" class="group">
+                    <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
+                        <div class="h-48 bg-gradient-to-br from-maroon-700 to-maroon-900 flex items-center justify-center">
+                            <div class="text-6xl">▬</div>
+                        </div>
+                        <div class="p-6">
+                            <span class="inline-block px-3 py-1 bg-maroon-100 text-maroon-700 rounded-full text-xs font-bold mb-3">Research</span>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-700">Faculty Publication Highlight</h3>
+                            <p class="text-gray-600 text-sm line-clamp-3">Dr. Maria Santos publishes groundbreaking research on sustainable materials.</p>
+                        </div>
+                    </div>
+                </a>
             </div>
 
             <div class="text-center">
                 <a href="{{ route('view.news') }}" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-maroon-600 to-maroon-700 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110 transition-all duration-300">
-                    View All News & Events →
+                    View All News →
                 </a>
             </div>
         </div>
@@ -188,13 +200,13 @@
 
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight">
-                Ready to Start Your Engineering Journey?
+                Begin Your Engineering Excellence Journey
             </h2>
             <p class="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-                Join thousands of students and become part of UPH Engineering's legacy of excellence.
+                Join our community of innovators and become part of UPHSD DALTA's College of Engineering, Architecture, and Technology legacy.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('register') }}" class="px-8 py-4 bg-primary-500 text-maroon-900 font-bold rounded-xl hover:bg-primary-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary-400">
+                <a href="{{ route('register') }}" style="padding: 14px 32px; background: #8b0000; color: white; font-weight: 600; border-radius: 8px; text-decoration: none; display: inline-block; transition: all 0.3s ease; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(139, 0, 0, 0.2);" onmouseover="this.style.background='#6b0000'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(139, 0, 0, 0.3)';" onmouseout="this.style.background='#8b0000'; this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(139, 0, 0, 0.2)';">
                     Enroll Now
                 </a>
                 <a href="{{ route('view.programs') }}" class="px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/30 hover:shadow-2xl hover:shadow-white/20 transition-all duration-300 border border-white/30 hover:border-white hover:scale-110">
