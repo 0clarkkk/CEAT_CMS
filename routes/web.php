@@ -45,6 +45,11 @@ Route::get('/student/portal', function () {
 // Legacy routes (kept for backward compatibility)
 Route::get('/about', [PublicAboutController::class, 'index'])->name('view.about');
 
+// Test route
+Route::get('/test-content', function () {
+    return view('test-content');
+});
+
 // OAuth routes
 Route::get('/auth/{provider}/redirect', [OAuthController::class, 'redirect'])->name('oauth.redirect');
 Route::get('/auth/{provider}/callback', [OAuthController::class, 'callback'])->name('oauth.callback');

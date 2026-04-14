@@ -1,15 +1,16 @@
 <div 
     class="editable-content group relative"
-    data-page-slug="{{ $attributes->get('page-slug', '') }}"
-    data-section-key="{{ $attributes->get('section-key', '') }}"
+    data-page-slug="{{ $pageSlug }}"
+    data-section-key="{{ $sectionKey }}"
 >
     @auth
         @if(auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin')
             <div class="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 @php
-                    $pageSlug = $attributes->get('page-slug', '');
-                    $sectionKey = $attributes->get('section-key', '');
-                    $editUrl = "/admin/page-contents?tableSearch=" . urlencode("$pageSlug|$sectionKey");
+                    $pageContent = \App\Models\PageContent::where('page_slug', $pageSlug)
+                        ->where('section_key', $sectionKey)
+                        ->first();
+                    $editUrl = $pageContent ? "/admin/page-contents/{$pageContent->id}/edit" : "/admin/page-contents";
                 @endphp
                 <a 
                     href="{{ $editUrl }}"
@@ -25,15 +26,7 @@
         @endif
     @endauth
 
-    @php
-        $pageSlugVal = $attributes->get('page-slug', $pageSlug ?? '');
-        $sectionKeyVal = $attributes->get('section-key', $sectionKey ?? '');
-        $defaultVal = $attributes->get('default', $default ?? '');
-        $content = \App\Models\PageContent::getContent($pageSlugVal, $sectionKeyVal, $defaultVal);
-        $isRichText = filter_var($attributes->get('rich-text', $richText ?? false), FILTER_VALIDATE_BOOLEAN);
-    @endphp
-
-    @if($isRichText)
+    @if($richText)
         <div class="prose prose-sm max-w-none">
             {!! $content !!}
         </div>
