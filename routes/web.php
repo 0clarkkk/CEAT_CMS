@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentDashboardController;
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\SuperadminDashboardController;
 use App\Http\Controllers\PublicDepartmentController;
 use App\Http\Controllers\PublicProgramController;
@@ -68,10 +67,6 @@ Route::middleware('auth')->group(function () {
         ->middleware('role:student')
         ->name('student.dashboard');
 
-    Route::get('/admin/dashboard', AdminDashboardController::class)
-        ->middleware('role:admin,superadmin')
-        ->name('admin.dashboard');
-
     Route::get('/superadmin/dashboard', SuperadminDashboardController::class)
         ->middleware('role:superadmin')
         ->name('superadmin.dashboard');
@@ -82,8 +77,8 @@ Route::middleware('auth')->group(function () {
 
         return match ($user->role) {
             'student' => redirect()->route('student.dashboard'),
-            'admin' => redirect()->route('admin.dashboard'),
-            'superadmin' => redirect()->route('superadmin.dashboard'),
+            'admin' => redirect('/admin'),
+            'superadmin' => redirect('/admin'),
             default => redirect()->route('home'),
         };
     })->name('dashboard');
