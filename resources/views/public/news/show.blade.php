@@ -39,10 +39,10 @@
     </section>
 
     <!-- Featured Image -->
-    @if ($newsEvent->featured_image)
+    @if ($newsEvent->getFeaturedImageUrl())
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 mb-8">
         <div class="rounded-2xl overflow-hidden shadow-elevated">
-            <img src="{{ $newsEvent->featured_image }}" alt="{{ $newsEvent->title }}" class="w-full h-80 lg:h-96 object-cover">
+            <img src="{{ $newsEvent->getFeaturedImageUrl() }}" alt="{{ $newsEvent->title }}" class="w-full h-80 lg:h-96 object-cover">
         </div>
     </div>
     @endif

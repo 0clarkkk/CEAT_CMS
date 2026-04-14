@@ -11,8 +11,8 @@
             </a>
 
             <div class="flex items-start gap-6">
-                @if($faculty->photo)
-                    <img src="{{ $faculty->photo }}" alt="{{ $faculty->first_name }} {{ $faculty->last_name }}" class="w-20 h-20 rounded-2xl object-cover shrink-0 shadow-xl animate-scale-in">
+                @if($faculty->getPhotoUrl())
+                    <img src="{{ $faculty->getPhotoUrl() }}" alt="{{ $faculty->first_name }} {{ $faculty->last_name }}" class="w-20 h-20 rounded-2xl object-cover shrink-0 shadow-xl animate-scale-in">
                 @else
                     <div class="w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center text-maroon-900 text-2xl font-bold shrink-0 shadow-xl animate-scale-in">
                         {{ strtoupper(substr($faculty->first_name, 0, 1) . substr($faculty->last_name, 0, 1)) }}

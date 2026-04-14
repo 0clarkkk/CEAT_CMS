@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -72,6 +73,27 @@ class FacultyMember extends Model
         'is_active',
     ];
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // Delete old photo when updating
+        static::updating(function ($model) {
+            if ($model->isDirty('photo')) {
+                $oldPhoto = $model->getOriginal('photo');
+                if ($oldPhoto && Storage::disk('public')->exists($oldPhoto)) {
+                    Storage::disk('public')->delete($oldPhoto);
+                }
+            }
+        });
+
+        // Delete photo when record is deleted
+        static::deleting(function ($model) {
+            if ($model->photo && Storage::disk('public')->exists($model->photo)) {
+                Storage::disk('public')->delete($model->photo);
+            }
+        });
+    }
     protected function casts(): array
     {
         return [
@@ -88,21 +110,21 @@ class FacultyMember extends Model
     }
 
     /**
-     * Get the photo URL
+     * Get the photo URL for display in views
      */
-    public function getPhotoAttribute($value)
+    public function getPhotoUrl(): ?string
     {
-        if (!$value) {
+        if (!$this->photo) {
             return null;
         }
-        
+
         // If it's already a full URL, return it
-        if (str_starts_with($value, 'http')) {
-            return $value;
+        if (str_starts_with($this->photo, 'http')) {
+            return $this->photo;
         }
-        
+
         // Convert to asset URL for public disk
-        return asset('storage/' . $value);
+        return asset('storage/' . $this->photo);
     }
 
     public function getFullNameAttribute(): string

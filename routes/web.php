@@ -11,11 +11,10 @@ use App\Http\Controllers\PublicNewsEventController;
 use App\Http\Controllers\PublicAboutController;
 use App\Http\Controllers\PublicCurriculumController;
 use App\Http\Controllers\OAuthController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Public Routes (accessible without authentication)
 Route::get('/departments', [PublicDepartmentController::class, 'index'])->name('view.departments');
@@ -59,6 +58,7 @@ Route::get('/faculty/{faculty}', [PublicFacultyController::class, 'show'])->name
 
 
 Route::get('/news', [PublicNewsEventController::class, 'index'])->name('view.news');
+Route::get('/news/all', [PublicNewsEventController::class, 'index'])->name('view.news.all');
 Route::get('/news/{newsEvent:slug}', [PublicNewsEventController::class, 'show'])->name('view.news.show');
 
 // Authenticated routes

@@ -32,35 +32,72 @@
 @section('content')
 
     <!-- Carousel Section -->
-    <section x-data="{ currentSlide: 0 }" class="relative bg-gray-900 overflow-hidden">
+    <section x-data="{ currentSlide: 0, init() { setInterval(() => { this.currentSlide = (this.currentSlide + 1) % {{ count($latestNews) > 0 ? count($latestNews) : 1 }} }, 5000); } }" x-init="init()" class="relative bg-gray-900 overflow-hidden">
         <div class="relative h-96 sm:h-[500px] lg:h-[600px]">
-            <!-- Slide 1 -->
-            <div x-show="currentSlide === 0" x-transition class="absolute inset-0 w-full h-full" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('{{ asset('images/sample1.jpg') }}'); background-size: cover; background-position: center;"></div>
-            
-            <!-- Slide 2 -->
-            <div x-show="currentSlide === 1" x-transition class="absolute inset-0 w-full h-full" style="background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('{{ asset('images/sample2.jpg') }}'); background-size: cover; background-position: center;"></div>
-            
-            <!-- Slide 3 -->
-            <div x-show="currentSlide === 2" x-transition class="absolute inset-0 w-full h-full" style="background-color: #7f1416;"></div>
+            <!-- News Carousel Slides -->
+            @forelse($latestNews as $index => $news)
+                <div x-show="currentSlide === {{ $index }}" x-transition:enter="transition ease-in-out duration-500" x-transition:leave="transition ease-in-out duration-500" class="absolute inset-0 w-full h-full">
+                    @if($news->getFeaturedImageUrl())
+                        <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <div class="text-6xl mb-4">◈</div>
+                                <p class="text-xl font-semibold">{{ $news->title }}</p>
+                            </div>
+                        </div>
+                    @endif
+                    <!-- Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    
+                    <!-- Content -->
+                    <div class="absolute inset-0 flex items-end p-6 sm:p-8 lg:p-12">
+                        <div class="max-w-2xl text-white">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="px-3 py-1 bg-{{ $news->type === 'event' ? 'primary' : 'maroon' }}-500 text-white text-sm font-bold rounded-full">{{ ucfirst($news->type) }}</span>
+                                <span class="text-sm text-gray-200">{{ $news->published_at?->format('M d, Y') }}</span>
+                            </div>
+                            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-3 line-clamp-2">{{ $news->title }}</h2>
+                            <p class="text-gray-200 text-sm sm:text-base mb-4 line-clamp-2">{{ $news->excerpt }}</p>
+                            <a href="{{ route('view.news.show', $news) }}" class="inline-flex items-center gap-2 px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-lg transition-colors">
+                                Read More
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <!-- Fallback Slide -->
+                <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                    <div class="text-center text-white">
+                        <div class="text-6xl mb-4">◈</div>
+                        <p class="text-xl font-semibold">Welcome to CEAT</p>
+                    </div>
+                </div>
+            @endforelse
 
             <!-- Navigation Buttons -->
-            <button @click="currentSlide = (currentSlide - 1 + 3) % 3" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
-            <button @click="currentSlide = (currentSlide + 1) % 3" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
+            @if(count($latestNews) > 1)
+                <button @click="currentSlide = (currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }}" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button @click="currentSlide = (currentSlide + 1) % {{ count($latestNews) }}" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
 
-            <!-- Dots -->
-            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-                <button @click="currentSlide = 0" :class="currentSlide === 0 ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
-                <button @click="currentSlide = 1" :class="currentSlide === 1 ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
-                <button @click="currentSlide = 2" :class="currentSlide === 2 ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
-            </div>
+                <!-- Dots -->
+                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+                    @for($i = 0; $i < count($latestNews); $i++)
+                        <button @click="currentSlide = {{ $i }}" :class="currentSlide === {{ $i }} ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
+                    @endfor
+                </div>
+            @endif
         </div>
     </section>
     <section class="relative min-h-screen pt-32 pb-20 overflow-hidden gradient-mesh">
@@ -144,45 +181,67 @@
             </div>
 
             <!-- News Cards -->
-            <div class="grid md:grid-cols-3 gap-8 mb-12">
-                <a href="{{ route('view.news') }}" class="group">
-                    <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
-                        <div class="h-48 bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
-                            <div class="text-6xl">▬</div>
-                        </div>
-                        <div class="p-6">
-                            <span class="inline-block px-3 py-1 bg-maroon-100 text-maroon-700 rounded-full text-xs font-bold mb-3">News</span>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-700">New Engineering Lab Opens</h3>
-                            <p class="text-gray-600 text-sm line-clamp-3">State-of-the-art robotics and AI laboratory now available for student research.</p>
-                        </div>
+            <div class="grid lg:grid-cols-3 gap-8 mb-12">
+                <!-- Featured News (Left - Large Card) -->
+                @if($newsCards->isNotEmpty())
+                    @php $featured = $newsCards->first(); @endphp
+                    <div class="lg:col-span-2">
+                        <a href="{{ route('view.news.show', $featured) }}" class="group block">
+                            <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 h-full flex flex-col">
+                                @if($featured->getFeaturedImageUrl())
+                                    <div class="h-80 overflow-hidden">
+                                        <img src="{{ $featured->getFeaturedImageUrl() }}" alt="{{ $featured->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    </div>
+                                @else
+                                    <div class="h-80 bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                                        <div class="text-6xl text-white/30">◈</div>
+                                    </div>
+                                @endif
+                                <div class="p-8 flex flex-col flex-grow">
+                                    <span class="inline-block px-3 py-1 bg-{{ $featured->type === 'event' ? 'primary' : 'maroon' }}-100 text-{{ $featured->type === 'event' ? 'primary' : 'maroon' }}-700 rounded-full text-xs font-bold mb-4 w-fit">{{ ucfirst($featured->type) }}</span>
+                                    <div class="text-sm text-gray-400 mb-2">{{ $featured->published_at?->format('M d, Y') }}</div>
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-maroon-700 line-clamp-3">{{ $featured->title }}</h3>
+                                    <p class="text-gray-600 text-base line-clamp-4 flex-grow">{{ $featured->excerpt ?? Str::limit(strip_tags($featured->content), 200) }}</p>
+                                    <div class="pt-4 mt-4 border-t border-gray-100">
+                                        <span class="inline-flex items-center text-maroon-600 font-semibold text-sm group-hover:text-maroon-700">
+                                            READ MORE →
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
 
-                <a href="{{ route('view.news') }}" class="group">
-                    <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
-                        <div class="h-48 bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
-                            <div class="text-6xl">▬</div>
-                        </div>
-                        <div class="p-6">
-                            <span class="inline-block px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-bold mb-3">Event</span>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-700">Annual Engineering Symposium</h3>
-                            <p class="text-gray-600 text-sm line-clamp-3">Join industry leaders for the 25th annual Engineering Symposium.</p>
+                    <!-- News List (Right - Vertical Cards) -->
+                    <div class="space-y-4">
+                        @foreach($newsCards->skip(1) as $news)
+                            <a href="{{ route('view.news.show', $news) }}" class="group block">
+                                <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 p-4 hover:border-maroon-200">
+                                    <div class="text-sm text-gray-400 mb-2">{{ $news->published_at?->format('M d, Y') }}</div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-maroon-700 line-clamp-2">{{ $news->title }}</h4>
+                                    <span class="inline-flex items-center text-maroon-600 font-semibold text-xs group-hover:text-maroon-700">
+                                        READ MORE →
+                                    </span>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <!-- Fallback when no news -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 h-96 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="text-6xl text-gray-300 mb-4">◈</div>
+                                <p class="text-gray-500 font-semibold">No News Available</p>
+                            </div>
                         </div>
                     </div>
-                </a>
-
-                <a href="{{ route('view.news') }}" class="group">
-                    <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100">
-                        <div class="h-48 bg-gradient-to-br from-maroon-700 to-maroon-900 flex items-center justify-center">
-                            <div class="text-6xl">▬</div>
-                        </div>
-                        <div class="p-6">
-                            <span class="inline-block px-3 py-1 bg-maroon-100 text-maroon-700 rounded-full text-xs font-bold mb-3">Research</span>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-700">Faculty Publication Highlight</h3>
-                            <p class="text-gray-600 text-sm line-clamp-3">Dr. Maria Santos publishes groundbreaking research on sustainable materials.</p>
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
+                            <p class="text-gray-500 text-sm">Check back soon for latest updates</p>
                         </div>
                     </div>
-                </a>
+                @endif
             </div>
 
             <div class="text-center">

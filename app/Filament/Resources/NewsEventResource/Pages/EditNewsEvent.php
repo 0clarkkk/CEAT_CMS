@@ -16,4 +16,10 @@ class EditNewsEvent extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // The model's boot method will handle file cleanup
+        return $data;
+    }
 }

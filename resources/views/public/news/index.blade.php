@@ -27,9 +27,9 @@
                             <article class="card-premium h-full">
                                 <div class="h-1.5 bg-gradient-to-r from-primary-500 to-primary-400 rounded-t-2xl"></div>
 
-                                @if ($item->featured_image)
+                                @if ($item->getFeaturedImageUrl())
                                     <div class="relative h-52 overflow-hidden">
-                                        <img src="{{ $item->featured_image }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                        <img src="{{ $item->getFeaturedImageUrl() }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                                     </div>
                                 @else
@@ -83,9 +83,9 @@
                         <article class="card-premium h-full">
                             <div class="h-1.5 bg-gradient-to-r from-maroon-500 to-maroon-400 rounded-t-2xl"></div>
 
-                            @if ($item->featured_image)
+                            @if ($item->getFeaturedImageUrl())
                                 <div class="relative h-52 overflow-hidden">
-                                    <img src="{{ $item->featured_image }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                    <img src="{{ $item->getFeaturedImageUrl() }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                                 </div>
                             @else

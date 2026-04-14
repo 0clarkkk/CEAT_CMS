@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -68,6 +69,27 @@ class NewsEvent extends Model
         'status',
     ];
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // Delete old featured image when updating
+        static::updating(function ($model) {
+            if ($model->isDirty('featured_image')) {
+                $oldImage = $model->getOriginal('featured_image');
+                if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                    Storage::disk('public')->delete($oldImage);
+                }
+            }
+        });
+
+        // Delete featured image when record is deleted
+        static::deleting(function ($model) {
+            if ($model->featured_image && Storage::disk('public')->exists($model->featured_image)) {
+                Storage::disk('public')->delete($model->featured_image);
+            }
+        });
+    }
     protected function casts(): array
     {
         return [
@@ -76,26 +98,26 @@ class NewsEvent extends Model
         ];
     }
 
-    /**
-     * Get the featured image URL
-     */
-    public function getFeaturedImageAttribute($value)
-    {
-        if (!$value) {
-            return null;
-        }
-        
-        // If it's already a full URL, return it
-        if (str_starts_with($value, 'http')) {
-            return $value;
-        }
-        
-        // Convert to asset URL for public disk
-        return asset('storage/' . $value);
-    }
-
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Get the featured image URL for display in views
+     */
+    public function getFeaturedImageUrl(): ?string
+    {
+        if (!$this->featured_image) {
+            return null;
+        }
+
+        // If it's already a full URL, return it
+        if (str_starts_with($this->featured_image, 'http')) {
+            return $this->featured_image;
+        }
+
+        // Convert to asset URL for public disk
+        return asset('storage/' . $this->featured_image);
     }
 }

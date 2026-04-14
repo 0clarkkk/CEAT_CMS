@@ -95,7 +95,11 @@ class NewsEventResource extends Resource
                             ->directory('news')
                             ->maxSize(5120) // 5MB
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->helperText('Upload an image (JPEG, PNG, or WebP). Max 5MB.'),
+                            ->helperText('Upload an image (JPEG, PNG, or WebP). Max 5MB.')
+                            ->deletable(true)
+                            ->downloadable()
+                            ->previewable(false)
+                            ->visibility('public'),
                     ])->columns(2),
             ]);
     }

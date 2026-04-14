@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $metaDescription ?? 'University of Perpetual Help System DALTA - College of Engineering, Architecture, and Technology' }}">
 
-    <title>{{ $title ?? config('app.name') }} | UPH Engineering</title>
+    <title>UPHSD-CEAT</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

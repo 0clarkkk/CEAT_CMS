@@ -92,7 +92,11 @@ class FacultyMemberResource extends Resource
                             ->directory('faculty')
                             ->maxSize(5120) // 5MB
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->helperText('Upload a photo (JPEG, PNG, or WebP). Max 5MB.'),
+                            ->helperText('Upload a photo (JPEG, PNG, or WebP). Max 5MB.')
+                            ->deletable(true)
+                            ->downloadable()
+                            ->previewable(false)
+                            ->visibility('public'),
                     ]),
 
                 Forms\Components\Section::make('Status')
