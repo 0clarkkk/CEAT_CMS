@@ -82,15 +82,24 @@
                     About CEAT
                 </h2>
                 <div class="space-y-6 text-gray-700 leading-relaxed text-lg">
-                    <p>
-                        The College of Engineering, Architecture and Technology (CEAT) of the University of Perpetual Help System DALTA is dedicated to producing competent, innovative, and socially responsible professionals in the fields of engineering, architecture, and technology.
-                    </p>
-                    <p>
-                        The college serves as a hub for academic excellence, technological advancement, and research-driven education. It equips students with the necessary knowledge, technical skills, and ethical values to address real-world challenges and contribute to national development.
-                    </p>
-                    <p>
-                        Aligned with the university's guiding principle, <span class="font-semibold text-maroon-700">"Character Building is Nation Building,"</span> CEAT fosters holistic development by integrating academic learning with practical applications, industry exposure, and community engagement.
-                    </p>
+                    <x-editable-content 
+                        page-slug="college-about" 
+                        section-key="about-intro"
+                        default="The College of Engineering, Architecture and Technology (CEAT) of the University of Perpetual Help System DALTA is dedicated to producing competent, innovative, and socially responsible professionals in the fields of engineering, architecture, and technology."
+                        rich-text="true"
+                    />
+                    <x-editable-content 
+                        page-slug="college-about" 
+                        section-key="about-hub"
+                        default="The college serves as a hub for academic excellence, technological advancement, and research-driven education. It equips students with the necessary knowledge, technical skills, and ethical values to address real-world challenges and contribute to national development."
+                        rich-text="true"
+                    />
+                    <x-editable-content 
+                        page-slug="college-about" 
+                        section-key="about-character"
+                        default="Aligned with the university's guiding principle, <span class=\"font-semibold text-maroon-700\">\"Character Building is Nation Building,\"</span> CEAT fosters holistic development by integrating academic learning with practical applications, industry exposure, and community engagement."
+                        rich-text="true"
+                    />
                 </div>
             </div>
         </div>
@@ -101,12 +110,12 @@
             <div class="bg-yellow-50 rounded-2xl p-8 sm:p-10 shadow-xl border-l-4 border-l-yellow-400 border border-gray-100 hover:shadow-2xl transition-all duration-300">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6">Our Vision</h3>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                    <p>
-                        The University of Perpetual Help System DALTA envisions becoming a premier university in the Philippines, providing excellence in academics, technology, and research through strong local and international linkages.
-                    </p>
-                    <p>
-                        It aims to serve as a catalyst for human development by producing globally competitive graduates grounded in Christian values and committed to nation-building.
-                    </p>
+                    <x-editable-content 
+                        page-slug="college-about" 
+                        section-key="vision-content"
+                        default="The University of Perpetual Help System DALTA envisions becoming a premier university in the Philippines, providing excellence in academics, technology, and research through strong local and international linkages. It aims to serve as a catalyst for human development by producing globally competitive graduates grounded in Christian values and committed to nation-building."
+                        rich-text="true"
+                    />
                 </div>
             </div>
 
@@ -114,12 +123,12 @@
             <div class="bg-maroon-50 rounded-2xl p-8 sm:p-10 shadow-xl border-l-4 border-l-maroon-600 border border-gray-100 hover:shadow-2xl transition-all duration-300">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6">Our Mission</h3>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                    <p>
-                        The University of Perpetual Help System DALTA is committed to developing Filipino students into dynamic, well-rounded leaders who are physically, intellectually, socially, and spiritually prepared to achieve a high quality of life.
-                    </p>
-                    <p>
-                        It strives to form Christ-centered, service-oriented, and research-driven individuals who contribute to society through excellence in education, innovation, and community service, embodying the identity of <span class="font-semibold text-maroon-700">"Helpers of God."</span>
-                    </p>
+                    <x-editable-content 
+                        page-slug="college-about" 
+                        section-key="mission-content"
+                        default="The University of Perpetual Help System DALTA is committed to developing Filipino students into dynamic, well-rounded leaders who are physically, intellectually, socially, and spiritually prepared to achieve a high quality of life. It strives to form Christ-centered, service-oriented, and research-driven individuals who contribute to society through excellence in education, innovation, and community service, embodying the identity of <span class=\"font-semibold text-maroon-700\">\"Helpers of God.\"</span>"
+                        rich-text="true"
+                    />
                 </div>
             </div>
         </div>
