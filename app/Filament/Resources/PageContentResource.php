@@ -29,13 +29,13 @@ class PageContentResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->helperText('e.g., college-about, history, mission')
-                    ->disabled(fn (string $operation) => $operation === 'edit'),
+                    ->disabled(fn(string $operation) => $operation === 'edit'),
                 Forms\Components\TextInput::make('section_key')
                     ->label('Section Key')
                     ->required()
                     ->maxLength(255)
                     ->helperText('e.g., hero-title, hero-description, content')
-                    ->disabled(fn (string $operation) => $operation === 'edit'),
+                    ->disabled(fn(string $operation) => $operation === 'edit'),
                 Forms\Components\RichEditor::make('content')
                     ->label('Content')
                     ->required()
