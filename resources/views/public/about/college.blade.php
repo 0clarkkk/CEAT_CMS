@@ -84,7 +84,7 @@
                 <div class="space-y-6 text-gray-700 leading-relaxed text-lg">
                     <x-editable-content page-slug="college-about" section-key="about-intro" default="The College of Engineering, Architecture and Technology (CEAT) of the University of Perpetual Help System DALTA is dedicated to producing competent, innovative, and socially responsible professionals in the fields of engineering, architecture, and technology." rich-text="true" />
                     <x-editable-content page-slug="college-about" section-key="about-hub" default="The college serves as a hub for academic excellence, technological advancement, and research-driven education. It equips students with the necessary knowledge, technical skills, and ethical values to address real-world challenges and contribute to national development." rich-text="true" />
-                    <x-editable-content page-slug="college-about" section-key="about-character" default='<p>Aligned with the university\'s guiding principle, <span class="font-semibold text-maroon-700">"Character Building is Nation Building,"</span> CEAT fosters holistic development by integrating academic learning with practical applications, industry exposure, and community engagement.</p>' rich-text="true" />
+                    <x-editable-content page-slug="college-about" section-key="about-character" default="Character Building is Nation Building" rich-text="true" />
                 </div>
             </div>
         </div>
