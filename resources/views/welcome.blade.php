@@ -32,72 +32,74 @@
 @section('content')
 
     <!-- Carousel Section -->
-    <section x-data="{ currentSlide: 0, init() { setInterval(() => { this.currentSlide = (this.currentSlide + 1) % {{ count($latestNews) > 0 ? count($latestNews) : 1 }} }, 5000); } }" x-init="init()" class="relative bg-gray-900 overflow-hidden">
-        <div class="relative h-96 sm:h-[500px] lg:h-[600px]">
-            <!-- News Carousel Slides -->
-            @forelse($latestNews as $index => $news)
-                <div x-show="currentSlide === {{ $index }}" x-transition:enter="transition ease-in-out duration-500" x-transition:leave="transition ease-in-out duration-500" class="absolute inset-0 w-full h-full">
-                    @if($news->getFeaturedImageUrl())
-                        <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="text-6xl mb-4">◈</div>
-                                <p class="text-xl font-semibold">{{ $news->title }}</p>
+    <section x-data="{ currentSlide: 0, init() { setInterval(() => { this.currentSlide = (this.currentSlide + 1) % {{ count($latestNews) > 0 ? count($latestNews) : 1 }} }, 5000); } }" x-init="init()" class="relative bg-gray-100 py-6 sm:py-8 lg:py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative h-96 sm:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden bg-gray-900 shadow-xl">
+                <!-- News Carousel Slides -->
+                @forelse($latestNews as $index => $news)
+                    <div x-show="currentSlide === {{ $index }}" x-transition:enter="transition ease-in-out duration-500" x-transition:leave="transition ease-in-out duration-500" class="absolute inset-0 w-full h-full bg-gray-900">
+                        @if($news->getFeaturedImageUrl())
+                            <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" class="w-full h-full object-contain bg-gray-900">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                                <div class="text-center text-white">
+                                    <div class="text-6xl mb-4">◈</div>
+                                    <p class="text-xl font-semibold">{{ $news->title }}</p>
+                                </div>
+                            </div>
+                        @endif
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        
+                        <!-- Content -->
+                        <div class="absolute inset-0 flex items-end p-6 sm:p-8 lg:p-12">
+                            <div class="max-w-2xl text-white">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="px-3 py-1 bg-{{ $news->type === 'event' ? 'primary' : 'maroon' }}-500 text-white text-sm font-bold rounded-full">{{ ucfirst($news->type) }}</span>
+                                    <span class="text-sm text-gray-200">{{ $news->published_at?->format('M d, Y') }}</span>
+                                </div>
+                                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-3 line-clamp-2">{{ $news->title }}</h2>
+                                <p class="text-gray-200 text-sm sm:text-base mb-4 line-clamp-2">{{ $news->excerpt }}</p>
+                                <a href="{{ route('view.news.show', $news) }}" class="inline-flex items-center gap-2 px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-lg transition-colors">
+                                    Read More
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
                             </div>
                         </div>
-                    @endif
-                    <!-- Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                    
-                    <!-- Content -->
-                    <div class="absolute inset-0 flex items-end p-6 sm:p-8 lg:p-12">
-                        <div class="max-w-2xl text-white">
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="px-3 py-1 bg-{{ $news->type === 'event' ? 'primary' : 'maroon' }}-500 text-white text-sm font-bold rounded-full">{{ ucfirst($news->type) }}</span>
-                                <span class="text-sm text-gray-200">{{ $news->published_at?->format('M d, Y') }}</span>
-                            </div>
-                            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-3 line-clamp-2">{{ $news->title }}</h2>
-                            <p class="text-gray-200 text-sm sm:text-base mb-4 line-clamp-2">{{ $news->excerpt }}</p>
-                            <a href="{{ route('view.news.show', $news) }}" class="inline-flex items-center gap-2 px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-lg transition-colors">
-                                Read More
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
+                    </div>
+                @empty
+                    <!-- Fallback Slide -->
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <div class="text-6xl mb-4">◈</div>
+                            <p class="text-xl font-semibold">Welcome to CEAT</p>
                         </div>
                     </div>
-                </div>
-            @empty
-                <!-- Fallback Slide -->
-                <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
-                    <div class="text-center text-white">
-                        <div class="text-6xl mb-4">◈</div>
-                        <p class="text-xl font-semibold">Welcome to CEAT</p>
+                @endforelse
+
+                <!-- Navigation Buttons -->
+                @if(count($latestNews) > 1)
+                    <button @click="currentSlide = (currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }}" class="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button @click="currentSlide = (currentSlide + 1) % {{ count($latestNews) }}" class="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+
+                    <!-- Dots -->
+                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+                        @for($i = 0; $i < count($latestNews); $i++)
+                            <button @click="currentSlide = {{ $i }}" :class="currentSlide === {{ $i }} ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
+                        @endfor
                     </div>
-                </div>
-            @endforelse
-
-            <!-- Navigation Buttons -->
-            @if(count($latestNews) > 1)
-                <button @click="currentSlide = (currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }}" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button @click="currentSlide = (currentSlide + 1) % {{ count($latestNews) }}" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-
-                <!-- Dots -->
-                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-                    @for($i = 0; $i < count($latestNews); $i++)
-                        <button @click="currentSlide = {{ $i }}" :class="currentSlide === {{ $i }} ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
-                    @endfor
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
     </section>
     <section class="relative min-h-screen pt-32 pb-20 overflow-hidden gradient-mesh">
