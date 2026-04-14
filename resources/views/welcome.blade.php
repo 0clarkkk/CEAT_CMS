@@ -102,69 +102,6 @@
             </div>
         </div>
     </section>
-    <section class="relative min-h-screen pt-32 pb-20 overflow-hidden gradient-mesh">
-        <!-- Background Elements -->
-        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-maroon-500/10 rounded-full blur-3xl translate-y-1/2"></div>
-
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                <!-- Left Content -->
-                <div class="space-y-8">
-                    <div class="space-y-4">
-                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 rounded-full border border-primary-200">
-                            <span class="w-2 h-2 bg-primary-600 rounded-full"></span>
-                            <span class="text-sm font-semibold text-primary-700">UPHSD DALTA - College of Engineering, Architecture & Technology</span>
-                        </div>
-                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 leading-tight">
-                            Leading Excellence in
-                            <span class="block bg-gradient-to-r from-maroon-600 to-maroon-800 bg-clip-text text-transparent">Engineering Education</span>
-                        </h1>
-                        <p class="text-lg sm:text-xl text-gray-600 max-w-xl leading-relaxed">
-                            Discover premier engineering programs, world-class faculty expertise, and innovative research opportunities at the University of Perpetual Help System DALTA's College of Engineering, Architecture, and Technology.
-                        </p>
-                    </div>
-
-                    <!-- CTA Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <a href="{{ route('view.departments') }}" class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-maroon-600 to-maroon-700 text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:shadow-maroon-600 hover:scale-110 transition-all duration-300">
-                            Explore Programs
-                            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </a>
-                        <a href="{{ route('view.news') }}" class="inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-xl hover:border-maroon-600 hover:bg-maroon-50 hover:shadow-lg hover:shadow-maroon-300 hover:scale-110 transition-all duration-300">
-                            Latest News
-                        </a>
-                    </div>
-
-                    <!-- Stats -->
-                    <div class="grid grid-cols-3 gap-4 pt-8">
-                        <div class="space-y-2">
-                            <div class="text-3xl font-black text-maroon-700">.</div>
-                            <p class="text-sm text-gray-600">Departments</p>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="text-3xl font-black text-maroon-700">.</div>
-                            <p class="text-sm text-gray-600">Programs</p>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="text-3xl font-black text-maroon-700">.</div>
-                            <p class="text-sm text-gray-600">Faculty</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Visual -->
-                <div class="hidden lg:block relative h-[600px]">
-                    <div class="absolute inset-0 bg-gradient-to-br from-maroon-600 to-maroon-800 rounded-3xl shadow-2xl"></div>
-                    <div class="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent rounded-3xl"></div>
-                    <div class="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-2xl backdrop-blur-xl"></div>
-                    <div class="absolute bottom-10 left-10 w-24 h-24 bg-white/10 rounded-2xl backdrop-blur-xl"></div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- News & Events Section -->
     <section class="py-24 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
