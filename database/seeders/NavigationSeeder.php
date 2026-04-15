@@ -114,7 +114,7 @@ class NavigationSeeder extends Seeder
                     ],
                     [
                         'label' => 'Downloadables',
-                        'url' => '/student/downloads',
+                        'url' => '/downloads',
                         'icon' => 'arrow-down-tray',
                         'sort_order' => 2,
                     ],

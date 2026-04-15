@@ -1,5 +1,6 @@
 <?php
 
+
 declare(strict_types=1);
 
 namespace Database\Seeders;
@@ -10,9 +11,6 @@ use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         // Reset cached roles and permissions
@@ -27,6 +25,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_research',
             'view_news',
             'view_student_dashboard',
+            'view_downloads',
 
             // Admin permissions
             'manage_departments',
@@ -36,6 +35,12 @@ class RoleAndPermissionSeeder extends Seeder
             'manage_news',
             'view_students',
             'view_admin_dashboard',
+            'manage_downloads',
+            'manage_page_content',
+            'view_users',
+            'create_users',
+            'edit_users',
+            'delete_users',
 
             // Superadmin permissions
             'manage_admins',
@@ -59,6 +64,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_research',
             'view_news',
             'view_student_dashboard',
+            'view_downloads',
         ]);
 
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
@@ -69,6 +75,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_research',
             'view_news',
             'view_student_dashboard',
+            'view_downloads',
             'manage_departments',
             'manage_programs',
             'manage_faculty',
@@ -76,6 +83,10 @@ class RoleAndPermissionSeeder extends Seeder
             'manage_news',
             'view_students',
             'view_admin_dashboard',
+            'manage_downloads',
+            'manage_page_content',
+            'view_users',
+            'edit_users',
         ]);
 
         $superadminRole = Role::firstOrCreate(['name' => 'superadmin']);

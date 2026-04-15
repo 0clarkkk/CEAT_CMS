@@ -38,7 +38,7 @@ class NavigationComposer
         'Students' => [
             'items' => [
                 ['label' => 'Rules & Regulations', 'url' => '/student/rules'],
-                ['label' => 'Downloadables', 'url' => '/student/downloads'],
+                ['label' => 'Downloadables', 'url' => '/downloads'],
                 ['label' => 'Student Portal', 'url' => '/student/portal'],
             ],
         ],
