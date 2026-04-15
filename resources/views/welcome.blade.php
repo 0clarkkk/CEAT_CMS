@@ -52,12 +52,12 @@
             this.currentSlide = index;
             this.startAutoplay();
         }
-    }" x-init="init()" class="relative bg-gray-100 pt-24 pb-6 sm:pb-8 lg:pb-10">
+    }" x-init="init()" class="relative bg-gray-100 pt-24 pb-0 w-full">
         <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="relative h-96 sm:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden bg-gray-900 shadow-xl">
+            <div class="relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl" style="will-change: opacity; height: 500px;" :style="{ height: window.innerWidth >= 1024 ? '700px' : window.innerWidth >= 640 ? '600px' : '500px' }">
                 <!-- News Carousel Slides -->
                 @forelse($latestNews as $index => $news)
-                    <div x-show="currentSlide === {{ $index }}" x-transition:enter="transition ease-in-out duration-300" x-transition:leave="transition ease-in-out duration-300" class="absolute inset-0 w-full h-full bg-gray-900 flex items-center justify-center" style="position: relative;">
+                    <div x-show="currentSlide === {{ $index }}" class="absolute inset-0 w-full h-full bg-gray-900 flex items-center justify-center" style="position: relative; will-change: opacity;">
                         @if($news->getFeaturedImageUrl())
                             <!-- Blurred background image - scaled to avoid empty edges -->
                             <img src="{{ $news->getFeaturedImageUrl() }}" alt="" class="absolute inset-0 w-full h-full object-cover" style="filter: blur(25px) brightness(0.6); z-index: 0; transform: scale(1.15);">
@@ -73,24 +73,6 @@
                         @endif
                         <!-- Overlay -->
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" style="z-index: 20;"></div>
-                        
-                        <!-- Content on top -->
-                        <div class="absolute inset-0 flex items-end p-6 sm:p-8 lg:p-12" style="z-index: 30;">
-                            <div class="max-w-2xl text-white">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="px-3 py-1 bg-{{ $news->type === 'event' ? 'primary' : 'maroon' }}-500 text-white text-sm font-bold rounded-full">{{ ucfirst($news->type) }}</span>
-                                    <span class="text-sm text-gray-200">{{ $news->published_at?->format('M d, Y') }}</span>
-                                </div>
-                                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-3 line-clamp-2">{{ $news->title }}</h2>
-                                <p class="text-gray-200 text-sm sm:text-base mb-4 line-clamp-2">{{ $news->excerpt }}</p>
-                                <a href="{{ route('view.news.show', $news) }}" class="inline-flex items-center gap-2 px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-lg transition-colors">
-                                    Read More
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 @empty
                     <!-- Fallback Slide -->
@@ -104,12 +86,12 @@
 
                 <!-- Navigation Buttons -->
                 @if(count($latestNews) > 1)
-                    <button type="button" @click="goToSlide((currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }})" class="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                    <button type="button" @click="goToSlide((currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }})" class="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='rgb(147, 51, 54)'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button type="button" @click="goToSlide((currentSlide + 1) % {{ count($latestNews) }})" class="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                    <button type="button" @click="goToSlide((currentSlide + 1) % {{ count($latestNews) }})" class="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='rgb(147, 51, 54)'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
@@ -133,13 +115,9 @@
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Section Header -->
             <div class="text-center mb-16">
-                <span class="inline-block px-4 py-2 bg-primary-100 rounded-full text-sm font-bold text-primary-700 mb-4">Stay Updated</span>
                 <h2 class="text-4xl sm:text-5xl font-black text-gray-900 mb-6">
                     Latest News & Events
                 </h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Keep informed about important announcements and upcoming events at UPHSD DALTA's College of Engineering, Architecture, and Technology.
-                </p>
             </div>
 
             <!-- News Cards -->
@@ -163,12 +141,13 @@
                                     </div>
                                 @endif
                                 <div class="p-8 flex flex-col flex-grow">
-                                    <span class="inline-block px-3 py-1 bg-{{ $featured->type === 'event' ? 'primary' : 'maroon' }}-100 text-{{ $featured->type === 'event' ? 'primary' : 'maroon' }}-700 rounded-full text-xs font-bold mb-4 w-fit">{{ ucfirst($featured->type) }}</span>
-                                    <div class="text-sm text-gray-400 mb-2">{{ $featured->published_at?->format('M d, Y') }}</div>
-                                    <h3 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-maroon-700 line-clamp-3">{{ $featured->title }}</h3>
+                                    <div class="text-gray-600 text-base font-semibold mb-2">
+                                        {{ $featured->published_at?->format('F d, Y') }}
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-3 hover:text-maroon-700 transition-colors line-clamp-3">{{ $featured->title }}</h3>
                                     <p class="text-gray-600 text-base line-clamp-4 flex-grow">{{ $featured->excerpt ?? Str::limit(strip_tags($featured->content), 200) }}</p>
                                     <div class="pt-4 mt-4 border-t border-gray-100">
-                                        <span class="inline-flex items-center text-maroon-600 font-semibold text-sm group-hover:text-maroon-700">
+                                        <span class="inline-flex items-center text-gray-500 font-semibold text-sm hover:text-maroon-600 transition-colors cursor-pointer">
                                             READ MORE →
                                         </span>
                                     </div>
@@ -179,12 +158,14 @@
 
                     <!-- News List (Right - Vertical Cards) -->
                     <div class="space-y-4">
-                        @foreach($newsCards->skip(1) as $news)
+                        @foreach($newsCards->skip(1)->take(3) as $news)
                             <a href="{{ route('view.news.show', $news) }}" class="group block">
-                                <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 p-4 hover:border-maroon-200">
-                                    <div class="text-sm text-gray-400 mb-2">{{ $news->published_at?->format('M d, Y') }}</div>
-                                    <h4 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-maroon-700 line-clamp-2">{{ $news->title }}</h4>
-                                    <span class="inline-flex items-center text-maroon-600 font-semibold text-xs group-hover:text-maroon-700">
+                                <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 p-4 hover:border-maroon-200" style="border-top: 4px solid #933336; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                    <div class="text-gray-600 text-base font-semibold mb-2">
+                                        {{ $news->published_at?->format('F d, Y') }}
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 hover:text-maroon-700 transition-colors line-clamp-2">{{ $news->title }}</h4>
+                                    <span class="inline-flex items-center text-gray-500 font-semibold text-xs hover:text-maroon-600 transition-colors cursor-pointer">
                                         READ MORE →
                                     </span>
                                 </div>
@@ -210,7 +191,7 @@
             </div>
 
             <div class="text-center">
-                <a href="{{ route('view.news') }}" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-maroon-600 to-maroon-700 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110 transition-all duration-300">
+                <a href="{{ route('view.news') }}" class="inline-flex items-center px-8 py-3 font-bold rounded-xl transition-all duration-300" style="background-color: transparent; border: 2px solid #000000; color: #000000; display: inline-flex; align-items: center;" onmouseover="this.style.backgroundColor='#933336'; this.style.borderColor='#933336'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#000000'; this.style.color='#000000';">
                     View All News →
                 </a>
             </div>
@@ -248,11 +229,6 @@
             @if($allFeaturedResearch->isNotEmpty())
                 <!-- Section Header -->
                 <div class="text-center mb-16">
-                    <div class="inline-flex items-center justify-center mb-4">
-                        <span class="px-4 py-2 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-white/90 uppercase tracking-widest border border-white/20 hover:bg-white/25 transition-all duration-300">
-                            ⚡ Research & Innovation
-                        </span>
-                    </div>
                     <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
                         Featured Research
                     </h2>
@@ -275,15 +251,11 @@
                     <!-- Image Section with Float Effect -->
                     <div class="relative group flex flex-col gap-6">
                         <!-- Decorative Float Border (Behind) -->
-                        <div class="absolute -bottom-4 -right-4 w-40 h-40 border-2 border-primary-400/30 rounded-3xl hidden lg:block group-hover:border-primary-400/60 transition-all duration-500"></div>
                         <div class="absolute -top-4 -left-4 w-32 h-32 border-2 border-white/10 rounded-3xl hidden lg:block"></div>
                         
                         <!-- Main Image -->
                         <div class="w-full">
                             <div class="relative h-96 sm:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-                                <!-- Gradient Border Effect -->
-                                <div class="absolute inset-0 bg-gradient-to-br from-primary-400/40 to-transparent rounded-3xl pointer-events-none z-10" style="filter: blur(1px);"></div>
-                                
                                 <!-- Dynamic Main Image -->
                                 <img id="mainFeatureImage" 
                                      src=""
@@ -303,11 +275,12 @@
 
                             <!-- Gallery Thumbnails - Always show 5 slots -->
                             @if($allFeaturedResearch->isNotEmpty())
-                                <div class="flex gap-2 mt-4 w-full">
+                                <div class="flex gap-2 mt-4 w-full" id="galleryThumbnails">
                                     @foreach($allFeaturedResearch as $index => $research)
-                                        <button @click="currentGalleryImage = {{ $index }}; updateToResearch({{ $index }})" 
-                                                :class="currentGalleryImage === {{ $index }} ? 'border-primary-400 shadow-lg shadow-primary-400/50' : 'border-white/30 hover:border-white/50'"
-                                                class="flex-1 aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 min-w-0">
+                                        <button data-index="{{ $index }}" 
+                                                @click="currentGalleryImage = {{ $index }}; updateToResearch({{ $index }})" 
+                                                class="flex-1 aspect-square rounded-lg overflow-hidden border-2 transition-colors duration-300 min-w-0"
+                                                style="border-color: {{ $index === 0 ? '#FCD34D' : 'rgba(255, 255, 255, 0.3)' }}">
                                             @if($research->featured_image)
                                                 <img src="/storage/{{ $research->featured_image }}" 
                                                      alt="Gallery {{ $index + 1 }}" 
@@ -321,8 +294,7 @@
                                     @endforeach
                                     <!-- Empty placeholder slots up to 5 -->
                                     @for($i = $allFeaturedResearch->count(); $i < 5; $i++)
-                                        <div class="flex-1 aspect-square rounded-lg border-2 border-white/20 min-w-0 flex items-center justify-center bg-white/5">
-                                            <span class="text-white/30 text-xs font-semibold">{{ $i + 1 }}</span>
+                                        <div class="flex-1 aspect-square rounded-lg border-2 border-white/20 min-w-0 bg-white/5">
                                         </div>
                                     @endfor
                                 </div>
@@ -449,6 +421,18 @@
         
         // Function to update featured research content when thumbnail is clicked
         function updateToResearch(index) {
+            // Update thumbnail borders
+            const thumbnails = document.querySelectorAll('#galleryThumbnails button');
+            thumbnails.forEach((btn, idx) => {
+                btn.style.borderColor = idx === index ? '#FCD34D' : 'rgba(255, 255, 255, 0.3)';
+            });
+            
+            // Update Alpine component's currentGalleryImage
+            const alpineEl = document.querySelector('[x-data*="currentGalleryImage"]');
+            if (alpineEl && alpineEl.__x) {
+                alpineEl.__x.$data.currentGalleryImage = index;
+            }
+            
             currentGalleryIndex = index;
             
             if (!featuredResearchData || !featuredResearchData[index]) return;
