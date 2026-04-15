@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -19,6 +20,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property array<array-key, mixed>|null $research_areas
  * @property string|null $facilities
  * @property string|null $contact_email
+ * @property bool $is_featured
+ * @property int $featured_order
+ * @property string|null $featured_image
+ * @property string|null $featured_description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -46,6 +51,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ResearchCenter extends Model
 {
+
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -57,6 +63,15 @@ class ResearchCenter extends Model
         'research_areas',
         'facilities',
         'contact_email',
+        'is_featured',
+        'featured_order',
+        'featured_image',
+        'featured_description',
+    ];
+
+    protected $appends = [
+        'clean_featured_description',
+        'clean_description',
     ];
 
     protected function casts(): array
@@ -66,8 +81,56 @@ class ResearchCenter extends Model
         ];
     }
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->slug) && !empty($model->name)) {
+                $model->slug = Str::slug($model->name);
+            }
+        });
+
+        static::updating(function ($model) {
+            if (empty($model->slug) && !empty($model->name)) {
+                $model->slug = Str::slug($model->name);
+            }
+        });
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
-}
+
+    /**
+     * Get clean featured description for frontend display
+     */
+    public function getCleanFeaturedDescriptionAttribute(): string
+    {
+        if ($this->featured_description) {
+            $text = strip_tags($this->featured_description);
+            $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
+            return Str::squish($text);
+        }
+        if ($this->description) {
+            $text = strip_tags($this->description);
+            $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
+            return Str::squish($text);
+        }
+        return '';
+    }
+
+    /**
+     * Get clean description for frontend display
+     */
+    public function getCleanDescriptionAttribute(): string
+    {
+        if ($this->description) {
+            $text = strip_tags($this->description);
+            $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
+            return Str::squish($text);
+        }
+        return '';
+    }
+}   

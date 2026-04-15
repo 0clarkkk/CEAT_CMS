@@ -18,6 +18,8 @@ class ResearchCenterResource extends Resource
 
     protected static ?string $navigationGroup = 'Content Management';
 
+    protected static ?string $navigationLabel = 'Research';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -30,15 +32,16 @@ class ResearchCenterResource extends Resource
                             ->required()
                             ->searchable(),
                         Forms\Components\TextInput::make('name')
-                            ->label('Center Name')
+                            ->label('Research Title')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->live(onBlur: true),
                         Forms\Components\TextInput::make('slug')
                             ->label('URL Slug')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255)
-                            ->generateFromFill('name'),
+                            ->helperText('Auto-generated from title'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Leadership & Contact')
@@ -67,6 +70,30 @@ class ResearchCenterResource extends Resource
                             ->rows(4)
                             ->columnSpanFull(),
                     ]),
+
+                Forms\Components\Section::make('Featured On Homepage')
+                    ->description('Configure this research center to appear on the homepage featured section.')
+                    ->schema([
+                        Forms\Components\Toggle::make('is_featured')
+                            ->label('Feature on Homepage')
+                            ->default(false)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('featured_order')
+                            ->label('Display Order')
+                            ->numeric()
+                            ->default(0)
+                            ->helperText('Lower numbers appear first'),
+                        Forms\Components\FileUpload::make('featured_image')
+                            ->label('Featured Image')
+                            ->image()
+                            ->directory('research/featured')
+                            ->maxSize(5120)
+                            ->helperText('Recommended size: 800x600px'),
+                        Forms\Components\RichEditor::make('featured_description')
+                            ->label('Featured Description')
+                            ->helperText('Short description shown on homepage (optional)')
+                            ->columnSpanFull(),
+                    ])->columns(2),
             ]);
     }
 
@@ -74,6 +101,10 @@ class ResearchCenterResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\IconColumn::make('is_featured')
+                    ->label('Featured')
+                    ->boolean()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Center Name')
                     ->searchable()

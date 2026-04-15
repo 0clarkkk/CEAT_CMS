@@ -3,6 +3,16 @@
 @section('title', 'College History')
 
 @section('content')
+<!-- Banner Section -->
+<section class="relative min-h-[400px] bg-cover bg-center flex items-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/perps1.jpg'); background-attachment: fixed;">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="max-w-3xl">
+            <h1 class="text-5xl sm:text-6xl font-black text-white mb-4 leading-tight">College History</h1>
+            <p class="text-lg text-gray-100">Discover the rich heritage and evolution of UPHSD CEAT through the decades.</p>
+        </div>
+    </div>
+</section>
 <style>
     .history-card {
         @apply opacity-0 animate-fadeIn;

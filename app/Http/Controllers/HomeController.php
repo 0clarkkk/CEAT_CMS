@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\NewsEvent;
+use App\Models\ResearchCenter;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -19,9 +20,23 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
+        $featuredResearch = ResearchCenter::where('is_featured', true)
+            ->with('department')
+            ->orderBy('featured_order', 'asc')
+            ->first();
+
+        // Get all featured research (up to 5) for gallery
+        $allFeaturedResearch = ResearchCenter::where('is_featured', true)
+            ->with('department')
+            ->orderBy('featured_order', 'asc')
+            ->limit(5)
+            ->get();
+
         return view('welcome', [
             'latestNews' => $latestNews,
             'newsCards' => $newsCards,
+            'featuredResearch' => $featuredResearch,
+            'allFeaturedResearch' => $allFeaturedResearch,
         ]);
     }
 }

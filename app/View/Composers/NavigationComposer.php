@@ -24,6 +24,7 @@ class NavigationComposer
         'Academics' => [
             'items' => [
                 ['label' => 'Programs & Degrees', 'url' => '/academics/programs'],
+                ['label' => 'Research Centers', 'url' => '/academics/research'],
                 ['label' => 'Departments', 'url' => '/academics/departments'],
                 ['label' => 'Curriculum', 'url' => '/academics/curriculum'],
             ],
@@ -31,7 +32,6 @@ class NavigationComposer
         'Faculty & Staff' => [
             'items' => [
                 ['label' => 'Faculty Directory', 'url' => '/faculty/directory'],
-                ['label' => 'Departments', 'url' => '/faculty/departments'],
                 ['label' => 'Consultation Hours', 'url' => '/faculty/consultation'],
             ],
         ],
