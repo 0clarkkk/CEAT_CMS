@@ -14,8 +14,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Superadmin user
-        $superadmin = User::firstOrCreate(
+        // Create or update Superadmin user
+        $superadmin = User::updateOrCreate(
             ['email' => 'superadmin@uphsd.edu.ph'],
             [
                 'name' => 'System Administrator',
@@ -25,10 +25,10 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        $superadmin->assignRole('superadmin');
+        $superadmin->syncRoles('superadmin');
 
-        // Create Admin user
-        $admin = User::firstOrCreate(
+        // Create or update Admin user
+        $admin = User::updateOrCreate(
             ['email' => 'admin@uphsd.edu.ph'],
             [
                 'name' => 'Admin User',
@@ -38,10 +38,10 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        $admin->assignRole('admin');
+        $admin->syncRoles('admin');
 
-        // Create Student user
-        $student = User::firstOrCreate(
+        // Create or update Student user
+        $student = User::updateOrCreate(
             ['email' => 'student@uphsd.edu.ph'],
             [
                 'name' => 'Sample Student',
@@ -52,6 +52,6 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        $student->assignRole('student');
+        $student->syncRoles('student');
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\PublicResearchController;
 use App\Http\Controllers\PublicNewsEventController;
 use App\Http\Controllers\PublicAboutController;
 use App\Http\Controllers\PublicCurriculumController;
+use App\Http\Controllers\PublicDownloadController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageContentController;
@@ -39,13 +40,18 @@ Route::get('/faculty/consultation', [PublicFacultyController::class, 'consultati
 
 // Student Routes
 Route::get('/student/rules', [PublicAboutController::class, 'rules'])->name('view.student.rules');
-Route::get('/student/downloads', [PublicAboutController::class, 'downloads'])->name('view.student.downloads');
+Route::get('/downloads', [PublicAboutController::class, 'downloads'])->name('view.student.downloads');
 Route::get('/student/portal', function () {
     return redirect('https://portal.uphsl.edu.ph', 301);
 })->name('view.student.portal');
 
 // Legacy routes (kept for backward compatibility)
 Route::get('/about', [PublicAboutController::class, 'index'])->name('view.about');
+
+// Downloads Routes
+Route::get('/downloads', [PublicDownloadController::class, 'index'])->name('view.downloads');
+Route::get('/downloads/{downloadCategory:slug}', [PublicDownloadController::class, 'show'])->name('view.downloads.category');
+Route::get('/download/{downloadableForm}', [PublicDownloadController::class, 'download'])->name('download.form');
 
 // Test route
 Route::get('/test-content', function () {
