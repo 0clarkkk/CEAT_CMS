@@ -1,4 +1,11 @@
 <x-public-layout>
+    <!-- Back Button -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-b border-gray-100">
+        <a href="{{ route('view.news') }}" class="inline-flex items-center px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition-all duration-300">
+            ← Back to News & Events
+        </a>
+    </section>
+
     <!-- Hero Section -->
     <section class="relative min-h-[400px] pt-32 pb-20 overflow-hidden gradient-mesh">
         <div class="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2"></div>

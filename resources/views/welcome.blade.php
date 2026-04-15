@@ -1,5 +1,9 @@
 @extends('layouts.public')
 
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <style>
     [x-cloak] { display: none !important; }
     
@@ -32,16 +36,35 @@
 @section('content')
 
     <!-- Carousel Section -->
-    <section x-data="{ currentSlide: 0, init() { setInterval(() => { this.currentSlide = (this.currentSlide + 1) % {{ count($latestNews) > 0 ? count($latestNews) : 1 }} }, 5000); } }" x-init="init()" class="relative bg-gray-100 py-6 sm:py-8 lg:py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section x-data="{ 
+        currentSlide: 0, 
+        intervalId: null,
+        init() { 
+            this.startAutoplay();
+        },
+        startAutoplay() {
+            if (this.intervalId) clearInterval(this.intervalId);
+            this.intervalId = setInterval(() => { 
+                this.currentSlide = (this.currentSlide + 1) % {{ count($latestNews) > 0 ? count($latestNews) : 1 }} 
+            }, 3000); 
+        },
+        goToSlide(index) {
+            this.currentSlide = index;
+            this.startAutoplay();
+        }
+    }" x-init="init()" class="relative bg-gray-100 pt-24 pb-6 sm:pb-8 lg:pb-10">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="relative h-96 sm:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden bg-gray-900 shadow-xl">
                 <!-- News Carousel Slides -->
                 @forelse($latestNews as $index => $news)
-                    <div x-show="currentSlide === {{ $index }}" x-transition:enter="transition ease-in-out duration-500" x-transition:leave="transition ease-in-out duration-500" class="absolute inset-0 w-full h-full bg-gray-900">
+                    <div x-show="currentSlide === {{ $index }}" x-transition:enter="transition ease-in-out duration-300" x-transition:leave="transition ease-in-out duration-300" class="absolute inset-0 w-full h-full bg-gray-900 flex items-center justify-center" style="position: relative;">
                         @if($news->getFeaturedImageUrl())
-                            <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" class="w-full h-full object-contain bg-gray-900">
+                            <!-- Blurred background image - scaled to avoid empty edges -->
+                            <img src="{{ $news->getFeaturedImageUrl() }}" alt="" class="absolute inset-0 w-full h-full object-cover" style="filter: blur(25px) brightness(0.6); z-index: 0; transform: scale(1.15);">
+                            <!-- Clear image with contain and padding -->
+                            <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" style="z-index: 10; position: relative; object-fit: contain; padding: 0.5rem; max-width: 100%; max-height: 100%; width: auto; height: auto;">
                         @else
-                            <div class="w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                            <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center z-0">
                                 <div class="text-center text-white">
                                     <div class="text-6xl mb-4">◈</div>
                                     <p class="text-xl font-semibold">{{ $news->title }}</p>
@@ -49,10 +72,10 @@
                             </div>
                         @endif
                         <!-- Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" style="z-index: 20;"></div>
                         
-                        <!-- Content -->
-                        <div class="absolute inset-0 flex items-end p-6 sm:p-8 lg:p-12">
+                        <!-- Content on top -->
+                        <div class="absolute inset-0 flex items-end p-6 sm:p-8 lg:p-12" style="z-index: 30;">
                             <div class="max-w-2xl text-white">
                                 <div class="flex items-center gap-3 mb-3">
                                     <span class="px-3 py-1 bg-{{ $news->type === 'event' ? 'primary' : 'maroon' }}-500 text-white text-sm font-bold rounded-full">{{ ucfirst($news->type) }}</span>
@@ -81,21 +104,21 @@
 
                 <!-- Navigation Buttons -->
                 @if(count($latestNews) > 1)
-                    <button @click="currentSlide = (currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }}" class="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                    <button type="button" @click="goToSlide((currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }})" class="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button @click="currentSlide = (currentSlide + 1) % {{ count($latestNews) }}" class="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
+                    <button type="button" @click="goToSlide((currentSlide + 1) % {{ count($latestNews) }})" class="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-maroon-700 hover:bg-maroon-500 text-white p-3 rounded-lg transition-all duration-300 hover:shadow-2xl hover:shadow-maroon-500 hover:scale-110">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
 
                     <!-- Dots -->
-                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-2">
                         @for($i = 0; $i < count($latestNews); $i++)
-                            <button @click="currentSlide = {{ $i }}" :class="currentSlide === {{ $i }} ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
+                            <button type="button" @click="goToSlide({{ $i }})" :class="currentSlide === {{ $i }} ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
                         @endfor
                     </div>
                 @endif
@@ -128,8 +151,11 @@
                         <a href="{{ route('view.news.show', $featured) }}" class="group block">
                             <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 h-full flex flex-col">
                                 @if($featured->getFeaturedImageUrl())
-                                    <div class="h-80 overflow-hidden">
-                                        <img src="{{ $featured->getFeaturedImageUrl() }}" alt="{{ $featured->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="h-80 overflow-hidden relative bg-gray-900 flex items-center justify-center">
+                                        <!-- Blurred background image - scaled to avoid empty edges -->
+                                        <img src="{{ $featured->getFeaturedImageUrl() }}" alt="" class="absolute inset-0 w-full h-full object-cover" style="filter: blur(25px) brightness(0.6); z-index: 0; transform: scale(1.15);">
+                                        <!-- Clear image with contain and padding -->
+                                        <img src="{{ $featured->getFeaturedImageUrl() }}" alt="{{ $featured->title }}" style="z-index: 10; position: relative; object-fit: contain; padding: 0.5rem; max-width: 100%; max-height: 100%; width: auto; height: auto; transition: transform 0.5s ease;" class="group-hover:scale-105">
                                     </div>
                                 @else
                                     <div class="h-80 bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
@@ -190,6 +216,293 @@
             </div>
         </div>
     </section>
+
+    <!-- Featured Research Section -->
+    <section class="py-24 bg-gradient-to-br from-maroon-900 via-maroon-800 to-maroon-700 relative overflow-hidden">
+        <!-- Modern Gradient Overlays -->
+        <div class="absolute top-0 right-0 w-1/3 h-96 bg-gradient-to-b from-primary-500/20 to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-1/3 h-96 bg-gradient-to-t from-white/10 to-transparent rounded-full blur-3xl"></div>
+        
+        <!-- Animated Grid Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5"/>
+                    </pattern>
+                </defs>
+                <rect width="100" height="100" fill="url(#grid)" />
+            </svg>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ 
+            currentGalleryImage: 0,
+            featuredItems: @json($allFeaturedResearch),
+            debug: true
+        }" x-cloak>
+            <!-- DEBUG: Show data structure -->
+            <div style="background: #1f2937; color: #10b981; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; margin-top: 20px; border: 1px solid #059669;" x-show="debug">
+                <button @click="debug = !debug" style="background: #059669; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">Toggle Debug</button>
+                <pre x-text="'Items count: ' + featuredItems.length + '\nFirst item: ' + JSON.stringify(featuredItems[0], null, 2)"></pre>
+            </div>
+            @if($allFeaturedResearch->isNotEmpty())
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <div class="inline-flex items-center justify-center mb-4">
+                        <span class="px-4 py-2 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-white/90 uppercase tracking-widest border border-white/20 hover:bg-white/25 transition-all duration-300">
+                            ⚡ Research & Innovation
+                        </span>
+                    </div>
+                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+                        Featured Research
+                    </h2>
+                    <p class="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed backdrop-blur-sm">
+                        <template x-if="featuredItems[currentGalleryImage]">
+                            <span x-text="(featuredItems[currentGalleryImage].featured_description || featuredItems[currentGalleryImage].description || '').substring(0, 300)"></span>
+                        </template>
+                        <template x-if="!featuredItems[currentGalleryImage]">
+                            @if($featuredResearch->featured_description)
+                                {{ Str::limit(html_entity_decode(strip_tags($featuredResearch->featured_description)), 300) }}
+                            @else
+                                {{ Str::limit(html_entity_decode(strip_tags($featuredResearch->description)), 300) }}
+                            @endif
+                        </template>
+                    </p>
+                </div>
+
+                <!-- Featured Research Card - Modern Design -->
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                    <!-- Image Section with Float Effect -->
+                    <div class="relative group flex flex-col gap-6">
+                        <!-- Decorative Float Border (Behind) -->
+                        <div class="absolute -bottom-4 -right-4 w-40 h-40 border-2 border-primary-400/30 rounded-3xl hidden lg:block group-hover:border-primary-400/60 transition-all duration-500"></div>
+                        <div class="absolute -top-4 -left-4 w-32 h-32 border-2 border-white/10 rounded-3xl hidden lg:block"></div>
+                        
+                        <!-- Main Image -->
+                        <div class="w-full">
+                            <div class="relative h-96 sm:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+                                <!-- Gradient Border Effect -->
+                                <div class="absolute inset-0 bg-gradient-to-br from-primary-400/40 to-transparent rounded-3xl pointer-events-none z-10" style="filter: blur(1px);"></div>
+                                
+                                <!-- Dynamic Main Image -->
+                                <img id="mainFeatureImage" 
+                                     src=""
+                                     alt="Featured Research"
+                                     class="w-full h-full object-cover transition-transform duration-700"
+                                     onerror="this.style.display='none'">
+                                
+                                <!-- Fallback Gradient -->
+                                <div id="mainFeatureGradient" class="absolute inset-0 w-full h-full bg-gradient-to-br from-primary-500 to-maroon-600 flex items-center justify-center relative">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                    <div class="text-center relative z-10">
+                                        <div class="text-7xl mb-4 animate-bounce">⚗️</div>
+                                        <p class="text-white/80 font-medium text-lg" id="fallbackText">Research Initiative</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gallery Thumbnails - Always show 5 slots -->
+                            @if($allFeaturedResearch->isNotEmpty())
+                                <div class="flex gap-2 mt-4 w-full">
+                                    @foreach($allFeaturedResearch as $index => $research)
+                                        <button @click="currentGalleryImage = {{ $index }}; updateToResearch({{ $index }})" 
+                                                :class="currentGalleryImage === {{ $index }} ? 'border-primary-400 shadow-lg shadow-primary-400/50' : 'border-white/30 hover:border-white/50'"
+                                                class="flex-1 aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 min-w-0">
+                                            @if($research->featured_image)
+                                                <img src="/storage/{{ $research->featured_image }}" 
+                                                     alt="Gallery {{ $index + 1 }}" 
+                                                     class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                                            @else
+                                                <div class="w-full h-full bg-white/5 flex items-center justify-center">
+                                                    <span class="text-white/50 text-xs font-semibold">{{ $index + 1 }}</span>
+                                                </div>
+                                            @endif
+                                        </button>
+                                    @endforeach
+                                    <!-- Empty placeholder slots up to 5 -->
+                                    @for($i = $allFeaturedResearch->count(); $i < 5; $i++)
+                                        <div class="flex-1 aspect-square rounded-lg border-2 border-white/20 min-w-0 flex items-center justify-center bg-white/5">
+                                            <span class="text-white/30 text-xs font-semibold">{{ $i + 1 }}</span>
+                                        </div>
+                                    @endfor
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Content Section with Modern Styling -->
+                    <div class="flex flex-col justify-center space-y-6">
+                        <!-- Department Tag -->
+                        <div class="inline-flex items-center gap-3 w-fit">
+                            <div class="w-3 h-3 bg-gradient-to-r from-primary-400 to-primary-500 rounded-full"></div>
+                            <span class="text-sm font-bold text-primary-300 uppercase tracking-widest" 
+                                  id="featureDept">
+                                @if($featuredResearch?->department)
+                                    {{ $featuredResearch->department->name }}
+                                @else
+                                    Department
+                                @endif
+                            </span>
+                            <div class="flex-grow flex gap-1">
+                                <div class="w-1 h-1 bg-primary-400 rounded-full"></div>
+                                <div class="w-1 h-1 bg-primary-400 rounded-full opacity-50"></div>
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <h3 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight" id="featureTitle">
+                            @if($featuredResearch)
+                                {{ $featuredResearch->name }}
+                            @else
+                                Featured Research
+                            @endif
+                        </h3>
+
+                        <!-- Description -->
+                        <p class="text-base sm:text-lg text-white/80 leading-relaxed" id="featureDesc">
+                            @if($featuredResearch)
+                                @if($featuredResearch->featured_description)
+                                    {{ Str::limit(Str::squish(html_entity_decode(strip_tags($featuredResearch->featured_description))), 300) }}
+                                @else
+                                    {{ Str::limit(Str::squish(html_entity_decode(strip_tags($featuredResearch->description))), 300) }}
+                                @endif
+                            @else
+                                Research description
+                            @endif
+                        </p>
+
+                        <!-- Modern Info Cards -->
+                        <div class="grid grid-cols-2 gap-4 mt-6">
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-primary-400/50 transition-all duration-300">
+                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider">Director</div>
+                                <p class="text-sm text-white font-semibold truncate" id="featureDirector">
+                                    {{ $featuredResearch?->director ?? 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-primary-400/50 transition-all duration-300">
+                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider">Email</div>
+                                <p class="text-sm text-white font-semibold truncate" id="featureEmail">
+                                    {{ $featuredResearch?->contact_email ?? 'N/A' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- CTA Buttons - Modern Design -->
+                        <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                            <a href="javascript:void(0)" onclick="exploreResearch(currentGalleryImage)" class="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-primary-500/40 hover:scale-105 transition-all duration-300 text-center border border-primary-400/50 group relative overflow-hidden cursor-pointer">
+                                <span class="relative z-10 flex items-center justify-center gap-2">
+                                    Explore Research
+                                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="{{ route('view.research.all') }}" class="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-300 border border-white/30 hover:border-white/50 text-center">
+                                View All Research
+                            </a>
+                        </div>
+
+                        <!-- Accent Line -->
+                        <div class="h-1 w-16 bg-gradient-to-r from-primary-500 to-transparent rounded-full mt-4"></div>
+                    </div>
+                </div>
+            @else
+                <!-- Empty State - Modern Design -->
+                <div class="text-center py-20">
+                    <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl border border-white/20">⚗️</div>
+                    <p class="text-white/70 text-xl font-semibold">No featured research center yet. Stay tuned!</p>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <script>
+        // Store featured research items in global scope
+        const featuredResearchData = @json($allFeaturedResearch);
+        let currentGalleryIndex = 0;
+        
+        // Function to clean text thoroughly
+        function cleanText(text) {
+            if (!text) return '';
+            return text
+                // Decode HTML entities
+                .replace(/&nbsp;/g, ' ')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                // Remove multiple spaces
+                .replace(/\s+/g, ' ')
+                // Trim
+                .trim();
+        }
+        
+        // Function to get the main image source
+        function getMainImageSrc() {
+            if (!featuredResearchData || !featuredResearchData[currentGalleryIndex]) {
+                return '';
+            }
+            const item = featuredResearchData[currentGalleryIndex];
+            return item.featured_image ? `/storage/${item.featured_image}` : '';
+        }
+        
+        // Function to update featured research content when thumbnail is clicked
+        function updateToResearch(index) {
+            currentGalleryIndex = index;
+            
+            if (!featuredResearchData || !featuredResearchData[index]) return;
+            
+            const item = featuredResearchData[index];
+            
+            // Update main image
+            const mainImg = document.getElementById('mainFeatureImage');
+            const gradient = document.getElementById('mainFeatureGradient');
+            if (mainImg && item.featured_image) {
+                mainImg.src = `/storage/${item.featured_image}`;
+                mainImg.style.display = 'block';
+                if (gradient) gradient.style.display = 'none';
+            } else {
+                if (mainImg) mainImg.style.display = 'none';
+                if (gradient) gradient.style.display = 'flex';
+                if (gradient) document.getElementById('fallbackText').textContent = item.name || 'Research Initiative';
+            }
+            
+            // Update content fields with cleaned text
+            const deptEl = document.getElementById('featureDept');
+            const titleEl = document.getElementById('featureTitle');
+            const descEl = document.getElementById('featureDesc');
+            const directorEl = document.getElementById('featureDirector');
+            const emailEl = document.getElementById('featureEmail');
+            
+            if (deptEl) deptEl.textContent = cleanText(item.department?.name || 'Department');
+            if (titleEl) titleEl.textContent = cleanText(item.name || 'Featured Research');
+            
+            // Use the pre-cleaned description from the model accessor
+            const desc = item.clean_featured_description || item.clean_description || 'Research description';
+            const cleanedDesc = desc.substring(0, 300);
+            if (descEl) descEl.textContent = cleanedDesc;
+            
+            if (directorEl) directorEl.textContent = cleanText(item.director || 'N/A');
+            if (emailEl) emailEl.textContent = cleanText(item.contact_email || 'N/A');
+        }
+        
+        // Function to navigate to research detail page
+        function exploreResearch(index) {
+            if (!featuredResearchData || !featuredResearchData[index]) return;
+            const slug = featuredResearchData[index].slug;
+            if (slug) {
+                window.location.href = `/research/${slug}`;
+            }
+        }
+
+        // Initialize with first item on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (featuredResearchData && featuredResearchData.length > 0) {
+                updateToResearch(0);
+            }
+        });
+    </script>
 
     <!-- CTA Section -->
     <section class="py-24 bg-gradient-to-r from-maroon-700 via-maroon-600 to-maroon-800 relative overflow-hidden">

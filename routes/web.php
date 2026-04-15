@@ -6,6 +6,7 @@ use App\Http\Controllers\SuperadminDashboardController;
 use App\Http\Controllers\PublicDepartmentController;
 use App\Http\Controllers\PublicProgramController;
 use App\Http\Controllers\PublicFacultyController;
+use App\Http\Controllers\PublicResearchController;
 use App\Http\Controllers\PublicNewsEventController;
 use App\Http\Controllers\PublicAboutController;
 use App\Http\Controllers\PublicCurriculumController;
@@ -28,6 +29,7 @@ Route::get('/about/mission', [PublicAboutController::class, 'mission'])->name('v
 // Academics Routes
 Route::get('/academics/programs', [PublicProgramController::class, 'index'])->name('view.academics.programs');
 Route::get('/academics/departments', [PublicDepartmentController::class, 'index'])->name('view.academics.departments');
+Route::get('/academics/research', [PublicResearchController::class, 'academy'])->name('view.academics.research');
 Route::get('/academics/curriculum', [PublicCurriculumController::class, 'index'])->name('view.academics.curriculum');
 
 // Faculty & Staff Routes
@@ -65,6 +67,11 @@ Route::get('/faculty/{faculty}', [PublicFacultyController::class, 'show'])->name
 Route::get('/news', [PublicNewsEventController::class, 'index'])->name('view.news');
 Route::get('/news/all', [PublicNewsEventController::class, 'index'])->name('view.news.all');
 Route::get('/news/{newsEvent:slug}', [PublicNewsEventController::class, 'show'])->name('view.news.show');
+
+// Research Routes
+Route::get('/research', [PublicResearchController::class, 'index'])->name('view.research');
+Route::get('/research/all', [PublicResearchController::class, 'index'])->name('view.research.all');
+Route::get('/research/{researchCenter:slug}', [PublicResearchController::class, 'show'])->name('view.research.show');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

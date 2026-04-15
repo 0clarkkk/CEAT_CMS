@@ -1,21 +1,11 @@
 <x-public-layout>
-    <!-- Hero Section -->
-    <section class="relative min-h-[500px] pt-32 pb-20 overflow-hidden gradient-mesh">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-maroon-500/10 rounded-full blur-3xl translate-y-1/2"></div>
-
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Banner Section -->
+    <section class="relative min-h-[400px] bg-cover bg-center flex items-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=400&fit=crop'); background-attachment: fixed;">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div class="max-w-3xl">
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-maroon-100 rounded-full border border-maroon-200 mb-6">
-                    <span class="w-2 h-2 bg-maroon-600 rounded-full"></span>
-                    <span class="text-sm font-semibold text-maroon-700">Degree Programs</span>
-                </div>
-                <h1 class="text-5xl sm:text-6xl font-black text-gray-900 mb-6 leading-tight">
-                    Academic Programs
-                </h1>
-                <p class="text-lg sm:text-xl text-gray-600 max-w-2xl leading-relaxed">
-                    Explore all degree programs offered by our College of Engineering, Architecture, and Technology with flexible study options.
-                </p>
+                <h1 class="text-5xl sm:text-6xl font-black text-white mb-4 leading-tight">Academic Programs</h1>
+                <p class="text-lg text-gray-100">Explore all degree programs offered by our College of Engineering, Architecture, and Technology with flexible study options.</p>
             </div>
         </div>
     </section>
