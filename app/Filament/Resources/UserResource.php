@@ -44,9 +44,9 @@ class UserResource extends Resource
 
                         Forms\Components\TextInput::make('password')
                             ->password()
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $operation) => $operation === 'create')
+                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $operation) => $operation === 'create')
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('student_id')
@@ -104,7 +104,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Role')
                     ->badge()
-                    ->color(fn ($record) => match($record->roles->first()?->name) {
+                    ->color(fn($record) => match ($record->roles->first()?->name) {
                         'superadmin' => 'danger',
                         'admin' => 'warning',
                         'student' => 'info',

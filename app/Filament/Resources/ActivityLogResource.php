@@ -77,7 +77,7 @@ class ActivityLogResource extends Resource
 
                 Tables\Columns\TextColumn::make('subject_type')
                     ->label('Model')
-                    ->formatStateUsing(fn ($state) => str($state)->afterLast('\\'))
+                    ->formatStateUsing(fn($state) => str($state)->afterLast('\\'))
                     ->sortable()
                     ->toggleable(),
 
@@ -95,7 +95,7 @@ class ActivityLogResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('log_name')
                     ->label('Log Type')
-                    ->options(fn () => Activity::query()->distinct()->pluck('log_name', 'log_name')),
+                    ->options(fn() => Activity::query()->distinct()->pluck('log_name', 'log_name')),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
