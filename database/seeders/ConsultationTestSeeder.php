@@ -15,15 +15,14 @@ class ConsultationTestSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test advisors - using 'admin' role temporarily
-        // In a real system, these would have an 'advisor' role
+        // Create test advisors with correct 'advisor' role
         $advisor1 = User::firstOrCreate(
             ['email' => 'advisor1@ceat.edu'],
             [
                 'name' => 'Dr. Ahmed Hassan',
                 'password' => bcrypt('password123'),
                 'email_verified_at' => now(),
-                'role' => 'admin',  // Using admin role since advisor isn't in the enum yet
+                'role' => 'advisor',
             ]
         );
 
@@ -33,7 +32,7 @@ class ConsultationTestSeeder extends Seeder
                 'name' => 'Prof. Fatima Khan',
                 'password' => bcrypt('password123'),
                 'email_verified_at' => now(),
-                'role' => 'admin',  // Using admin role since advisor isn't in the enum yet
+                'role' => 'advisor',
             ]
         );
 
