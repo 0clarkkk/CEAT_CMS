@@ -26,6 +26,22 @@ class RoleAndPermissionSeeder extends Seeder
             'view_news',
             'view_student_dashboard',
             'view_downloads',
+            'request_consultation',
+            'view_own_consultations',
+
+            // Faculty permissions
+            'view_faculty_dashboard',
+            'manage_advisor_profile',
+            'view_available_students',
+
+            // Advisor permissions (subrole of faculty)
+            'view_consultation_requests',
+            'approve_consultation',
+            'reject_consultation',
+            'schedule_consultation',
+            'reschedule_consultation',
+            'complete_consultation',
+            'manage_availability_slots',
 
             // Admin permissions
             'manage_departments',
@@ -65,6 +81,41 @@ class RoleAndPermissionSeeder extends Seeder
             'view_news',
             'view_student_dashboard',
             'view_downloads',
+            'request_consultation',
+            'view_own_consultations',
+        ]);
+
+        $facultyRole = Role::firstOrCreate(['name' => 'faculty']);
+        $facultyRole->syncPermissions([
+            'view_departments',
+            'view_programs',
+            'view_faculty',
+            'view_research',
+            'view_news',
+            'view_downloads',
+            'view_faculty_dashboard',
+            'manage_advisor_profile',
+            'view_available_students',
+        ]);
+
+        $advisorRole = Role::firstOrCreate(['name' => 'advisor']);
+        $advisorRole->syncPermissions([
+            'view_departments',
+            'view_programs',
+            'view_faculty',
+            'view_research',
+            'view_news',
+            'view_downloads',
+            'view_faculty_dashboard',
+            'manage_advisor_profile',
+            'view_available_students',
+            'view_consultation_requests',
+            'approve_consultation',
+            'reject_consultation',
+            'schedule_consultation',
+            'reschedule_consultation',
+            'complete_consultation',
+            'manage_availability_slots',
         ]);
 
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
