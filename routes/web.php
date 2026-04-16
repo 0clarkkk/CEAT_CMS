@@ -119,8 +119,8 @@ Route::middleware('auth')->group(function () {
         Route::get('api/advisor-slots', [StudentConsultationController::class, 'getAdvisorSlots'])->name('api.advisor-slots');
     });
 
-    // Advisor Consultation Management Routes
-    Route::middleware('role:advisor')->prefix('advisor')->name('advisor.')->group(function () {
+    // Advisor Consultation Management Routes (available to faculty members who are advisors)
+    Route::middleware('role:faculty')->prefix('advisor')->name('advisor.')->group(function () {
         Route::get('consultations/dashboard', [ConsultationManagementController::class, 'dashboard'])->name('consultations.dashboard');
         Route::get('consultations', [ConsultationManagementController::class, 'index'])->name('consultations.index');
         Route::get('consultations/{consultation}', [ConsultationManagementController::class, 'show'])->name('consultations.show');
