@@ -1,204 +1,305 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="mb-8">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <!-- Header Section -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex justify-between items-center">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Faculty Dashboard</h1>
-                    <p class="mt-2 text-gray-600">Welcome back, {{ $faculty->full_name }}</p>
+                    <p class="mt-2 text-sm text-gray-600">Welcome back, {{ auth()->user()->name }}! • {{ now()->format('l, F j, Y') }}</p>
                 </div>
                 <div class="flex gap-3">
-                    <a href="{{ route('faculty.profile.edit') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    @if($faculty->is_advisor)
+                        <a href="{{ route('advisor.consultations.dashboard') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            Consultation Hub
+                        </a>
+                    @endif
+                    <a href="{{ route('faculty.profile.edit') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Edit Profile
                     </a>
-                    @if($faculty->is_advisor)
-                        <a href="{{ route('faculty.advisor-profile.show') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-                            Advisor Settings
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Statistics Cards -->
+        @if($faculty->is_advisor)
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <!-- Pending Requests Card -->
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500 hover:shadow-lg transition">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Pending Requests</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ $pendingConsultations }}</p>
+                        <a href="{{ route('advisor.consultations.index') }}?status=pending" class="text-xs text-yellow-600 hover:text-yellow-700 mt-2 inline-flex items-center">
+                            View All →
                         </a>
+                    </div>
+                    <div class="bg-yellow-100 rounded-full p-3">
+                        <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Consultations Card -->
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500 hover:shadow-lg transition">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Upcoming (7 Days)</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ $upcomingConsultations->count() }}</p>
+                        <a href="{{ route('advisor.consultations.dashboard') }}" class="text-xs text-blue-600 hover:text-blue-700 mt-2 inline-flex items-center">
+                            View Schedule →
+                        </a>
+                    </div>
+                    <div class="bg-blue-100 rounded-full p-3">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed This Month Card -->
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500 hover:shadow-lg transition">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Completed (This Month)</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ $completedThisMonth }}</p>
+                        <p class="text-xs text-green-600 mt-2">{{ now()->format('F Y') }}</p>
+                    </div>
+                    <div class="bg-green-100 rounded-full p-3">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Availability Card -->
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500 hover:shadow-lg transition">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Manage Your Time</p>
+                        <p class="text-sm text-gray-700 font-semibold mt-3">Set availability slots for students to book consultations</p>
+                        <a href="{{ route('advisor.consultations.availability.index') }}" class="text-xs text-purple-600 hover:text-purple-700 mt-2 inline-flex items-center">
+                            Manage Slots →
+                        </a>
+                    </div>
+                    <div class="bg-purple-100 rounded-full p-3">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content Area -->
+            <div class="lg:col-span-2">
+                @if($faculty->is_advisor)
+                    <!-- Upcoming Consultations List -->
+                    <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
+                        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                            <h2 class="text-lg font-semibold text-gray-900">Upcoming Consultations</h2>
+                            <p class="text-sm text-gray-600 mt-1">Next 7 days • {{ $upcomingConsultations->count() }} scheduled</p>
+                        </div>
+                        @if($upcomingConsultations->isEmpty())
+                            <div class="px-6 py-12 text-center">
+                                <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-gray-500 font-medium">No upcoming consultations</p>
+                                <p class="text-sm text-gray-500 mt-1">When students request consultations, they'll appear here</p>
+                            </div>
+                        @else
+                            <div class="divide-y divide-gray-200">
+                                @foreach($upcomingConsultations as $consultation)
+                                    <div class="px-6 py-4 hover:bg-gray-50 transition">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-sm font-semibold text-gray-900">{{ $consultation->title }}</h3>
+                                                <div class="mt-2 space-y-1 text-sm">
+                                                    <p class="text-gray-600">
+                                                        <span class="font-medium">Student:</span> {{ $consultation->student?->name ?? 'N/A' }}
+                                                    </p>
+                                                    @if($consultation->category)
+                                                        <p class="text-gray-600">
+                                                            <span class="font-medium">Category:</span> 
+                                                            <span class="capitalize">{{ $consultation->category }}</span>
+                                                        </p>
+                                                    @endif
+                                                    <p class="text-gray-600">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        {{ $consultation->scheduled_at?->format('M d, Y \a\t h:i A') ?? 'Not scheduled' }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    {{ ucfirst($consultation->status) }}
+                                                </span>
+                                                <a href="{{ route('advisor.consultations.show', $consultation->id) }}" 
+                                                   class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                                                    View →
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
+                        <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
+                        <p class="text-sm text-gray-600 mt-1">Latest consultation updates</p>
+                    </div>
+                    @if($recentActivity->isEmpty())
+                        <div class="px-6 py-12 text-center">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="text-gray-500 font-medium">No recent activity</p>
+                        </div>
+                    @else
+                        <div class="divide-y divide-gray-200">
+                            @foreach($recentActivity->take(5) as $activity)
+                                <div class="px-6 py-4 hover:bg-gray-50 transition">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center">
+                                                @if($activity->status === 'pending')
+                                                    <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>
+                                                @elseif($activity->status === 'approved')
+                                                    <span class="inline-block w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                                                @elseif($activity->status === 'completed')
+                                                    <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                                @else
+                                                    <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mr-3"></span>
+                                                @endif
+                                                <h3 class="text-sm font-medium text-gray-900">{{ $activity->title }}</h3>
+                                            </div>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                Student: <span class="font-medium">{{ $activity->student?->name ?? 'Unknown' }}</span>
+                                            </p>
+                                            <p class="text-xs text-gray-500 mt-2">{{ $activity->updated_at->diffForHumans() }}</p>
+                                        </div>
+                                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                            {{ ucfirst($activity->status) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
                 </div>
             </div>
-        </div>
-
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Profile Card -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Profile Status</dt>
-                            <dd class="text-lg font-medium text-gray-900">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    Active
-                                </span>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-
-            @if($faculty->is_advisor)
-                <!-- Pending Requests -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Pending Requests</dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ $pendingConsultations }}</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Upcoming Consultations -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Upcoming (7 days)</dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ $upcomingConsultations->count() }}</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Completed This Month -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Completed (This Month)</dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ $completedThisMonth }}</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Main Content -->
-            <div class="lg:col-span-2">
-                <!-- Quick Actions -->
-                @if($faculty->is_advisor)
-                <div class="bg-white rounded-lg shadow mb-8">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
-                    </div>
-                    <div class="px-6 py-6 grid grid-cols-2 gap-4">
-                        <a href="#pending" class="flex items-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                            <svg class="w-5 h-5 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span class="font-medium text-gray-700">View Pending</span>
-                        </a>
-                        <a href="#upcoming" class="flex items-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                            <svg class="w-5 h-5 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span class="font-medium text-gray-700">View Calendar</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Upcoming Consultations List -->
-                @if($upcomingConsultations->isNotEmpty())
-                <div class="bg-white rounded-lg shadow" id="upcoming">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-900">Upcoming Consultations (Next 7 Days)</h2>
-                    </div>
-                    <div class="divide-y divide-gray-200">
-                        @foreach($upcomingConsultations as $consultation)
-                        <div class="px-6 py-4 hover:bg-gray-50 transition">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">{{ $consultation->title }}</h3>
-                                    <p class="text-sm text-gray-600 mt-1">Student: {{ $consultation->student->name ?? 'N/A' }}</p>
-                                    <p class="text-sm text-gray-600">{{ $consultation->consultation_date->format('M d, Y - h:i A') }}</p>
-                                </div>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                    Scheduled
-                                </span>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                @else
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6" id="upcoming">
-                    <div class="flex">
-                        <svg class="h-5 w-5 text-blue-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-sm text-blue-700">No upcoming consultations in the next 7 days.</p>
-                    </div>
-                </div>
-                @endif
-                @endif
-            </div>
 
             <!-- Sidebar -->
-            <div class="lg:col-span-1">
-                <!-- Profile Info -->
-                <div class="bg-white rounded-lg shadow p-6 mb-6">
-                    <div class="text-center">
-                        @if($faculty->getPhotoUrl())
-                        <img src="{{ $faculty->getPhotoUrl() }}" alt="{{ $faculty->full_name }}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
-                        @else
-                        <div class="w-24 h-24 rounded-full mx-auto mb-4 bg-gray-200 flex items-center justify-center">
-                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Profile Card -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 h-20"></div>
+                    <div class="px-6 py-6 text-center -mt-10 relative z-10">
+                        <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center shadow-lg">
+                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                            </svg>
                         </div>
+                        <h3 class="text-lg font-semibold text-gray-900">{{ auth()->user()->name }}</h3>
+                        <p class="text-sm text-gray-600 mt-1">{{ $faculty->position ?? 'Faculty Member' }}</p>
+                        @if($faculty->department)
+                            <p class="text-xs text-gray-500 mt-1">{{ $faculty->department->name }}</p>
                         @endif
-                        <h3 class="text-lg font-semibold text-gray-900">{{ $faculty->full_name }}</h3>
-                        <p class="text-sm text-gray-600">{{ $faculty->position }}</p>
-                        <p class="text-xs text-gray-500 mt-2">{{ $faculty->department?->name ?? 'N/A' }}</p>
+                        @if($faculty->is_advisor)
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-3">
+                                ✓ Active Advisor
+                            </span>
+                        @endif
                     </div>
-                    <div class="mt-6 pt-6 border-t border-gray-200">
-                        <a href="{{ route('faculty.profile.edit') }}" class="block w-full text-center px-4 py-2 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200 transition font-medium text-sm">
-                            Edit Profile
-                        </a>
+                    <div class="border-t border-gray-200 px-6 py-4 space-y-2">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">EMAIL</p>
+                            <p class="text-sm text-gray-900">{{ auth()->user()->email }}</p>
+                        </div>
+                        @if($faculty->phone_number)
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">PHONE</p>
+                                <p class="text-sm text-gray-900">{{ $faculty->phone_number }}</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-                    <div class="space-y-4">
-                        @forelse($recentActivity->take(5) as $activity)
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <div class="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+                <!-- Quick Links Card -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-900">Quick Links</h3>
+                    </div>
+                    <div class="px-6 py-3 space-y-2">
+                        <a href="{{ route('faculty.profile.edit') }}" 
+                           class="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Edit My Profile
+                        </a>
+                        <a href="{{ route('faculty.advisor-profile.show') }}" 
+                           class="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            View Advisor Profile
+                        </a>
+                        @if($faculty->is_advisor)
+                            <a href="{{ route('advisor.consultations.availability.index') }}" 
+                               class="block px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Manage Availability
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg shadow overflow-hidden">
+                    <div class="px-6 py-4 border-b border-indigo-200">
+                        <h3 class="text-sm font-semibold text-gray-900">This Month</h3>
+                    </div>
+                    <div class="px-6 py-4 space-y-3">
+                        @if($faculty->is_advisor)
+                            <div>
+                                <p class="text-xs text-gray-600 font-medium">Total Consultations</p>
+                                <p class="text-2xl font-bold text-indigo-600 mt-1">{{ $completedThisMonth }}</p>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-900">
-                                    @if($activity->status === 'pending')
-                                        New consultation request
-                                    @elseif($activity->status === 'approved')
-                                        Consultation approved
-                                    @elseif($activity->status === 'completed')
-                                        Consultation completed
-                                    @else
-                                        {{ ucfirst($activity->status) }}
-                                    @endif
-                                </p>
-                                <p class="text-xs text-gray-500 mt-1">{{ $activity->updated_at->diffForHumans() }}</p>
+                            <div class="pt-2 border-t border-indigo-200">
+                                <p class="text-xs text-gray-600">Completed in {{ now()->format('F Y') }}</p>
                             </div>
-                        </div>
-                        @empty
-                        <p class="text-sm text-gray-500">No recent activity</p>
-                        @endforelse
+                        @else
+                            <div class="text-center py-4">
+                                <p class="text-sm text-gray-600">Not an active advisor</p>
+                                <a href="{{ route('faculty.advisor-profile.edit') }}" class="text-xs text-indigo-600 hover:text-indigo-700 mt-2 inline-flex items-center">
+                                    Enable Advisor Role →
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
