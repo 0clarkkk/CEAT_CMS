@@ -15,14 +15,14 @@ class ConsultationTestSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test advisors with correct 'advisor' role
+        // Create test advisors as faculty with advisor capability
         $advisor1 = User::firstOrCreate(
             ['email' => 'advisor1@ceat.edu'],
             [
                 'name' => 'Dr. Ahmed Hassan',
                 'password' => bcrypt('password123'),
                 'email_verified_at' => now(),
-                'role' => 'advisor',
+                'role' => 'faculty',
             ]
         );
 
@@ -32,7 +32,7 @@ class ConsultationTestSeeder extends Seeder
                 'name' => 'Prof. Fatima Khan',
                 'password' => bcrypt('password123'),
                 'email_verified_at' => now(),
-                'role' => 'advisor',
+                'role' => 'faculty',
             ]
         );
 

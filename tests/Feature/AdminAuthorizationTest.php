@@ -2,9 +2,9 @@
 
 use App\Models\User;
 
-it('advisor cannot access the admin panel', function () {
+it('faculty with advisor capability cannot access the admin panel', function () {
     $advisor = User::factory()->create([
-        'role' => 'advisor',
+        'role' => 'faculty',
         'email' => 'advisor@test.edu',
     ]);
 
