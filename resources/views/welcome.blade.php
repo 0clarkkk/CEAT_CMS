@@ -238,7 +238,7 @@
                         </template>
                         <template x-if="!featuredItems[currentGalleryImage]">
                             @if($featuredResearch->featured_description)
-                                {{ Str::limit(html_entity_decode(strip_tags($featuredResearch->featured_description)), 300) }}
+                                {{ Str::limit($featuredResearch->featured_description, 300) }}
                             @else
                                 {{ Str::limit(html_entity_decode(strip_tags($featuredResearch->description)), 300) }}
                             @endif
@@ -258,17 +258,17 @@
                             <div class="relative h-96 sm:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
                                 <!-- Dynamic Main Image -->
                                 <img id="mainFeatureImage" 
-                                     src=""
+                                     src="@if($featuredResearch?->thumbnail_photo)/storage/{{ $featuredResearch->thumbnail_photo }}@elseif($featuredResearch?->featured_image)/storage/{{ $featuredResearch->featured_image }}@endif"
                                      alt="Featured Research"
                                      class="w-full h-full object-cover transition-transform duration-700"
-                                     onerror="this.style.display='none'">
+                                     onerror="this.style.display='none'; document.getElementById('mainFeatureGradient').style.display='flex'">
                                 
                                 <!-- Fallback Gradient -->
-                                <div id="mainFeatureGradient" class="absolute inset-0 w-full h-full bg-gradient-to-br from-primary-500 to-maroon-600 flex items-center justify-center relative">
+                                <div id="mainFeatureGradient" class="absolute inset-0 w-full h-full bg-gradient-to-br from-primary-500 to-maroon-600 flex items-center justify-center relative" @if($featuredResearch?->thumbnail_photo || $featuredResearch?->featured_image)style="display: none;" @endif>
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                                     <div class="text-center relative z-10">
                                         <div class="text-7xl mb-4 animate-bounce">⚗️</div>
-                                        <p class="text-white/80 font-medium text-lg" id="fallbackText">Research Initiative</p>
+                                        <p class="text-white/80 font-medium text-lg" id="fallbackText">{{ $featuredResearch?->name ?? 'Research Initiative' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -281,7 +281,11 @@
                                                 @click="currentGalleryImage = {{ $index }}; updateToResearch({{ $index }})" 
                                                 class="flex-1 aspect-square rounded-lg overflow-hidden border-2 transition-colors duration-300 min-w-0"
                                                 style="border-color: {{ $index === 0 ? '#FCD34D' : 'rgba(255, 255, 255, 0.3)' }}">
-                                            @if($research->featured_image)
+                                            @if($research->thumbnail_photo)
+                                                <img src="/storage/{{ $research->thumbnail_photo }}" 
+                                                     alt="Gallery {{ $index + 1 }}" 
+                                                     class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+                                            @elseif($research->featured_image)
                                                 <img src="/storage/{{ $research->featured_image }}" 
                                                      alt="Gallery {{ $index + 1 }}" 
                                                      class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
@@ -334,7 +338,7 @@
                         <p class="text-base sm:text-lg text-white/80 leading-relaxed" id="featureDesc">
                             @if($featuredResearch)
                                 @if($featuredResearch->featured_description)
-                                    {{ Str::limit(Str::squish(html_entity_decode(strip_tags($featuredResearch->featured_description))), 300) }}
+                                    {{ Str::limit(Str::squish($featuredResearch->featured_description), 300) }}
                                 @else
                                     {{ Str::limit(Str::squish(html_entity_decode(strip_tags($featuredResearch->description))), 300) }}
                                 @endif
@@ -346,9 +350,15 @@
                         <!-- Modern Info Cards -->
                         <div class="grid grid-cols-2 gap-4 mt-6">
                             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-primary-400/50 transition-all duration-300">
-                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider">Director</div>
-                                <p class="text-sm text-white font-semibold truncate" id="featureDirector">
-                                    {{ $featuredResearch?->director ?? 'N/A' }}
+                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider">Researchers</div>
+                                <p class="text-sm text-white font-semibold" id="featureResearchers" style="word-break: break-word; white-space: normal; line-height: 1.5;">
+                                    @if($featuredResearch?->researchers->isNotEmpty())
+                                        @foreach($featuredResearch->researchers as $index => $researcher)
+                                            @if($index > 0)<br>@endif{{ $researcher->name }}
+                                        @endforeach
+                                    @else
+                                        N/A
+                                    @endif
                                 </p>
                             </div>
                             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-primary-400/50 transition-all duration-300">
@@ -416,7 +426,8 @@
                 return '';
             }
             const item = featuredResearchData[currentGalleryIndex];
-            return item.featured_image ? `/storage/${item.featured_image}` : '';
+            // Use thumbnail_photo first, fallback to featured_image
+            return item.thumbnail_photo ? `/storage/${item.thumbnail_photo}` : (item.featured_image ? `/storage/${item.featured_image}` : '');
         }
         
         // Function to update featured research content when thumbnail is clicked
@@ -439,24 +450,26 @@
             
             const item = featuredResearchData[index];
             
-            // Update main image
+            // Update main image (use thumbnail_photo first, fallback to featured_image)
             const mainImg = document.getElementById('mainFeatureImage');
             const gradient = document.getElementById('mainFeatureGradient');
-            if (mainImg && item.featured_image) {
-                mainImg.src = `/storage/${item.featured_image}`;
+            const fallbackText = document.getElementById('fallbackText');
+            const imageUrl = item.thumbnail_photo ? `/storage/${item.thumbnail_photo}` : (item.featured_image ? `/storage/${item.featured_image}` : '');
+            
+            if (mainImg && imageUrl) {
+                mainImg.src = imageUrl;
                 mainImg.style.display = 'block';
                 if (gradient) gradient.style.display = 'none';
             } else {
                 if (mainImg) mainImg.style.display = 'none';
                 if (gradient) gradient.style.display = 'flex';
-                if (gradient) document.getElementById('fallbackText').textContent = item.name || 'Research Initiative';
+                if (fallbackText) fallbackText.textContent = cleanText(item.name || 'Research Initiative');
             }
             
             // Update content fields with cleaned text
             const deptEl = document.getElementById('featureDept');
             const titleEl = document.getElementById('featureTitle');
             const descEl = document.getElementById('featureDesc');
-            const directorEl = document.getElementById('featureDirector');
             const emailEl = document.getElementById('featureEmail');
             
             if (deptEl) deptEl.textContent = cleanText(item.department?.name || 'Department');
@@ -467,8 +480,20 @@
             const cleanedDesc = desc.substring(0, 300);
             if (descEl) descEl.textContent = cleanedDesc;
             
-            if (directorEl) directorEl.textContent = cleanText(item.director || 'N/A');
-            if (emailEl) emailEl.textContent = cleanText(item.contact_email || 'N/A');
+            // Update researchers list
+            const researchersEl = document.getElementById('featureResearchers');
+            if (researchersEl) {
+                const researchers = item.researchers || [];
+                if (researchers.length > 0) {
+                    const researcherNames = researchers.map(r => cleanText(r.name || '')).filter(n => n);
+                    researchersEl.innerHTML = researcherNames.join('<br>');
+                } else {
+                    researchersEl.textContent = 'N/A';
+                }
+            }
+            
+            const emailEl2 = document.getElementById('featureEmail');
+            if (emailEl2) emailEl2.textContent = cleanText(item.contact_email || 'N/A');
         }
         
         // Function to navigate to research detail page

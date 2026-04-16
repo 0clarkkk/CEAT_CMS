@@ -9,11 +9,6 @@
         
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
-                <div class="inline-flex items-center justify-center mb-6">
-                    <span class="px-4 py-2 bg-primary-500/20 backdrop-blur-sm rounded-full text-xs font-bold text-primary-300 uppercase tracking-widest border border-primary-400/30">
-                        🔬 Research & Innovation
-                    </span>
-                </div>
                 <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight mb-6">
                     Research Centers & Initiatives
                 </h1>
@@ -44,8 +39,8 @@
                             
                             <!-- Fixed Image Container -->
                             <a href="{{ route('view.research.show', $research->slug) }}" class="relative h-64 bg-gradient-to-br from-primary-500 to-maroon-600 overflow-hidden block">
-                                @if($research->featured_image)
-                                    <img src="/storage/{{ $research->featured_image }}" 
+                                @if($research->thumbnail_photo)
+                                    <img src="/storage/{{ $research->thumbnail_photo }}" 
                                          alt="{{ $research->name }}"
                                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 @else
@@ -78,15 +73,16 @@
 
                                 <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
                                     @if($research->featured_description)
-                                        {{ Str::limit(html_entity_decode(strip_tags($research->featured_description)), 120) }}
+                                        {{ Str::limit($research->featured_description, 120) }}
                                     @else
                                         {{ Str::limit(html_entity_decode(strip_tags($research->description)), 120) }}
                                     @endif
                                 </p>
 
-                                @if($research->director)
-                                    <p class="text-xs text-gray-500 mb-4">
-                                        <span class="font-semibold text-gray-700">Director:</span> {{ $research->director }}
+                                @if($research->researchers->isNotEmpty())
+                                    <p class="text-xs text-gray-600 mb-4">
+                                        <span class="font-semibold text-maroon-600">👥 {{ $research->researchers->count() === 1 ? 'Researcher' : 'Researchers' }}:</span> 
+                                        {{ $research->researchers->pluck('name')->join(', ', ' & ') }}
                                     </p>
                                 @endif
 
@@ -107,7 +103,7 @@
     @endif
 
     <!-- All Research Centers Section -->
-    <section class="py-24 bg-gray-50 relative">
+    <section class="py-16 bg-gray-50 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-4">
@@ -126,8 +122,8 @@
                             
                             <!-- Fixed Image Container -->
                             <a href="{{ route('view.research.show', $research->slug) }}" class="relative h-64 bg-gradient-to-br from-primary-500 to-maroon-600 overflow-hidden block">
-                                @if($research->featured_image)
-                                    <img src="/storage/{{ $research->featured_image }}" 
+                                @if($research->thumbnail_photo)
+                                    <img src="/storage/{{ $research->thumbnail_photo }}" 
                                          alt="{{ $research->name }}"
                                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 @else
@@ -166,9 +162,10 @@
                                     @endif
                                 </p>
 
-                                @if($research->director)
-                                    <p class="text-xs text-gray-500 mb-4">
-                                        <span class="font-semibold text-gray-700">Director:</span> {{ $research->director }}
+                                @if($research->researchers->isNotEmpty())
+                                    <p class="text-xs text-gray-600 mb-4">
+                                        <span class="font-semibold text-maroon-600">👥 {{ $research->researchers->count() === 1 ? 'Researcher' : 'Researchers' }}:</span> 
+                                        {{ $research->researchers->pluck('name')->join(', ', ' & ') }}
                                     </p>
                                 @endif
 

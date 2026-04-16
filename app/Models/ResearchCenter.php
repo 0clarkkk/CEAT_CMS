@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -24,10 +25,13 @@ use Illuminate\Support\Str;
  * @property int $featured_order
  * @property string|null $featured_image
  * @property string|null $featured_description
+ * @property string|null $thumbnail_photo
+ * @property array<array-key, string>|null $gallery
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Department|null $department
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Researcher>|null $researchers
  * @method static \Database\Factories\ResearchCenterFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ResearchCenter newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ResearchCenter newQuery()
@@ -67,6 +71,8 @@ class ResearchCenter extends Model
         'featured_order',
         'featured_image',
         'featured_description',
+        'thumbnail_photo',
+        'gallery',
     ];
 
     protected $appends = [
@@ -78,7 +84,80 @@ class ResearchCenter extends Model
     {
         return [
             'research_areas' => 'json',
+            'gallery' => 'json',
         ];
+    }
+
+    public function getResearchAreasAttribute($value)
+    {
+        if (is_array($value)) {
+            return !empty($value) ? $value : [['area' => '', 'description' => '']];
+        }
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) && !empty($decoded) ? $decoded : [['area' => '', 'description' => '']];
+        }
+        return [['area' => '', 'description' => '']];
+    }
+
+    public function setResearchAreasAttribute($value)
+    {
+        if (is_array($value)) {
+            // Filter out empty rows (where both area and description are empty)
+            $filtered = array_filter($value, function ($item) {
+                if (is_array($item)) {
+                    return !empty(trim($item['area'] ?? '')) || !empty(trim($item['description'] ?? ''));
+                }
+                return !empty($item);
+            });
+            $this->attributes['research_areas'] = !empty($filtered) ? json_encode($filtered) : null;
+        } else {
+            $this->attributes['research_areas'] = $value;
+        }
+    }
+
+    public function getGalleryAttribute($value)
+    {
+        if (is_array($value)) {
+            return !empty($value) ? array_filter($value) : [];
+        }
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) && !empty($decoded) ? array_filter($decoded) : [];
+        }
+        return [];
+    }
+
+    public function setGalleryAttribute($value)
+    {
+        if (is_array($value)) {
+            // Filter out empty values
+            $filtered = array_filter($value, function ($item) {
+                return !empty(trim((string)$item));
+            });
+            $this->attributes['gallery'] = !empty($filtered) ? json_encode(array_values($filtered)) : null;
+        } else {
+            $this->attributes['gallery'] = $value;
+        }
+    }
+
+    /**
+     * Detect file type (photo or video) from file path
+     */
+    public function getFileType(string $path): string
+    {
+        $photoExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $videoExtensions = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv'];
+        
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        
+        if (in_array($extension, $photoExtensions)) {
+            return 'photo';
+        } elseif (in_array($extension, $videoExtensions)) {
+            return 'video';
+        }
+        
+        return 'photo'; // default to photo
     }
 
     protected static function boot(): void
@@ -96,11 +175,51 @@ class ResearchCenter extends Model
                 $model->slug = Str::slug($model->name);
             }
         });
+
+        static::saved(function ($model) {
+            // Delete researchers with both name and email empty
+            $model->researchers()
+                ->whereRaw("(TRIM(COALESCE(name, '')) = '' AND TRIM(COALESCE(email, '')) = '')")
+                ->delete();
+
+            // Filter out empty research areas from JSON
+            if ($model->research_areas) {
+                $filtered = array_filter($model->research_areas, function ($item) {
+                    if (is_array($item)) {
+                        return !empty(trim($item['area'] ?? '')) || !empty(trim($item['description'] ?? ''));
+                    }
+                    return !empty($item);
+                });
+                $newValue = !empty($filtered) ? array_values($filtered) : null;
+                if ((json_encode($model->research_areas) !== json_encode($newValue))) {
+                    $model->fill(['research_areas' => $newValue])->saveQuietly();
+                }
+            }
+
+            // Filter out empty gallery items from JSON
+            if ($model->gallery) {
+                $filtered = array_filter($model->gallery, function ($item) {
+                    return !empty(trim((string)$item));
+                });
+                $newValue = !empty($filtered) ? array_values($filtered) : null;
+                if ((json_encode($model->gallery) !== json_encode($newValue))) {
+                    $model->fill(['gallery' => $newValue])->saveQuietly();
+                }
+            }
+        });
     }
 
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Get all researchers for this research center
+     */
+    public function researchers(): HasMany
+    {
+        return $this->hasMany(Researcher::class)->orderBy('order', 'asc')->where('is_active', true);
     }
 
     /**

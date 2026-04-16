@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Department;
+use App\Models\Researcher;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -33,5 +34,17 @@ class ResearchCenterFactory extends Factory
             'facilities' => $this->faker->paragraph(),
             'contact_email' => $this->faker->unique()->safeEmail(),
         ];
+    }
+
+    /**
+     * Create researchers after creating research center
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function ($researchCenter) {
+            Researcher::factory(rand(2, 4))->create([
+                'research_center_id' => $researchCenter->id,
+            ]);
+        });
     }
 }

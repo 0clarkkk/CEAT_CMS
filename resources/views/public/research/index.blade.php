@@ -41,11 +41,27 @@
                             <div class="p-6">
                                 <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-maroon-600 transition-colors">{{ $center->name }}</h3>
                                 <p class="text-sm text-gray-500 mb-3 font-medium">{{ $center->department->name }}</p>
-                                @if ($center->director)
-                                <p class="text-sm text-gray-600 mb-3">
-                                    <span class="font-semibold text-gray-700">Director:</span> {{ $center->director }}
-                                </p>
+                                
+                                <!-- Researchers Preview -->
+                                @if ($center->researchers->isNotEmpty())
+                                <div class="mb-3 p-3 bg-primary-50 rounded-lg border border-primary-200">
+                                    <p class="text-xs font-semibold text-primary-700 uppercase tracking-wide mb-2">{{ $center->researchers->count() === 1 ? 'Researcher' : 'Researchers' }}</p>
+                                    <div class="space-y-1">
+                                        @foreach ($center->researchers->take(2) as $researcher)
+                                        <p class="text-sm text-gray-700">
+                                            <span class="font-medium">{{ $researcher->name }}</span>
+                                            @if ($researcher->specialization)
+                                                <span class="text-gray-500">• {{ $researcher->specialization }}</span>
+                                            @endif
+                                        </p>
+                                        @endforeach
+                                        @if ($center->researchers->count() > 2)
+                                            <p class="text-xs text-primary-600 font-medium pt-1">+ {{ $center->researchers->count() - 2 }} more researcher(s)</p>
+                                        @endif
+                                    </div>
+                                </div>
                                 @endif
+                                
                                 <p class="text-gray-500 text-sm line-clamp-3 mb-5 leading-relaxed">
                                     {{ strip_tags($center->description) }}
                                 </p>

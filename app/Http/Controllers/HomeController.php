@@ -21,13 +21,13 @@ class HomeController extends Controller
             ->get();
 
         $featuredResearch = ResearchCenter::where('is_featured', true)
-            ->with('department')
+            ->with('department', 'researchers')
             ->orderBy('featured_order', 'asc')
             ->first();
 
         // Get all featured research (up to 5) for gallery
         $allFeaturedResearch = ResearchCenter::where('is_featured', true)
-            ->with('department')
+            ->with('department', 'researchers')
             ->orderBy('featured_order', 'asc')
             ->limit(5)
             ->get();

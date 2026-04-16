@@ -44,30 +44,108 @@ class ResearchCenterResource extends Resource
                             ->helperText('Auto-generated from title'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Leadership & Contact')
+                Forms\Components\Section::make('Contact & Researchers')
+                    ->description('Add contact information and manage researchers for this center.')
                     ->schema([
-                        Forms\Components\TextInput::make('director')
-                            ->label('Director Name')
-                            ->maxLength(255),
                         Forms\Components\TextInput::make('contact_email')
-                            ->label('Contact Email')
+                            ->label('Center Contact Email')
                             ->email()
-                            ->maxLength(255),
-                    ])->columns(2),
+                            ->maxLength(255)
+                            ->placeholder('Email (optional)')
+                            ->columnSpanFull(),
+
+                        Forms\Components\Repeater::make('researchers')
+                            ->label('Researchers')
+                            ->relationship('researchers')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Researcher Name')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Email')
+                                    ->email()
+                                    ->maxLength(255)
+                                    ->placeholder('Email (optional)'),
+                            ])
+                            ->columns(2)
+                            ->collapsible()
+                            ->collapsed(false)
+                            ->minItems(1)
+                            ->afterStateHydrated(function ($component, $state) {
+                                if (empty($state)) {
+                                    $component->state([['name' => '', 'email' => '']]);
+                                }
+                            })
+                            ->columnSpanFull()
+                            ->addActionLabel('Add researcher')
+                            ->helperText('Add researcher names and emails (email is optional)'),
+                    ]),
 
                 Forms\Components\Section::make('Description & Focus Areas')
                     ->schema([
                         Forms\Components\RichEditor::make('description')
                             ->label('Description')
                             ->columnSpanFull(),
-                        Forms\Components\Textarea::make('research_areas')
-                            ->label('Research Areas (JSON)')
-                            ->rows(4)
-                            ->helperText('Enter JSON array of research areas')
+                        Forms\Components\Repeater::make('research_areas')
+                            ->label('Research Areas')
+                            ->schema([
+                                Forms\Components\TextInput::make('area')
+                                    ->label('Research Area')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('description')
+                                    ->label('Description')
+                                    ->maxLength(255),
+                            ])
+                            ->columns(2)
+                            ->collapsible()
+                            ->collapsed(false)
+                            ->minItems(1)
+                            ->afterStateHydrated(function ($component, $state) {
+                                if (empty($state)) {
+                                    $component->state([['area' => '', 'description' => '']]);
+                                }
+                            })
+                            ->addActionLabel('Add research area')
                             ->columnSpanFull(),
                         Forms\Components\Textarea::make('facilities')
                             ->label('Facilities & Equipment')
                             ->rows(4)
+                            ->columnSpanFull(),
+                    ]),
+
+                Forms\Components\Section::make('Gallery & Media')
+                    ->description('Add photos and videos to the gallery.')
+                    ->schema([
+                        Forms\Components\FileUpload::make('thumbnail_photo')
+                            ->label('Thumbnail Photo')
+                            ->disk('public')
+                            ->image()
+                            ->directory('research/thumbnails')
+                            ->maxSize(5120)
+                            ->previewable(false)
+                            ->helperText('Recommended size: 500x300px - This appears in research cards and featured section')
+                            ->columnSpanFull(),
+
+                        Forms\Components\FileUpload::make('gallery')
+                            ->label('Gallery Photos & Videos')
+                            ->disk('public')
+                            ->directory('research/gallery')
+                            ->maxSize(51200)
+                            ->multiple()
+                            ->previewable(false)
+                            ->acceptedFileTypes([
+                                'image/jpeg',
+                                'image/png',
+                                'image/gif',
+                                'image/webp',
+                                'image/tiff',
+                                'image/bmp',
+                                'image/svg+xml',
+                                'video/mp4',
+                                'video/webm',
+                                'video/ogg',
+                            ])
+                            ->helperText('Max 50MB each - Photos (JPG, PNG, GIF, WEBP, TIFF, BMP, SVG) or Videos (MP4, WEBM, OGG)')
                             ->columnSpanFull(),
                     ]),
 
@@ -77,23 +155,24 @@ class ResearchCenterResource extends Resource
                         Forms\Components\Toggle::make('is_featured')
                             ->label('Feature on Homepage')
                             ->default(false)
+                            ->live(onBlur: true)
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('featured_order')
                             ->label('Display Order')
                             ->numeric()
                             ->default(0)
-                            ->helperText('Lower numbers appear first'),
-                        Forms\Components\FileUpload::make('featured_image')
-                            ->label('Featured Image')
-                            ->image()
-                            ->directory('research/featured')
-                            ->maxSize(5120)
-                            ->helperText('Recommended size: 800x600px'),
-                        Forms\Components\RichEditor::make('featured_description')
+                            ->helperText('Lower numbers appear first')
+                            ->hidden(fn (Forms\Get $get) => !$get('is_featured')),
+                        Forms\Components\Textarea::make('featured_description')
                             ->label('Featured Description')
-                            ->helperText('Short description shown on homepage (optional)')
-                            ->columnSpanFull(),
+                            ->rows(4)
+                            ->maxLength(300)
+                            ->helperText('Short description shown on homepage - max 300 characters (optional)')
+                            ->columnSpanFull()
+                            ->hidden(fn (Forms\Get $get) => !$get('is_featured')),
                     ])->columns(2),
+
+                Forms\Components\View::make('filament.resources.featured-image-preview'),
             ]);
     }
 

@@ -14,6 +14,11 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- FancyBox Gallery -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 </head>
 <body class="font-sans antialiased bg-white text-gray-900 custom-scrollbar pt-24 lg:pt-28">
     <div class="min-h-screen flex flex-col">
@@ -27,14 +32,16 @@
 
         <!-- Footer -->
         <footer class="bg-gradient-to-b from-gray-900 to-gray-950 text-gray-400 relative overflow-hidden">
+            <!-- Fixed Background Image - stays in place when scrolling -->
+            <div class="absolute inset-0 bg-cover opacity-10" style="background-image: url('{{ asset('images/perps1.jpg') }}'); background-attachment: fixed; background-position: center 5%;"></div>
+            
             <!-- Decorative top border -->
-            <div class="h-1 bg-gradient-to-r from-maroon-500 via-primary-500 to-maroon-500"></div>
+            <div class="h-1 bg-gradient-to-r from-maroon-500 via-primary-500 to-maroon-500 relative z-10"></div>
 
             <!-- Decorative shapes -->
-            <div class="absolute top-0 right-0 w-96 h-96 bg-maroon-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 bg-primary-500/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-maroon-500/5 rounded-full -translate-y-1/2 translate-x-1/2 z-20"></div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-30">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
                     <!-- Brand -->
                     <div class="lg:col-span-2">
@@ -88,7 +95,7 @@
                 </div>
 
                 <!-- Bottom Bar -->
-                <div class="border-t border-gray-800 pt-8">
+                <div class="border-t border-gray-800 pt-8 relative z-40">
                     <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
                         <p class="text-gray-500">© {{ date('Y') }} University of Perpetual Help System DALTA. All rights reserved.</p>
                         <div class="flex gap-6">
