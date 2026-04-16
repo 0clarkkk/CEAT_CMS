@@ -19,14 +19,14 @@ class PublicNewsEventController extends Controller
         if ($type === 'events') {
             $items = NewsEvent::where('status', 'published')
                 ->where('type', 'event')
-                ->with('department')
+                ->with('department', 'departments')
                 ->orderBy('event_date', 'desc')
                 ->paginate(12);
             $title = 'All Events';
         } else {
             $items = NewsEvent::where('status', 'published')
                 ->where('type', '!=', 'event')
-                ->with('department')
+                ->with('department', 'departments')
                 ->orderBy('published_at', 'desc')
                 ->paginate(12);
             $title = 'All News';
@@ -47,7 +47,7 @@ class PublicNewsEventController extends Controller
         // Get upcoming events
         $upcomingEvents = NewsEvent::where('status', 'published')
             ->where('type', 'event')
-            ->with('department')
+            ->with('department', 'departments')
             ->orderBy('event_date', 'desc')
             ->limit(6)
             ->get();
@@ -55,7 +55,7 @@ class PublicNewsEventController extends Controller
         // Get latest news
         $latestNews = NewsEvent::where('status', 'published')
             ->where('type', '!=', 'event')
-            ->with('department')
+            ->with('department', 'departments')
             ->orderBy('published_at', 'desc')
             ->limit(6)
             ->get();
@@ -75,7 +75,7 @@ class PublicNewsEventController extends Controller
             abort(404);
         }
 
-        $newsEvent->load('department');
+        $newsEvent->load('department', 'departments');
 
         // Get related news/events
         $related = NewsEvent::where('status', 'published')

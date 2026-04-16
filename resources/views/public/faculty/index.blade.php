@@ -42,7 +42,9 @@
                                 </div>
                             </div>
 
-                            <p class="text-sm text-gray-500 font-medium mb-3">{{ $member->department->name }}</p>
+                            @if ($member->department)
+                                <p class="text-sm text-gray-500 font-medium mb-3">{{ $member->department->name }}</p>
+                            @endif
 
                             @if($member->specialization)
                             <p class="text-sm text-gray-600 mb-4 leading-relaxed">

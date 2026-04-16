@@ -11,9 +11,11 @@
             </a>
 
             <div class="flex flex-wrap gap-3 mb-4">
-                <a href="{{ route('view.departments.show', $researchCenter->department) }}" class="badge bg-primary-500/20 text-primary-300 border border-primary-500/30 hover:bg-primary-500/30 transition-colors">
-                    {{ $researchCenter->department->name }}
-                </a>
+                @if ($researchCenter->department?->slug)
+                    <a href="{{ route('view.departments.show', $researchCenter->department->slug) }}" class="badge bg-primary-500/20 text-primary-300 border border-primary-500/30 hover:bg-primary-500/30 transition-colors">
+                        {{ $researchCenter->department->name }}
+                    </a>
+                @endif
             </div>
 
             <h1 class="text-4xl lg:text-6xl font-extrabold mb-4 animate-fade-in-up">{{ $researchCenter->name }}</h1>
@@ -116,10 +118,12 @@
                         Related
                     </h3>
                     <div class="space-y-2">
-                        <a href="{{ route('view.departments.show', $researchCenter->department) }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-maroon-50 transition-colors group">
-                            <span class="w-8 h-8 bg-maroon-100 rounded-lg flex items-center justify-center text-maroon-600 text-sm">◆</span>
-                            <span class="text-sm font-medium text-gray-700 group-hover:text-maroon-600 transition-colors">Department</span>
-                        </a>
+                        @if ($researchCenter->department?->slug)
+                            <a href="{{ route('view.departments.show', $researchCenter->department->slug) }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-maroon-50 transition-colors group">
+                                <span class="w-8 h-8 bg-maroon-100 rounded-lg flex items-center justify-center text-maroon-600 text-sm">◆</span>
+                                <span class="text-sm font-medium text-gray-700 group-hover:text-maroon-600 transition-colors">Department</span>
+                            </a>
+                        @endif
                         <a href="{{ route('view.research') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-maroon-50 transition-colors group">
                             <span class="w-8 h-8 bg-maroon-100 rounded-lg flex items-center justify-center text-maroon-600 text-sm">⬢</span>
                             <span class="text-sm font-medium text-gray-700 group-hover:text-maroon-600 transition-colors">All Research Centers</span>

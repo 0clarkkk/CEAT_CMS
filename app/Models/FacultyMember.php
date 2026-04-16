@@ -76,6 +76,11 @@ class FacultyMember extends Model
         'office_location',
         'office_hours',
         'phone_number',
+        'advisor_bio',
+        'default_consultation_duration',
+        'cancellation_deadline_hours',
+        'is_advisor_visible',
+        'profile_last_updated_at',
     ];
 
     protected static function boot(): void
@@ -104,6 +109,8 @@ class FacultyMember extends Model
         return [
             'is_active' => 'boolean',
             'is_advisor' => 'boolean',
+            'is_advisor_visible' => 'boolean',
+            'profile_last_updated_at' => 'datetime',
             'education' => 'json',
             'research_interests' => 'json',
             'publications' => 'json',
@@ -113,6 +120,56 @@ class FacultyMember extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Get the user associated with this faculty member
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
+    /**
+     * Get pending consultation requests count
+     */
+    public function getPendingConsultationCountAttribute(): int
+    {
+        return Consultation::where('advisor_id', $this->id)
+            ->where('status', 'pending')
+            ->count();
+    }
+
+    /**
+     * Get upcoming consultations for this faculty member
+     */
+    public function getUpcomingConsultations($days = 7)
+    {
+        return Consultation::where('advisor_id', $this->id)
+            ->where('status', 'approved')
+            ->where('consultation_date', '>=', now())
+            ->where('consultation_date', '<=', now()->addDays($days))
+            ->orderBy('consultation_date')
+            ->get();
+    }
+
+    /**
+     * Get completed consultations for this month
+     */
+    public function getCompletedConsultationsThisMonth(): int
+    {
+        return Consultation::where('advisor_id', $this->id)
+            ->where('status', 'completed')
+            ->whereMonth('consultation_date', now()->month)
+            ->count();
+    }
+
+    /**
+     * Update the profile_last_updated_at timestamp
+     */
+    public function updateProfileTimestamp(): void
+    {
+        $this->update(['profile_last_updated_at' => now()]);
     }
 
     /**
@@ -136,5 +193,59 @@ class FacultyMember extends Model
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
+     * Get education as display text (comma-separated or line-separated)
+     */
+    public function getEducationDisplayAttribute(): string
+    {
+        if (!$this->education) {
+            return '';
+        }
+
+        $education = is_array($this->education) ? $this->education : json_decode($this->education, true);
+        
+        if (is_array($education)) {
+            return implode("\n", $education);
+        }
+
+        return $education ?? '';
+    }
+
+    /**
+     * Get research interests as display text
+     */
+    public function getResearchInterestsDisplayAttribute(): string
+    {
+        if (!$this->research_interests) {
+            return '';
+        }
+
+        $interests = is_array($this->research_interests) ? $this->research_interests : json_decode($this->research_interests, true);
+        
+        if (is_array($interests)) {
+            return implode(", ", $interests);
+        }
+
+        return $interests ?? '';
+    }
+
+    /**
+     * Get publications as display text
+     */
+    public function getPublicationsDisplayAttribute(): string
+    {
+        if (!$this->publications) {
+            return '';
+        }
+
+        $publications = is_array($this->publications) ? $this->publications : json_decode($this->publications, true);
+        
+        if (is_array($publications)) {
+            return implode("\n", $publications);
+        }
+
+        return $publications ?? '';
     }
 }

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @property int $id
  * @property int|null $department_id
+ * @property bool $applies_to_all_departments
  * @property string $title
  * @property string $slug
  * @property string $type
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Storage;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Department|null $department
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Department> $departments
  * @method static \Database\Factories\NewsEventFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NewsEvent newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NewsEvent newQuery()
@@ -57,6 +59,7 @@ class NewsEvent extends Model
 
     protected $fillable = [
         'department_id',
+        'applies_to_all_departments',
         'title',
         'slug',
         'type',
@@ -95,12 +98,64 @@ class NewsEvent extends Model
         return [
             'published_at' => 'datetime',
             'event_date' => 'datetime',
+            'applies_to_all_departments' => 'boolean',
         ];
     }
 
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Get all departments this news/event is associated with (many-to-many)
+     */
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'department_news_event');
+    }
+
+    /**
+     * Get applicable departments - either all departments or specific ones
+     */
+    public function getApplicableDepartments()
+    {
+        if ($this->applies_to_all_departments) {
+            return Department::all();
+        }
+        
+        // If specific departments are set, use those
+        $specific = $this->departments()->get();
+        if ($specific->isNotEmpty()) {
+            return $specific;
+        }
+        
+        // Fallback to primary department if set
+        if ($this->department_id) {
+            return collect([$this->department]);
+        }
+        
+        return collect([]);
+    }
+
+    /**
+     * Get department display text for list views
+     */
+    public function getDepartmentDisplayText(): string
+    {
+        if ($this->applies_to_all_departments) {
+            return 'All Departments';
+        }
+        
+        $departments = $this->departments()->get();
+        if ($departments->isNotEmpty()) {
+            if ($departments->count() === 1) {
+                return $departments->first()->name;
+            }
+            return "{$departments->count()} Departments";
+        }
+        
+        return $this->department?->name ?? 'Unassigned';
     }
 
     /**

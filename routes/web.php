@@ -17,6 +17,8 @@ use App\Http\Controllers\PageContentController;
 use App\Http\Controllers\Student\ConsultationController as StudentConsultationController;
 use App\Http\Controllers\Advisor\ConsultationManagementController;
 use App\Http\Controllers\Faculty\AdvisorProfileController;
+use App\Http\Controllers\Faculty\DashboardController as FacultyDashboardController;
+use App\Http\Controllers\Faculty\ProfileController as FacultyProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -151,6 +153,16 @@ Route::middleware('auth')->group(function () {
 
     // Faculty Advisor Profile Routes
     Route::middleware('role:faculty')->prefix('faculty')->name('faculty.')->group(function () {
+        // Dashboard
+        Route::get('dashboard', [FacultyDashboardController::class, 'index'])->name('dashboard');
+
+        // Profile Management
+        Route::get('profile/edit', [FacultyProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('profile', [FacultyProfileController::class, 'update'])->name('profile.update');
+        Route::get('profile/preview', [FacultyProfileController::class, 'preview'])->name('profile.preview');
+        Route::get('profile/history', [FacultyProfileController::class, 'changeHistory'])->name('profile.history');
+
+        // Advisor Profile Routes
         Route::get('advisor-profile', [AdvisorProfileController::class, 'show'])->name('advisor-profile.show');
         Route::get('advisor-profile/edit', [AdvisorProfileController::class, 'edit'])->name('advisor-profile.edit');
         Route::patch('advisor-profile', [AdvisorProfileController::class, 'update'])->name('advisor-profile.update');

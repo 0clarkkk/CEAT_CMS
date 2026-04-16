@@ -40,7 +40,9 @@
                             </div>
                             <div class="p-6">
                                 <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-maroon-600 transition-colors">{{ $center->name }}</h3>
-                                <p class="text-sm text-gray-500 mb-3 font-medium">{{ $center->department->name }}</p>
+                                @if ($center->department)
+                                    <p class="text-sm text-gray-500 mb-3 font-medium">{{ $center->department->name }}</p>
+                                @endif
                                 @if ($center->director)
                                 <p class="text-sm text-gray-600 mb-3">
                                     <span class="font-semibold text-gray-700">Director:</span> {{ $center->director }}

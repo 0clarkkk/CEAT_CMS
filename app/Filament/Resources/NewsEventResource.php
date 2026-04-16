@@ -27,11 +27,21 @@ class NewsEventResource extends Resource
                 Forms\Components\Section::make('Basic Information')
                     ->description('News/event title and category')
                     ->schema([
+                        Forms\Components\Toggle::make('applies_to_all_departments')
+                            ->label('Applies to All Departments')
+                            ->helperText('Enable to make this news/event visible to all departments')
+                            ->live(),
                         Forms\Components\Select::make('department_id')
-                            ->label('Department')
+                            ->label('Primary Department (Single Department)')
                             ->relationship('department', 'name')
-                            ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->hidden(fn(Forms\Get $get) => $get('applies_to_all_departments')),
+                        Forms\Components\MultiSelect::make('departments')
+                            ->label('Departments (Multiple Selection)')
+                            ->relationship('departments', 'name')
+                            ->searchable()
+                            ->hidden(fn(Forms\Get $get) => $get('applies_to_all_departments'))
+                            ->helperText('Select specific departments for this news/event. Leave empty for all departments if toggled above.'),
                         Forms\Components\TextInput::make('title')
                             ->label('Title')
                             ->required()
@@ -120,6 +130,11 @@ class NewsEventResource extends Resource
                         'event' => 'success',
                         'announcement' => 'warning',
                     }),
+                Tables\Columns\IconColumn::make('applies_to_all_departments')
+                    ->label('All Depts')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
                 Tables\Columns\TextColumn::make('department.code')
                     ->label('Department')
                     ->searchable()

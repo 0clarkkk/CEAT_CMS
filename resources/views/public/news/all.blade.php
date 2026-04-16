@@ -73,7 +73,11 @@
                                 </div>
 
                                 <h3 class="text-lg font-bold text-gray-900 mb-2 {{ $type === 'events' ? 'group-hover:text-primary-600' : 'group-hover:text-maroon-600' }} transition-colors line-clamp-2">{{ $item->title }}</h3>
-                                <p class="text-sm text-gray-500 mb-3 font-medium">{{ $item->department->name }}</p>
+                                @if ($item->department)
+                                    <p class="text-sm text-gray-500 mb-3 font-medium">{{ $item->department->name }}</p>
+                                @elseif ($item->applies_to_all_departments)
+                                    <p class="text-sm text-gray-500 mb-3 font-medium">All Departments</p>
+                                @endif
                                 <p class="text-gray-500 text-sm line-clamp-3 mb-5 leading-relaxed">{{ $item->excerpt }}</p>
 
                                 <div class="flex items-center justify-between {{ $type === 'events' ? 'text-primary-600' : 'text-maroon-600' }} font-semibold text-sm pt-4 border-t border-gray-100">

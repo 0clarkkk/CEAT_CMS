@@ -23,7 +23,9 @@
                         </div>
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-maroon-600 transition-colors line-clamp-2">{{ $program->name }}</h3>
-                            <p class="text-sm text-gray-500 mb-3 font-medium">{{ $program->department->name }}</p>
+                            @if ($program->department)
+                                <p class="text-sm text-gray-500 mb-3 font-medium">{{ $program->department->name }}</p>
+                            @endif
 
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <span class="badge badge-maroon">{{ ucfirst($program->degree_level) }}</span>
