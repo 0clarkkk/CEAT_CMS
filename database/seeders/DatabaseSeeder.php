@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             PageContentSeeder::class,
             DownloadCategorySeeder::class,
+            ConsultationTestSeeder::class,
         ]);
     }
 }

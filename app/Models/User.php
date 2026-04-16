@@ -70,6 +70,7 @@ class User extends Authenticatable
         'role',
         'student_id',
         'department_id',
+        'faculty_member_id',
         'is_active',
         'last_login_at',
     ];
@@ -97,5 +98,13 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the faculty member associated with this user
+     */
+    public function facultyMember()
+    {
+        return $this->belongsTo(\App\Models\FacultyMember::class);
     }
 }

@@ -71,6 +71,11 @@ class FacultyMember extends Model
         'research_interests',
         'publications',
         'is_active',
+        'is_advisor',
+        'consultation_info',
+        'office_location',
+        'office_hours',
+        'phone_number',
     ];
 
     protected static function boot(): void
@@ -98,6 +103,7 @@ class FacultyMember extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_advisor' => 'boolean',
             'education' => 'json',
             'research_interests' => 'json',
             'publications' => 'json',

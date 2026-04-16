@@ -3,13 +3,25 @@
 namespace App\Providers;
 
 use App\Models\DownloadableForm;
+use App\Models\Consultation;
 use App\Observers\DownloadableFormObserver;
+use App\Policies\ConsultationPolicy;
 use App\View\Composers\NavigationComposer;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        Consultation::class => ConsultationPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */
@@ -23,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register policies
+        foreach ($this->policies as $model => $policy) {
+            Gate::policy($model, $policy);
+        }
+
         // Register observers
         DownloadableForm::observe(DownloadableFormObserver::class);
 

@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('activity_log', function (Blueprint $table) {
-            $table->id();
-            $table->string('log_name')->default('default')->index();
-            $table->text('description');
-            $table->nullableMorphs('subject', 'activity');
-            $table->nullableMorphs('causer', 'activity');
-            $table->json('properties')->nullable();
-            $table->timestamps();
-            $table->index('created_at');
-        });
+        if (!Schema::hasTable('activity_log')) {
+            Schema::create('activity_log', function (Blueprint $table) {
+                $table->id();
+                $table->string('log_name')->default('default')->index();
+                $table->text('description');
+                $table->nullableMorphs('subject');
+                $table->nullableMorphs('causer');
+                $table->json('properties')->nullable();
+                $table->timestamps();
+                $table->index('created_at');
+            });
+        }
     }
 
     /**
