@@ -11,7 +11,7 @@
                     <p class="mt-2 text-sm text-gray-600">Welcome back, {{ auth()->user()->name }}! • {{ now()->format('l, F j, Y') }}</p>
                 </div>
                 <div class="flex gap-3">
-                    @if($faculty->is_advisor)
+                    @if($faculty && $faculty->is_advisor)
                         <a href="{{ route('advisor.consultations.dashboard') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                             Consultation Hub
@@ -27,8 +27,24 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @if(!$faculty)
+            <!-- No Faculty Member Setup -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+                <svg class="w-16 h-16 mx-auto text-blue-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h2 class="text-2xl font-semibold text-blue-900 mb-2">Profile Setup Required</h2>
+                <p class="text-blue-700 mb-6">Your faculty profile hasn't been set up yet. Please complete your profile to access the full dashboard.</p>
+                <a href="{{ route('faculty.profile.edit') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Complete Your Profile
+                </a>
+            </div>
+        @else
+            <!-- Statistics Cards -->
 
-        <!-- Statistics Cards -->
         @if($faculty->is_advisor)
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             <!-- Pending Requests Card -->
@@ -303,7 +319,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
 @endsection

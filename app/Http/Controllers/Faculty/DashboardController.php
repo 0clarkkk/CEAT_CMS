@@ -17,7 +17,21 @@ class DashboardController extends Controller
     public function index(): View
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('id', $user->faculty_member_id)->firstOrFail();
+        
+        // Get faculty member, or create a minimal one if it doesn't exist
+        $faculty = FacultyMember::where('user_id', $user->id)->first() 
+            ?? FacultyMember::where('id', $user->faculty_member_id)->first();
+
+        if (!$faculty) {
+            // If no faculty member exists, return a view indicating they need to be set up
+            return view('faculty.dashboard.index', [
+                'faculty' => null,
+                'pendingConsultations' => 0,
+                'upcomingConsultations' => collect(),
+                'completedThisMonth' => 0,
+                'recentActivity' => collect(),
+            ]);
+        }
 
         // Get statistics
         $pendingConsultations = Consultation::where('advisor_id', $faculty->id)
@@ -26,15 +40,15 @@ class DashboardController extends Controller
 
         $upcomingConsultations = Consultation::where('advisor_id', $faculty->id)
             ->where('status', 'approved')
-            ->where('consultation_date', '>=', now())
-            ->where('consultation_date', '<=', now()->addDays(7))
-            ->orderBy('consultation_date')
+            ->where('scheduled_at', '>=', now())
+            ->where('scheduled_at', '<=', now()->addDays(7))
+            ->orderBy('scheduled_at')
             ->limit(5)
             ->get();
 
         $completedThisMonth = Consultation::where('advisor_id', $faculty->id)
             ->where('status', 'completed')
-            ->whereMonth('consultation_date', now()->month)
+            ->whereMonth('scheduled_at', now()->month)
             ->count();
 
         // Get recent activity
