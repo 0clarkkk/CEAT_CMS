@@ -45,14 +45,17 @@
                 </div>
 
                 <!-- Research Areas -->
-                @if ($researchCenter->research_areas && count($researchCenter->research_areas) > 0)
+                @php
+                    $researchAreas = is_array($researchCenter->research_areas) ? $researchCenter->research_areas : (is_string($researchCenter->research_areas) ? json_decode($researchCenter->research_areas, true) : []);
+                @endphp
+                @if (!empty($researchAreas) && count($researchAreas) > 0)
                 <div class="card-premium p-8 animate-fade-in-up animation-delay-100">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                         <span class="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center text-primary-700">🔬</span>
                         Research Areas
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @foreach ($researchCenter->research_areas as $area)
+                        @foreach ($researchAreas as $area)
                         <div class="flex items-center gap-3 p-4 bg-gradient-to-r from-maroon-50 to-maroon-50/50 rounded-xl border-l-4 border-maroon-500">
                             <span class="w-2 h-2 rounded-full bg-maroon-500 shrink-0"></span>
                             <p class="text-gray-800 font-medium text-sm">{{ is_array($area) ? implode(', ', $area) : $area }}</p>

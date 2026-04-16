@@ -44,7 +44,7 @@ class PublicResearchController extends Controller
     public function show(ResearchCenter $researchCenter): View
     {
         return view('public.research.show', [
-            'research' => $researchCenter,
+            'researchCenter' => $researchCenter,
         ]);
     }
 }

@@ -65,7 +65,7 @@
     </div>
 </div>
 
-<div class="pb-16 px-4 sm:px-6 lg:px-8" style="padding-top: 80px;">
+<div class="pt-16 pb-16 px-4 sm:px-6 lg:px-8">
     <div class="max-w-6xl mx-auto">
         <!-- Header -->
         <div class="mb-16">

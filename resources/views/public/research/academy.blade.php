@@ -38,60 +38,67 @@
                     <div class="h-1 w-16 bg-gradient-to-r from-primary-500 to-transparent rounded-full mx-auto mt-6"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @foreach($featuredResearch as $research)
-                        <div class="group bg-gradient-to-br from-gray-50 to-white rounded-3xl overflow-hidden border border-gray-200 hover:border-primary-300 shadow-lg hover:shadow-2xl transition-all duration-300">
-                            <!-- Featured Image -->
-                            @if($research->featured_image)
-                                <div class="relative h-56 overflow-hidden bg-gradient-to-br from-primary-500 to-maroon-600">
+                        <div class="group relative bg-white rounded-2xl overflow-visible border border-gray-200 hover:border-primary-400 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+                            
+                            <!-- Fixed Image Container -->
+                            <a href="{{ route('view.research.show', $research->slug) }}" class="relative h-64 bg-gradient-to-br from-primary-500 to-maroon-600 overflow-hidden block">
+                                @if($research->featured_image)
                                     <img src="/storage/{{ $research->featured_image }}" 
                                          alt="{{ $research->name }}"
                                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <div class="text-5xl">🔬</div>
+                                    </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                
+                                <!-- Date Badge Overlapping Bottom of Image -->
+                                <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white border-4 border-maroon-600 rounded-xl px-4 py-2 text-sm font-bold text-maroon-600 uppercase tracking-widest whitespace-nowrap shadow-lg">
+                                    {{ $research->created_at->format('M d, Y') }}
                                 </div>
-                            @else
-                                <div class="relative h-56 bg-gradient-to-br from-primary-500 to-maroon-600 flex items-center justify-center">
-                                    <div class="text-5xl">🔬</div>
-                                </div>
-                            @endif
+                            </a>
 
                             <!-- Content -->
-                            <div class="p-6">
-                                @if($research->department)
-                                    <p class="text-xs font-bold text-primary-600 uppercase tracking-widest mb-2">
-                                        {{ $research->department->name }}
-                                    </p>
-                                @endif
-                                
-                                <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors">
-                                    {{ $research->name }}
-                                </h3>
-                                
-                                <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                            <div class="p-6 flex-1 flex flex-col pt-6">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        @if($research->department)
+                                            <p class="text-xs font-bold text-maroon-600 uppercase tracking-widest mb-1">
+                                                {{ $research->department->name }}
+                                            </p>
+                                        @endif
+                                        <a href="{{ route('view.research.show', $research->slug) }}" class="text-xl font-bold text-gray-900 hover:text-maroon-600 transition-colors cursor-pointer block">
+                                            {{ $research->name }}
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
                                     @if($research->featured_description)
-                                        {{ Str::limit(html_entity_decode(strip_tags($research->featured_description)), 150) }}
+                                        {{ Str::limit(html_entity_decode(strip_tags($research->featured_description)), 120) }}
                                     @else
-                                        {{ Str::limit(html_entity_decode(strip_tags($research->description)), 150) }}
+                                        {{ Str::limit(html_entity_decode(strip_tags($research->description)), 120) }}
                                     @endif
                                 </p>
 
-                                <!-- Director Info -->
                                 @if($research->director)
-                                    <div class="flex items-center gap-2 text-xs text-gray-500 mb-4 pb-4 border-b border-gray-200">
-                                        <span class="w-2 h-2 bg-primary-500 rounded-full"></span>
-                                        <span>Director: <strong>{{ $research->director }}</strong></span>
-                                    </div>
+                                    <p class="text-xs text-gray-500 mb-4">
+                                        <span class="font-semibold text-gray-700">Director:</span> {{ $research->director }}
+                                    </p>
                                 @endif
 
-                                <!-- CTA Button -->
-                                <a href="{{ route('view.research.show', $research->slug) }}" 
-                                   class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-sm font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
-                                    Learn More
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                    </svg>
-                                </a>
+                                <!-- Read More Link - Pushed to Bottom -->
+                                <div class="mt-auto pt-4 border-t border-gray-100 text-center">
+                                    <a href="{{ route('view.research.show', $research->slug) }}" class="text-xs font-bold text-gray-500 hover:text-maroon-600 transition-colors uppercase tracking-widest cursor-pointer inline-block">
+                                        Read More →
+                                    </a>
+                                </div>
                             </div>
+
+                            <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl group-hover:from-primary-500/20 transition-all"></div>
                         </div>
                     @endforeach
                 </div>
@@ -113,43 +120,68 @@
             </div>
 
             @if($allResearch->isNotEmpty())
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @foreach($allResearch as $research)
-                        <a href="{{ route('view.research.show', $research->slug) }}" 
-                           class="group relative bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-primary-400 shadow-md hover:shadow-xl transition-all duration-300 p-6">
+                        <div class="group relative bg-white rounded-2xl overflow-visible border border-gray-200 hover:border-primary-400 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full">
                             
-                            <div class="flex items-start justify-between mb-4">
-                                <div>
-                                    @if($research->department)
-                                        <p class="text-xs font-bold text-primary-600 uppercase tracking-widest mb-1">
-                                            {{ $research->department->name }}
-                                        </p>
-                                    @endif
-                                    <h3 class="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                                        {{ $research->name }}
-                                    </h3>
+                            <!-- Fixed Image Container -->
+                            <a href="{{ route('view.research.show', $research->slug) }}" class="relative h-64 bg-gradient-to-br from-primary-500 to-maroon-600 overflow-hidden block">
+                                @if($research->featured_image)
+                                    <img src="/storage/{{ $research->featured_image }}" 
+                                         alt="{{ $research->name }}"
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <div class="text-5xl">🔬</div>
+                                    </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                
+                                <!-- Date Badge Overlapping Bottom of Image -->
+                                <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white border-4 border-maroon-600 rounded-xl px-4 py-2 text-sm font-bold text-maroon-600 uppercase tracking-widest whitespace-nowrap shadow-lg">
+                                    {{ $research->created_at->format('M d, Y') }}
                                 </div>
-                                <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                    🔬
+                            </a>
+
+                            <!-- Content -->
+                            <div class="p-6 flex-1 flex flex-col pt-6">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        @if($research->department)
+                                            <p class="text-xs font-bold text-maroon-600 uppercase tracking-widest mb-1">
+                                                {{ $research->department->name }}
+                                            </p>
+                                        @endif
+                                        <a href="{{ route('view.research.show', $research->slug) }}" class="text-xl font-bold text-gray-900 hover:text-maroon-600 transition-colors cursor-pointer block">
+                                            {{ $research->name }}
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                                    @if($research->description)
+                                        {{ Str::limit(html_entity_decode(strip_tags($research->description)), 120) }}
+                                    @else
+                                        Research and innovation center dedicated to advancing technology
+                                    @endif
+                                </p>
+
+                                @if($research->director)
+                                    <p class="text-xs text-gray-500 mb-4">
+                                        <span class="font-semibold text-gray-700">Director:</span> {{ $research->director }}
+                                    </p>
+                                @endif
+
+                                <!-- Read More Link - Pushed to Bottom -->
+                                <div class="mt-auto pt-4 border-t border-gray-100 text-center">
+                                    <a href="{{ route('view.research.show', $research->slug) }}" class="text-xs font-bold text-gray-500 hover:text-maroon-600 transition-colors uppercase tracking-widest cursor-pointer inline-block">
+                                        Read More →
+                                    </a>
                                 </div>
                             </div>
 
-                            <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
-                                @if($research->description)
-                                    {{ Str::limit(html_entity_decode(strip_tags($research->description)), 120) }}
-                                @else
-                                    Research and innovation center dedicated to advancing technology
-                                @endif
-                            </p>
-
-                            @if($research->director)
-                                <p class="text-xs text-gray-500">
-                                    <span class="font-semibold text-gray-700">Director:</span> {{ $research->director }}
-                                </p>
-                            @endif
-
                             <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl group-hover:from-primary-500/20 transition-all"></div>
-                        </a>
+                        </div>
                     @endforeach
                 </div>
             @else
