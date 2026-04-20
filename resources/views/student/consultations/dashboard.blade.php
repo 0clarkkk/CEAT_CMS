@@ -75,13 +75,32 @@
             </div>
         </div>
 
-        <!-- New Request Button -->
-        <div class="mb-8">
-            <a href="{{ route('student.consultations.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
-                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                Request New Consultation
+        <!-- Quick Action Cards -->
+        <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Request Consultation Card -->
+            <a href="{{ route('student.consultations.create') }}" class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg shadow-lg p-6 text-white hover:shadow-xl transition-all transform hover:scale-105">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold mb-2">Request Consultation</h3>
+                        <p class="text-indigo-100 text-sm">Submit a new consultation request to an advisor</p>
+                    </div>
+                    <svg class="h-12 w-12 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Browse Advisors Card -->
+            <a href="{{ route('student.consultations.browse-advisors') }}" class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white hover:shadow-xl transition-all transform hover:scale-105">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold mb-2">Browse Advisors</h3>
+                        <p class="text-purple-100 text-sm">View available advisors and their schedules</p>
+                    </div>
+                    <svg class="h-12 w-12 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 7a4 4 0 11-8 0 4 4 0 018 0zM6 20h12a6 6 0 00-6-6 6 6 0 00-6 6z"></path>
+                    </svg>
+                </div>
             </a>
         </div>
 

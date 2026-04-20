@@ -64,6 +64,30 @@
                         </div>
                     </div>
                 </a>
+
+                <a href="{{ route('student.consultations.index') }}" class="group">
+                    <div class="bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-500 p-6 h-full border border-transparent hover:border-indigo-100">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform duration-300">📋</div>
+                        <h4 class="font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">My Consultations</h4>
+                        <p class="text-sm text-gray-500">Manage your consultation requests with advisors.</p>
+                        <div class="mt-4 flex items-center text-indigo-600 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            View
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{{ route('student.consultations.create') }}" class="group">
+                    <div class="bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-500 p-6 h-full border border-transparent hover:border-purple-100">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform duration-300">✏️</div>
+                        <h4 class="font-bold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">Request Consultation</h4>
+                        <p class="text-sm text-gray-500">Submit a new consultation request to an advisor.</p>
+                        <div class="mt-4 flex items-center text-purple-600 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Request
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

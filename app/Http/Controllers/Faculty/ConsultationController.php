@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Carbon\Carbon;
+use Illuminate\Pagination\Paginator;
 
 class ConsultationController extends Controller
 {
@@ -24,7 +25,7 @@ class ConsultationController extends Controller
 
         if (!$faculty) {
             return view('faculty.consultations.index', [
-                'consultations' => collect(),
+                'consultations' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15, 1),
                 'stats' => [
                     'total' => 0,
                     'pending' => 0,

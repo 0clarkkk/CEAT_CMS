@@ -84,17 +84,7 @@
                         }
                     @endphp
                     <a href="{{ $dashboardUrl }}" class="btn-primary px-5 py-2 font-bold text-sm rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105" style="background-color: #ffc700; color: #7f1416;">Dashboard</a>
-                    <!-- Logout Button -->
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-md inline-flex items-center gap-2" title="Log Out">
-                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h6a1 1 0 110 2H5v10h5a1 1 0 110 2H4a1 1 0 01-1-1V4z" clip-rule="evenodd"/>
-                                <path d="M12.293 7.293a1 1 0 011.414 0L17 10.586a1 1 0 010 1.414l-3.293 3.293a1 1 0 01-1.414-1.414L14.586 12H9a1 1 0 110-2h5.586l-2.293-2.293a1 1 0 010-1.414z" />
-                            </svg>
-                            <span>Logout</span>
-                        </button>
-                    </form>
+                    <!-- Logout Button - Removed, use dashboard header logout instead -->
                 @else
                     <a href="{{ route('login') }}" class="btn-secondary px-4 py-2 font-semibold text-sm rounded-lg transition-all duration-300"
                        :style="`color: ${isScrolled ? 'white' : '#7f1416'};`">Sign In</a>
@@ -176,16 +166,7 @@
                         }
                     @endphp
                     <a href="{{ $dashboardUrl }}" class="btn-primary px-4 py-2 font-bold text-sm text-center rounded-lg transition-all duration-300" style="background-color: #ffc700; color: #7f1416;">Dashboard</a>
-                    <form method="POST" action="{{ route('logout') }}" class="w-full">
-                        @csrf
-                        <button type="submit" class="w-full px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-md inline-flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h6a1 1 0 110 2H5v10h5a1 1 0 110 2H4a1 1 0 01-1-1V4z" clip-rule="evenodd"/>
-                                <path d="M12.293 7.293a1 1 0 011.414 0L17 10.586a1 1 0 010 1.414l-3.293 3.293a1 1 0 01-1.414-1.414L14.586 12H9a1 1 0 110-2h5.586l-2.293-2.293a1 1 0 010-1.414z" />
-                            </svg>
-                            <span>Logout</span>
-                        </button>
-                    </form>
+                    <!-- Mobile Logout Button - Removed, use dashboard header logout instead -->
                 @else
                     <a href="{{ route('login') }}" class="btn-secondary px-4 py-2 font-semibold text-sm text-center rounded-lg transition-all duration-300"
                        :style="`color: ${isScrolled ? 'white' : '#7f1416'}; border: 1px solid currentColor;`">Sign In</a>

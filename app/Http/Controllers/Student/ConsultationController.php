@@ -60,12 +60,50 @@ class ConsultationController extends Controller
     /**
      * Show form to create a new consultation request.
      */
+    public function browseAdvisors(Request $request): View
+    {
+        $search = $request->query('search');
+        
+        $query = User::where('role', 'faculty')
+            ->where('is_active', true)
+            ->whereHas('availabilitySlots', fn($q) => 
+                $q->where('status', 'available')
+                  ->where('start_time', '>=', now())
+            );
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhereHas('facultyMember.department', fn($dq) => 
+                    $dq->where('name', 'like', "%{$search}%")
+                  );
+            });
+        }
+
+        $advisors = $query->paginate(9);
+
+        return view('student.consultations.browse-advisors', [
+            'advisors' => $advisors,
+        ]);
+    }
+
+    /**
+     * Show form to create a new consultation request.
+     */
     public function create(): View
     {
-        // Get all advisors
-        $advisors = User::where('role', 'advisor')
-            ->orWhereHas('roles', fn($q) => $q->where('name', 'advisor'))
+        // Get faculty members with active consultation schedules
+        // Faculty become advisors when they have available consultation slots
+        $advisors = User::where('role', 'faculty')
             ->where('is_active', true)
+            ->with(['facultyMember.department'])
+            ->whereHas('availabilitySlots', fn($q) => 
+                $q->where('status', 'available')
+                  ->where('start_time', '>=', now())
+            )
+            ->orderBy('name')
+            ->distinct()
             ->get();
 
         $categories = [
@@ -98,8 +136,8 @@ class ConsultationController extends Controller
 
         try {
             $consultation = $this->consultationService->createConsultationRequest(
-                student_id: auth()->id(),
-                advisor_id: $validated['advisor_id'],
+                studentId: auth()->id(),
+                advisorId: (int) $validated['advisor_id'],
                 title: $validated['title'],
                 description: $validated['description'],
                 category: $validated['category'],

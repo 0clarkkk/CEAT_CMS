@@ -1,13 +1,13 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 shadow-sm">
+<nav x-data="{ open: false }" class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-sm">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between items-center h-16">
             <div class="flex items-center">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+                    <a href="" class="flex items-center gap-3 group">
                         <div class="w-9 h-9 bg-gradient-to-br from-maroon-500 to-maroon-700 rounded-xl flex items-center justify-center text-white font-bold text-[10px] shadow-md group-hover:shadow-lg transition-all duration-300">
-                            UPH
+                            CEAT
                         </div>
                         <span class="font-bold text-maroon-700 text-sm hidden sm:inline">Dashboard</span>
                     </a>
@@ -15,81 +15,31 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-1 sm:-my-px sm:ms-8 sm:flex">
-                    @php
-                    $dashboardActive = request()->routeIs('dashboard') || 
-                                      request()->routeIs('student.dashboard') || 
-                                      request()->routeIs('faculty.dashboard') || 
-                                      request()->routeIs('superadmin.dashboard') ||
-                                      request()->routeIs('*.dashboard');
-                    $dashboardUrl = route('dashboard');
-                    if (auth()->check()) {
-                        if (auth()->user()->role === 'faculty') {
-                            $dashboardUrl = route('faculty.dashboard');
-                        } elseif (auth()->user()->role === 'student') {
-                            $dashboardUrl = route('student.dashboard');
-                        } elseif (auth()->user()->role === 'superadmin') {
-                            $dashboardUrl = route('superadmin.dashboard');
-                        }
-                    }
-                    @endphp
-                    <x-nav-link :href="$dashboardUrl" :active="$dashboardActive"
-                        class="!px-4 !py-2 !rounded-lg !text-sm !font-medium">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
                     <a href="{{ route('home') }}" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-maroon-600 hover:bg-maroon-50 transition-all duration-200">
                         {{ __('Home') }}
                     </a>
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
-                <!-- LOGOUT BUTTON - BRIGHT RED FOR VISIBILITY -->
-                <form method="POST" action="{{ route('logout') }}" class="inline">
+            <!-- Settings Icons & Hamburger Menu -->
+            <div class="flex items-center gap-4 sm:gap-6">
+                <!-- Profile Icon (Desktop) -->
+                <a href="{{ route('profile.edit') }}" class="hidden sm:flex items-center justify-center w-10 h-10 bg-gradient-to-br from-maroon-500 to-maroon-700 rounded-lg text-white text-xs font-bold shadow-sm hover:shadow-md transition-all hover:from-maroon-600 hover:to-maroon-800" title="Edit Profile">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                </a>
+
+                <!-- Logout Icon (Desktop) -->
+                <form method="POST" action="{{ route('logout') }}" class="hidden sm:block">
                     @csrf
-                    <button type="submit" class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-md" title="Click to Logout">
-                        <!-- Logout Icon SVG -->
-                        <svg class="w-5 h-5 inline mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h6a1 1 0 110 2H5v10h5a1 1 0 110 2H4a1 1 0 01-1-1V4z" clip-rule="evenodd"/>
-                            <path d="M12.293 7.293a1 1 0 011.414 0L17 10.586a1 1 0 010 1.414l-3.293 3.293a1 1 0 01-1.414-1.414L14.586 12H9a1 1 0 110-2h5.586l-2.293-2.293a1 1 0 010-1.414z" />
+                    <button type="submit" class="flex items-center justify-center p-2 text-gray-600 hover:text-maroon-600 hover:bg-gray-100 rounded-lg transition-all" title="Log Out">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                         </svg>
-                        <span class="font-bold">LOGOUT</span>
                     </button>
                 </form>
-
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-sm leading-4 font-medium rounded-xl text-gray-600 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition-all duration-200">
-                            <div class="w-7 h-7 bg-gradient-to-br from-maroon-400 to-maroon-600 rounded-lg flex items-center justify-center text-white text-[10px] font-bold">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                            </div>
-                            <span>{{ auth()->user()->name }}</span>
-                            <svg class="fill-current h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}" class="block">
-                            @csrf
-                            <button type="submit" class="block w-full text-start px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                                {{ __('Log Out') }}
-                            </button>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                
+                <!-- Hamburger Menu Button (Mobile) -->
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out sm:hidden">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

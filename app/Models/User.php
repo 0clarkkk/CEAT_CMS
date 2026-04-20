@@ -107,4 +107,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(\App\Models\FacultyMember::class);
     }
+
+    /**
+     * Get the advisor availability slots
+     */
+    public function availabilitySlots()
+    {
+        return $this->hasMany(\App\Models\AdvisorAvailabilitySlot::class, 'advisor_id');
+    }
 }

@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function () {
     // Student Consultation Routes
     Route::middleware('role:student')->prefix('student')->name('student.')->group(function () {
         Route::get('consultations/dashboard', [StudentConsultationController::class, 'dashboard'])->name('consultations.dashboard');
+        Route::get('consultations/browse', [StudentConsultationController::class, 'browseAdvisors'])->name('consultations.browse-advisors');
         Route::get('consultations', [StudentConsultationController::class, 'index'])->name('consultations.index');
         Route::get('consultations/create', [StudentConsultationController::class, 'create'])->name('consultations.create');
         Route::post('consultations', [StudentConsultationController::class, 'store'])->name('consultations.store');

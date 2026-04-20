@@ -308,27 +308,65 @@ class ConsultationManagementController extends Controller
      */
     public function storeSlots(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'slots' => 'required|array|min:1',
-            'slots.*.start_time' => 'required|date_format:Y-m-d H:i',
-            'slots.*.end_time' => 'required|date_format:Y-m-d H:i|after:slots.*.start_time',
-            'slots.*.location' => 'nullable|string|max:255',
-            'slots.*.notes' => 'nullable|string|max:500',
-        ]);
+        // Check if recurring slots are being created
+        $isRecurring = $request->has('use_recurring') && $request->boolean('use_recurring');
 
-        try {
-            $this->consultationService->createAvailabilitySlots(
-                auth()->id(),
-                $validated['slots']
-            );
+        if ($isRecurring) {
+            $validated = $request->validate([
+                'recurring_start_date' => 'required|date_format:Y-m-d',
+                'recurring_start_time' => 'required|date_format:H:i',
+                'recurring_end_time' => 'required|date_format:H:i',
+                'recurring_weeks' => 'required|integer|min:1|max:52',
+                'recurring_days' => 'required|array|min:1',
+                'recurring_days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+                'recurring_location' => 'nullable|string|max:255',
+                'recurring_notes' => 'nullable|string|max:500',
+            ]);
 
-            return redirect()
-                ->route('advisor.consultations.availability.index')
-                ->with('success', 'Availability slots created successfully!');
-        } catch (\Exception $e) {
-            return back()
-                ->withInput()
-                ->with('error', $e->getMessage());
+            try {
+                $this->consultationService->createRecurringSlots(
+                    auth()->id(),
+                    $validated['recurring_start_date'],
+                    $validated['recurring_days'],
+                    $validated['recurring_start_time'],
+                    $validated['recurring_end_time'],
+                    (int) $validated['recurring_weeks'],
+                    $validated['recurring_location'],
+                    $validated['recurring_notes']
+                );
+
+                return redirect()
+                    ->route('advisor.consultations.availability.index')
+                    ->with('success', 'Recurring availability slots created successfully!');
+            } catch (\Exception $e) {
+                return back()
+                    ->withInput()
+                    ->with('error', $e->getMessage());
+            }
+        } else {
+            // Individual slots
+            $validated = $request->validate([
+                'slots' => 'required|array|min:1',
+                'slots.*.start_time' => 'required|date_format:Y-m-d\TH:i',
+                'slots.*.end_time' => 'required|date_format:Y-m-d\TH:i|after:slots.*.start_time',
+                'slots.*.location' => 'nullable|string|max:255',
+                'slots.*.notes' => 'nullable|string|max:500',
+            ]);
+
+            try {
+                $this->consultationService->createAvailabilitySlots(
+                    auth()->id(),
+                    $validated['slots']
+                );
+
+                return redirect()
+                    ->route('advisor.consultations.availability.index')
+                    ->with('success', 'Availability slots created successfully!');
+            } catch (\Exception $e) {
+                return back()
+                    ->withInput()
+                    ->with('error', $e->getMessage());
+            }
         }
     }
 

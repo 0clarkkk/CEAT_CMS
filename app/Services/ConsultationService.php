@@ -24,10 +24,15 @@ class ConsultationService
         string $category,
         ?string $notes = null
     ): Consultation {
-        // Validate advisor exists and has advisor role
+        // Validate advisor exists and is faculty with active consultation schedules
         $advisor = User::findOrFail($advisorId);
-        if (!$advisor->hasRole('advisor')) {
-            throw new Exception("User {$advisorId} is not an advisor.");
+        if ($advisor->role !== 'faculty') {
+            throw new Exception("User {$advisorId} is not a faculty member.");
+        }
+        
+        // Verify advisor has active consultation slots
+        if (!$advisor->availabilitySlots()->where('status', 'available')->exists()) {
+            throw new Exception("Advisor {$advisorId} has no available consultation slots.");
         }
 
         // Create consultation in pending status
@@ -469,5 +474,71 @@ class ConsultationService
             'cancelled' => Consultation::forStudent($studentId)->cancelled()->count(),
             'upcoming' => Consultation::forStudent($studentId)->upcoming()->count(),
         ];
+    }
+
+    /**
+     * Create recurring availability slots.
+     * Example: Every Monday and Wednesday from 12:00 PM to 2:00 PM for 12 weeks
+     */
+    public function createRecurringSlots(
+        int $advisorId,
+        string $startDate,
+        array $daysOfWeek,
+        string $startTime,
+        string $endTime,
+        int $numberOfWeeks = 12,
+        ?string $location = null,
+        ?string $notes = null
+    ): array {
+        $createdSlots = [];
+        $currentDate = Carbon::parse($startDate);
+        $endDate = $currentDate->copy()->addWeeks($numberOfWeeks);
+
+        // Map day names to Carbon constants
+        $dayMap = [
+            'Monday' => 1,
+            'Tuesday' => 2,
+            'Wednesday' => 3,
+            'Thursday' => 4,
+            'Friday' => 5,
+            'Saturday' => 6,
+            'Sunday' => 0,
+        ];
+
+        // Convert day names to numbers
+        $dayNumbers = array_map(fn($day) => $dayMap[$day] ?? null, $daysOfWeek);
+        $dayNumbers = array_filter($dayNumbers, fn($d) => $d !== null);
+
+        // Generate slots for each week
+        while ($currentDate <= $endDate) {
+            $dayOfWeek = $currentDate->dayOfWeek;
+
+            if (in_array($dayOfWeek, $dayNumbers)) {
+                $slotStartTime = $currentDate->copy()->setTimeFromTimeString($startTime);
+                $slotEndTime = $currentDate->copy()->setTimeFromTimeString($endTime);
+
+                // Check for conflicts
+                if (!AdvisorAvailabilitySlot::hasConflict($advisorId, $slotStartTime, $slotEndTime)) {
+                    $slot = AdvisorAvailabilitySlot::create([
+                        'advisor_id' => $advisorId,
+                        'start_time' => $slotStartTime,
+                        'end_time' => $slotEndTime,
+                        'status' => 'available',
+                        'location' => $location,
+                        'notes' => $notes,
+                        'is_recurring' => true,
+                        'recurrence_pattern' => 'weekly',
+                        'recurrence_days' => $daysOfWeek,
+                        'recurrence_end_weeks' => $numberOfWeeks,
+                    ]);
+
+                    $createdSlots[] = $slot;
+                }
+            }
+
+            $currentDate->addDay();
+        }
+
+        return $createdSlots;
     }
 }

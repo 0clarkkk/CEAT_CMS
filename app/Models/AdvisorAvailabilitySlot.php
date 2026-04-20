@@ -18,6 +18,10 @@ use Spatie\Activitylog\LogOptions;
  * @property string $status
  * @property string|null $location
  * @property string|null $notes
+ * @property bool $is_recurring
+ * @property string|null $recurrence_pattern
+ * @property array|null $recurrence_days
+ * @property int|null $recurrence_end_weeks
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read User $advisor
@@ -35,6 +39,10 @@ class AdvisorAvailabilitySlot extends Model
         'status',
         'location',
         'notes',
+        'is_recurring',
+        'recurrence_pattern',
+        'recurrence_days',
+        'recurrence_end_weeks',
     ];
 
     protected $casts = [
@@ -42,6 +50,8 @@ class AdvisorAvailabilitySlot extends Model
         'end_time' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'is_recurring' => 'boolean',
+        'recurrence_days' => 'array',
     ];
 
     /**
@@ -172,7 +182,7 @@ class AdvisorAvailabilitySlot extends Model
      */
     public function getDurationInMinutes(): int
     {
-        return $this->end_time->diffInMinutes($this->start_time);
+        return (int) $this->end_time->diffInMinutes($this->start_time);
     }
 
     /**
@@ -180,9 +190,9 @@ class AdvisorAvailabilitySlot extends Model
      */
     public function getFormattedDuration(): string
     {
-        $minutes = $this->getDurationInMinutes();
-        $hours = floor($minutes / 60);
-        $mins = $minutes % 60;
+        $minutes = (int) $this->getDurationInMinutes();
+        $hours = (int) floor($minutes / 60);
+        $mins = (int) ($minutes % 60);
 
         if ($hours > 0) {
             return "{$hours}h " . ($mins > 0 ? "{$mins}m" : '');
