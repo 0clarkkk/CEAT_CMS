@@ -72,7 +72,6 @@ Route::get('/programs', [PublicProgramController::class, 'index'])->name('view.p
 Route::get('/programs/{program:slug}', [PublicProgramController::class, 'show'])->name('view.programs.show');
 
 Route::get('/faculty', [PublicFacultyController::class, 'index'])->name('view.faculty');
-Route::get('/faculty/{faculty}', [PublicFacultyController::class, 'show'])->name('view.faculty.show');
 
 
 
@@ -95,6 +94,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/superadmin/dashboard', SuperadminDashboardController::class)
         ->middleware('role:superadmin')
         ->name('superadmin.dashboard');
+
+    Route::get('/faculty/dashboard', [FacultyDashboardController::class, 'index'])
+        ->middleware('role:faculty')
+        ->name('faculty.dashboard');
 
     // Redirect /dashboard to appropriate role dashboard
     Route::get('/dashboard', function () {
@@ -154,9 +157,6 @@ Route::middleware('auth')->group(function () {
 
     // Faculty Advisor Profile Routes
     Route::middleware('role:faculty')->prefix('faculty')->name('faculty.')->group(function () {
-        // Dashboard
-        Route::get('dashboard', [FacultyDashboardController::class, 'index'])->name('dashboard');
-
         // Profile Management
         Route::get('profile/edit', [FacultyProfileController::class, 'edit'])->name('profile.edit');
         Route::put('profile', [FacultyProfileController::class, 'update'])->name('profile.update');
@@ -189,5 +189,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/api/page-content/update', [PageContentController::class, 'update'])->name('page-content.update');
     Route::get('/api/page-content/{pageSlug}/{sectionKey}', [PageContentController::class, 'show'])->name('page-content.show');
 });
+
+// Public faculty profile route (catch-all must come after authenticated routes)
+Route::get('/faculty/{faculty}', [PublicFacultyController::class, 'show'])->name('view.faculty.show');
 
 require __DIR__ . '/auth.php';

@@ -1,8 +1,4 @@
-@extends('layouts.app')
-
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
     <!-- Header Section -->
     <div class="bg-white shadow-sm border-b border-gray-200">
@@ -332,4 +328,4 @@
         @endif
     </div>
 </div>
-@endsection
+</x-app-layout>
