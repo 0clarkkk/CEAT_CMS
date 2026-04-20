@@ -19,6 +19,7 @@ use App\Http\Controllers\Advisor\ConsultationManagementController;
 use App\Http\Controllers\Faculty\AdvisorProfileController;
 use App\Http\Controllers\Faculty\DashboardController as FacultyDashboardController;
 use App\Http\Controllers\Faculty\ProfileController as FacultyProfileController;
+use App\Http\Controllers\Faculty\ConsultationController as FacultyConsultationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -167,6 +168,21 @@ Route::middleware('auth')->group(function () {
         Route::get('advisor-profile/edit', [AdvisorProfileController::class, 'edit'])->name('advisor-profile.edit');
         Route::patch('advisor-profile', [AdvisorProfileController::class, 'update'])->name('advisor-profile.update');
         Route::post('advisor-profile/toggle', [AdvisorProfileController::class, 'toggleStatus'])->name('advisor-profile.toggle');
+
+        // Consultation Management Routes
+        Route::prefix('consultations')->name('consultations.')->group(function () {
+            Route::get('/', [FacultyConsultationController::class, 'index'])->name('index');
+            Route::get('{consultation}', [FacultyConsultationController::class, 'show'])->name('show');
+            Route::post('{consultation}/approve', [FacultyConsultationController::class, 'approve'])->name('approve');
+            Route::get('{consultation}/reject', [FacultyConsultationController::class, 'rejectForm'])->name('reject-form');
+            Route::post('{consultation}/reject', [FacultyConsultationController::class, 'reject'])->name('reject');
+            Route::get('{consultation}/schedule', [FacultyConsultationController::class, 'scheduleForm'])->name('schedule-form');
+            Route::post('{consultation}/schedule', [FacultyConsultationController::class, 'schedule'])->name('schedule');
+            Route::get('{consultation}/reschedule', [FacultyConsultationController::class, 'rescheduleForm'])->name('reschedule-form');
+            Route::patch('{consultation}/reschedule', [FacultyConsultationController::class, 'reschedule'])->name('reschedule');
+            Route::post('{consultation}/complete', [FacultyConsultationController::class, 'complete'])->name('complete');
+            Route::post('{consultation}/cancel', [FacultyConsultationController::class, 'cancel'])->name('cancel');
+        });
     });
 
     // Page Content API routes (admin only)

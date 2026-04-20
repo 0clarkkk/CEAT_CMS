@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Consultation;
 use App\Models\AdvisorAvailabilitySlot;
+use App\Models\FacultyMember;
+use App\Models\Department;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 
@@ -15,8 +17,15 @@ class ConsultationTestSeeder extends Seeder
      */
     public function run(): void
     {
+        // Get or create a department for faculty members
+        $department = Department::first() ?? Department::create([
+            'name' => 'Computer Science & Engineering',
+            'slug' => 'cse',
+            'description' => 'Department of Computer Science & Engineering',
+        ]);
+
         // Create test advisors as faculty with advisor capability
-        $advisor1 = User::firstOrCreate(
+        $advisor1User = User::firstOrCreate(
             ['email' => 'advisor1@ceat.edu'],
             [
                 'name' => 'Dr. Ahmed Hassan',
@@ -26,7 +35,29 @@ class ConsultationTestSeeder extends Seeder
             ]
         );
 
-        $advisor2 = User::firstOrCreate(
+        // Create FacultyMember record for advisor1
+        $advisor1 = FacultyMember::firstOrCreate(
+            ['user_id' => $advisor1User->id],
+            [
+                'email' => 'advisor1@ceat.edu',
+                'first_name' => 'Ahmed',
+                'last_name' => 'Hassan',
+                'position' => 'Associate Professor',
+                'specialization' => 'Database Systems',
+                'is_active' => true,
+                'is_advisor' => true,
+                'office_location' => 'Office 101',
+                'office_hours' => 'Monday to Friday: 9:00 AM - 5:00 PM',
+                'phone_number' => '+1-555-0101',
+                'department_id' => $department->id,
+            ]
+        );
+        // Update user's faculty_member_id if needed
+        if (!$advisor1User->faculty_member_id) {
+            $advisor1User->update(['faculty_member_id' => $advisor1->id]);
+        }
+
+        $advisor2User = User::firstOrCreate(
             ['email' => 'advisor2@ceat.edu'],
             [
                 'name' => 'Prof. Fatima Khan',
@@ -35,6 +66,28 @@ class ConsultationTestSeeder extends Seeder
                 'role' => 'faculty',
             ]
         );
+
+        // Create FacultyMember record for advisor2
+        $advisor2 = FacultyMember::firstOrCreate(
+            ['user_id' => $advisor2User->id],
+            [
+                'email' => 'advisor2@ceat.edu',
+                'first_name' => 'Fatima',
+                'last_name' => 'Khan',
+                'position' => 'Professor',
+                'specialization' => 'Software Engineering',
+                'is_active' => true,
+                'is_advisor' => true,
+                'office_location' => 'Office 202',
+                'office_hours' => 'Monday, Wednesday, Friday: 10:00 AM - 4:00 PM',
+                'phone_number' => '+1-555-0202',
+                'department_id' => $department->id,
+            ]
+        );
+        // Update user's faculty_member_id if needed
+        if (!$advisor2User->faculty_member_id) {
+            $advisor2User->update(['faculty_member_id' => $advisor2->id]);
+        }
 
         // Create test students
         $student1 = User::firstOrCreate(

@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('faculty_member_id')->nullable()->constrained('faculty_members')->onDelete('set null')->after('department_id');
+            // Check if column already exists
+            if (!Schema::hasColumn('users', 'faculty_member_id')) {
+                $table->unsignedBigInteger('faculty_member_id')->nullable()->after('id');
+            }
         });
     }
 
@@ -22,8 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeignKeyIfExists(['faculty_member_id']);
-            $table->dropColumn('faculty_member_id');
+            if (Schema::hasColumn('users', 'faculty_member_id')) {
+                $table->dropColumn('faculty_member_id');
+            }
         });
     }
 };
