@@ -15,7 +15,24 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-1 sm:-my-px sm:ms-8 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('*.dashboard')"
+                    @php
+                    $dashboardActive = request()->routeIs('dashboard') || 
+                                      request()->routeIs('student.dashboard') || 
+                                      request()->routeIs('faculty.dashboard') || 
+                                      request()->routeIs('superadmin.dashboard') ||
+                                      request()->routeIs('*.dashboard');
+                    $dashboardUrl = route('dashboard');
+                    if (auth()->check()) {
+                        if (auth()->user()->role === 'faculty') {
+                            $dashboardUrl = route('faculty.dashboard');
+                        } elseif (auth()->user()->role === 'student') {
+                            $dashboardUrl = route('student.dashboard');
+                        } elseif (auth()->user()->role === 'superadmin') {
+                            $dashboardUrl = route('superadmin.dashboard');
+                        }
+                    }
+                    @endphp
+                    <x-nav-link :href="$dashboardUrl" :active="$dashboardActive"
                         class="!px-4 !py-2 !rounded-lg !text-sm !font-medium">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -31,9 +48,9 @@
                     <x-slot name="trigger">
                         <button class="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-sm leading-4 font-medium rounded-xl text-gray-600 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition-all duration-200">
                             <div class="w-7 h-7 bg-gradient-to-br from-maroon-400 to-maroon-600 rounded-lg flex items-center justify-center text-white text-[10px] font-bold">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                             </div>
-                            <span>{{ Auth::user()->name }}</span>
+                            <span>{{ auth()->user()->name }}</span>
                             <svg class="fill-current h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
@@ -46,13 +63,11 @@
                         </x-dropdown-link>
 
                         <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" class="block">
                             @csrf
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                            <button type="submit" class="block w-full text-start px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 {{ __('Log Out') }}
-                            </x-dropdown-link>
+                            </button>
                         </form>
                     </x-slot>
                 </x-dropdown>
@@ -73,7 +88,23 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            @php
+            $responsiveDashboardActive = request()->routeIs('dashboard') || 
+                                        request()->routeIs('student.dashboard') || 
+                                        request()->routeIs('faculty.dashboard') || 
+                                        request()->routeIs('superadmin.dashboard');
+            $responsiveDashboardUrl = route('dashboard');
+            if (auth()->check()) {
+                if (auth()->user()->role === 'faculty') {
+                    $responsiveDashboardUrl = route('faculty.dashboard');
+                } elseif (auth()->user()->role === 'student') {
+                    $responsiveDashboardUrl = route('student.dashboard');
+                } elseif (auth()->user()->role === 'superadmin') {
+                    $responsiveDashboardUrl = route('superadmin.dashboard');
+                }
+            }
+            @endphp
+            <x-responsive-nav-link :href="$responsiveDashboardUrl" :active="$responsiveDashboardActive">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
@@ -83,11 +114,11 @@
             <div class="px-4">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 bg-gradient-to-br from-maroon-400 to-maroon-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                     </div>
                     <div>
-                        <div class="font-semibold text-sm text-gray-800">{{ Auth::user()->name }}</div>
-                        <div class="font-medium text-xs text-gray-500">{{ Auth::user()->email }}</div>
+                        <div class="font-semibold text-sm text-gray-800">{{ auth()->user()->name }}</div>
+                        <div class="font-medium text-xs text-gray-500">{{ auth()->user()->email }}</div>
                     </div>
                 </div>
             </div>
@@ -98,13 +129,11 @@
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" class="block">
                     @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                    <button type="submit" class="block w-full text-start px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                         {{ __('Log Out') }}
-                    </x-responsive-nav-link>
+                    </button>
                 </form>
             </div>
         </div>
