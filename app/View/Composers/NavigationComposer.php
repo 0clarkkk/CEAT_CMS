@@ -42,7 +42,7 @@ class NavigationComposer
                 ['label' => 'Student Portal', 'url' => '/student/portal'],
             ],
         ],
-        'News' => '/news', // Single link (no dropdown)
+        'News & Events' => '/news', // Single link (no dropdown)
     ];
 
     /**

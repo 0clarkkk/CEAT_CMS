@@ -27,6 +27,7 @@ use Illuminate\Support\Str;
  * @property string|null $featured_description
  * @property string|null $thumbnail_photo
  * @property array<array-key, string>|null $gallery
+ * @property \Illuminate\Support\Carbon|null $published_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -73,6 +74,7 @@ class ResearchCenter extends Model
         'featured_description',
         'thumbnail_photo',
         'gallery',
+        'published_at',
     ];
 
     protected $appends = [
@@ -85,6 +87,9 @@ class ResearchCenter extends Model
         return [
             'research_areas' => 'json',
             'gallery' => 'json',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'published_at' => 'datetime',
         ];
     }
 

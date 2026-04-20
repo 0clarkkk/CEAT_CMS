@@ -1,8 +1,9 @@
 <x-public-layout>
     <!-- Back Button -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-b border-gray-100">
-        <a href="{{ route('view.news') }}" class="inline-flex items-center px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition-all duration-300">
-            ← Back to News & Events
+        <a href="{{ route('view.news') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm transition-all duration-300 border border-gray-200 hover:border-gray-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            <span>Back to News & Events</span>
         </a>
     </section>
 
@@ -97,9 +98,9 @@
 
     <!-- Back to News Button -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-gray-100">
-        <a href="{{ route('view.news') }}" class="inline-flex items-center px-6 py-3 text-gray-700 font-semibold hover:text-maroon-600 transition-colors">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-            Back to News & Events
+        <a href="{{ route('view.news') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm transition-all duration-300 border border-gray-200 hover:border-gray-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            <span>Back to News & Events</span>
         </a>
     </section>
 </x-public-layout>

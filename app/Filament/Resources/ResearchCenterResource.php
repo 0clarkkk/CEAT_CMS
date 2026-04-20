@@ -149,6 +149,14 @@ class ResearchCenterResource extends Resource
                             ->columnSpanFull(),
                     ]),
 
+                Forms\Components\Section::make('Publishing')
+                    ->description('Control when this research center appears publicly.')
+                    ->schema([
+                        Forms\Components\DateTimePicker::make('published_at')
+                            ->label('Published Date')
+                            ->helperText('Leave blank to keep as draft. Set a date to schedule publication.'),
+                    ])->columns(1),
+
                 Forms\Components\Section::make('Featured On Homepage')
                     ->description('Configure this research center to appear on the homepage featured section.')
                     ->schema([
@@ -198,6 +206,11 @@ class ResearchCenterResource extends Resource
                 Tables\Columns\TextColumn::make('contact_email')
                     ->label('Email')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('published_at')
+                    ->label('Published')
+                    ->dateTime('M d, Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime('M d, Y')

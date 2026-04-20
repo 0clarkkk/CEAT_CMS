@@ -5,9 +5,9 @@
         <div class="absolute inset-0 bg-mesh-pattern opacity-20"></div>
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('view.news') }}" class="inline-flex items-center gap-2 text-primary-300 hover:text-primary-200 mb-6 transition-colors text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Back to News & Events
+            <a href="{{ route('view.news') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40 mb-6">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                <span>Back to News & Events</span>
             </a>
 
             <div class="flex flex-wrap items-center gap-3 mb-4 animate-fade-in">

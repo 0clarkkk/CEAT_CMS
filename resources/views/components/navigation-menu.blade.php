@@ -29,11 +29,6 @@
                                     :style="`color: ${isScrolled ? 'white' : '#7f1416'}; background-color: ${activeDropdown === '{{ $itemKey }}' ? (isScrolled ? 'rgba(255, 255, 255, 0.15)' : 'rgba(127, 20, 22, 0.05)') : 'transparent'};`"
                                     @click.prevent>
                                 <span>{{ $item['label'] }}</span>
-                                <svg class="w-4 h-4 transition-transform duration-300" 
-                                     :class="activeDropdown === '{{ $itemKey }}' ? 'rotate-180' : ''" 
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                </svg>
                             </button>
                             
                             <!-- Dropdown Content -->
@@ -109,11 +104,6 @@
                                 class="w-full text-left flex items-center justify-between py-3 px-4 border-b font-medium text-sm transition-colors duration-200"
                                 :style="`border-color: ${isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(127, 20, 22, 0.1)'}; background-color: ${openMobileDropdowns['{{ $itemKey }}'] ? (isScrolled ? 'rgba(255, 255, 255, 0.05)' : 'rgba(127, 20, 22, 0.05)') : 'transparent'};`">
                             <span>{{ $item['label'] }}</span>
-                            <svg class="w-4 h-4 transition-transform duration-300" 
-                                 :class="openMobileDropdowns['{{ $itemKey }}'] ? 'rotate-180' : ''"
-                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                            </svg>
                         </button>
                         
                         <!-- Mobile Dropdown Items -->

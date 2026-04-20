@@ -22,21 +22,20 @@
 
     <!-- Research Centers Grid -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        @if ($researchCenters->isEmpty())
+        @if ($research->isEmpty())
             <div class="text-center py-20">
-                <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">🔬</div>
                 <p class="text-gray-500 text-lg font-medium">No research centers available at this time.</p>
                 <p class="text-gray-400 text-sm mt-1">Check back later for updates.</p>
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach ($researchCenters as $index => $center)
+                @foreach ($research as $index => $center)
                     <a href="{{ route('view.research.show', $center) }}" class="group" style="animation: fadeInUp 0.6s ease-out {{ $index * 0.08 }}s both">
                         <div class="card-premium h-full">
                             <div class="h-1.5 bg-gradient-to-r from-maroon-500 to-primary-500 rounded-t-2xl"></div>
                             <div class="relative bg-gradient-to-br from-maroon-500 to-maroon-700 h-32 flex items-center justify-center overflow-hidden">
                                 <div class="absolute inset-0 hero-pattern opacity-30"></div>
-                                <div class="relative text-5xl group-hover:scale-110 transition-transform duration-500">🔬</div>
+                                <div class="relative text-5xl group-hover:scale-110 transition-transform duration-500"></div>
                             </div>
                             <div class="p-6">
                                 <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-maroon-600 transition-colors">{{ $center->name }}</h3>

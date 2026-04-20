@@ -28,7 +28,7 @@
                             <p x-text="item.description" class="text-lg md:text-xl text-gray-100 mb-6 line-clamp-3"></p>
                             <a :href="item.link"
                                 class="inline-block px-6 py-3 bg-yellow-300 text-maroon-900 rounded-lg hover:bg-yellow-400 transition-all transform hover:scale-105 font-semibold">
-                                Learn More →
+                                Learn More
                             </a>
                         </div>
                     </div>

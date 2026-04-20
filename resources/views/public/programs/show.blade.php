@@ -6,12 +6,12 @@
         <div class="absolute top-20 right-10 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-float"></div>
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('view.programs') }}" class="inline-flex items-center gap-2 text-primary-300 hover:text-primary-200 mb-6 transition-colors text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Back to Programs
+            <a href="{{ route('view.programs') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                <span>Back to Programs</span>
             </a>
 
-            <div class="flex flex-wrap gap-3 mb-4">
+            <div class="flex flex-wrap gap-3 mb-4 mt-8">
                 <span class="badge bg-primary-500/20 text-primary-300 border border-primary-500/30">{{ ucfirst($program->degree_level) }}</span>
                 <span class="badge bg-white/10 text-white border border-white/20">{{ $program->duration_years }} Years</span>
             </div>

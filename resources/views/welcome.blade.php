@@ -148,7 +148,7 @@
                                     <p class="text-gray-600 text-base line-clamp-4 flex-grow">{{ $featured->excerpt ?? Str::limit(strip_tags($featured->content), 200) }}</p>
                                     <div class="pt-4 mt-4 border-t border-gray-100">
                                         <span class="inline-flex items-center text-gray-500 font-semibold text-sm hover:text-maroon-600 transition-colors cursor-pointer">
-                                            READ MORE →
+                                            READ MORE
                                         </span>
                                     </div>
                                 </div>
@@ -166,7 +166,7 @@
                                     </div>
                                     <h4 class="text-lg font-bold text-gray-900 mb-2 hover:text-maroon-700 transition-colors line-clamp-2">{{ $news->title }}</h4>
                                     <span class="inline-flex items-center text-gray-500 font-semibold text-xs hover:text-maroon-600 transition-colors cursor-pointer">
-                                        READ MORE →
+                                        READ MORE
                                     </span>
                                 </div>
                             </a>
@@ -192,29 +192,17 @@
 
             <div class="text-center">
                 <a href="{{ route('view.news') }}" class="inline-flex items-center px-8 py-3 font-bold rounded-xl transition-all duration-300" style="background-color: transparent; border: 2px solid #000000; color: #000000; display: inline-flex; align-items: center;" onmouseover="this.style.backgroundColor='#933336'; this.style.borderColor='#933336'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#000000'; this.style.color='#000000';">
-                    View All News →
+                    View All News
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Featured Research Section -->
-    <section class="py-24 bg-gradient-to-br from-maroon-900 via-maroon-800 to-maroon-700 relative overflow-hidden">
-        <!-- Modern Gradient Overlays -->
-        <div class="absolute top-0 right-0 w-1/3 h-96 bg-gradient-to-b from-primary-500/20 to-transparent rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-1/3 h-96 bg-gradient-to-t from-white/10 to-transparent rounded-full blur-3xl"></div>
-        
-        <!-- Animated Grid Pattern -->
-        <div class="absolute inset-0 opacity-5">
-            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <defs>
-                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5"/>
-                    </pattern>
-                </defs>
-                <rect width="100" height="100" fill="url(#grid)" />
-            </svg>
-        </div>
+    <section class="py-24 bg-maroon-700 relative overflow-hidden">
+        <!-- Subtle aesthetic blur accents -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ 
             currentGalleryImage: 0,
@@ -350,7 +338,7 @@
                         <!-- Modern Info Cards -->
                         <div class="grid grid-cols-2 gap-4 mt-6">
                             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-primary-400/50 transition-all duration-300">
-                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider">Researchers</div>
+                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider" id="researcherLabel">{{ $featuredResearch?->researchers->count() === 1 ? 'Researcher' : 'Researchers' }}</div>
                                 <p class="text-sm text-white font-semibold" id="featureResearchers" style="word-break: break-word; white-space: normal; line-height: 1.5;">
                                     @if($featuredResearch?->researchers->isNotEmpty())
                                         @foreach($featuredResearch->researchers as $index => $researcher)
@@ -371,7 +359,7 @@
 
                         <!-- CTA Buttons - Modern Design -->
                         <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                            <a href="javascript:void(0)" onclick="exploreResearch(currentGalleryImage)" class="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-primary-500/40 hover:scale-105 transition-all duration-300 text-center border border-primary-400/50 group relative overflow-hidden cursor-pointer">
+                            <a href="javascript:void(0)" onclick="exploreResearch(currentGalleryIndex)" class="px-8 py-4 bg-gradient-to-r from-maroon-600 to-maroon-700 text-primary-400 font-bold rounded-xl hover:shadow-2xl hover:shadow-maroon-600/40 hover:scale-105 transition-all duration-300 text-center border border-maroon-500/50 group relative overflow-hidden cursor-pointer">
                                 <span class="relative z-10 flex items-center justify-center gap-2">
                                     Explore Research
                                     <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -379,7 +367,7 @@
                                     </svg>
                                 </span>
                             </a>
-                            <a href="{{ route('view.research.all') }}" class="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-300 border border-white/30 hover:border-white/50 text-center">
+                            <a href="{{ route('view.research.all') }}" class="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-xl hover:bg-white/20 hover:scale-105 transition-all duration-300 border border-white/30 hover:border-white/50 text-center">
                                 View All Research
                             </a>
                         </div>
@@ -482,13 +470,21 @@
             
             // Update researchers list
             const researchersEl = document.getElementById('featureResearchers');
+            const researcherLabel = document.getElementById('researcherLabel');
             if (researchersEl) {
                 const researchers = item.researchers || [];
                 if (researchers.length > 0) {
                     const researcherNames = researchers.map(r => cleanText(r.name || '')).filter(n => n);
                     researchersEl.innerHTML = researcherNames.join('<br>');
+                    // Update label based on count
+                    if (researcherLabel) {
+                        researcherLabel.textContent = researcherNames.length === 1 ? 'RESEARCHER' : 'RESEARCHERS';
+                    }
                 } else {
                     researchersEl.textContent = 'N/A';
+                    if (researcherLabel) {
+                        researcherLabel.textContent = 'RESEARCHERS';
+                    }
                 }
             }
             
@@ -513,25 +509,90 @@
         });
     </script>
 
-    <!-- CTA Section -->
-    <section class="py-24 bg-gradient-to-r from-maroon-700 via-maroon-600 to-maroon-800 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"></div>
+    <!-- Accreditations Section -->
+    <section class="py-20 sm:py-28 bg-white relative overflow-hidden">
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-maroon-500/5 rounded-full blur-3xl"></div>
 
-        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight">
-                Begin Your Engineering Excellence Journey
-            </h2>
-            <p class="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-                Join our community of innovators and become part of UPHSD DALTA's College of Engineering, Architecture, and Technology legacy.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('register') }}" style="padding: 14px 32px; background: #8b0000; color: white; font-weight: 600; border-radius: 8px; text-decoration: none; display: inline-block; transition: all 0.3s ease; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(139, 0, 0, 0.2);" onmouseover="this.style.background='#6b0000'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(139, 0, 0, 0.3)';" onmouseout="this.style.background='#8b0000'; this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(139, 0, 0, 0.2)';">
-                    Enroll Now
-                </a>
-                <a href="{{ route('view.programs') }}" class="px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/30 hover:shadow-2xl hover:shadow-white/20 transition-all duration-300 border border-white/30 hover:border-white hover:scale-110">
-                    Learn More
-                </a>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="text-center mb-16 sm:mb-20">
+                <p class="text-sm font-bold text-maroon-600 uppercase tracking-wider mb-3">Quality Assurance</p>
+                <h2 class="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight">
+                    Accreditations
+                </h2>
+                <div class="w-16 h-1 bg-gradient-to-r from-maroon-600 to-primary-500 rounded-full mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Our programs are recognized and accredited by prestigious international and national bodies, ensuring excellence in engineering education and professional standards.
+                </p>
+            </div>
+
+            <!-- Accreditation Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <!-- ABET Accreditation -->
+                <div class="group bg-white rounded-2xl border border-gray-200 p-8 hover:border-maroon-300 hover:shadow-xl transition-all duration-300 text-center">
+                    <!-- Logo Placeholder -->
+                    <div class="w-20 h-20 bg-gradient-to-br from-maroon-100 to-maroon-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:from-maroon-200 group-hover:to-maroon-100 transition-all duration-300 overflow-hidden">
+                        <img src="" alt="ABET Logo" class="w-full h-full object-contain p-2" style="display: none;">
+                        <span class="text-maroon-400 text-2xl font-bold">ABET</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">ABET</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Accreditation Board for Engineering and Technology</p>
+                </div>
+
+                <!-- PECE Accreditation -->
+                <div class="group bg-white rounded-2xl border border-gray-200 p-8 hover:border-maroon-300 hover:shadow-xl transition-all duration-300 text-center">
+                    <!-- Logo Placeholder -->
+                    <div class="w-20 h-20 bg-gradient-to-br from-primary-100 to-primary-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:from-primary-200 group-hover:to-primary-100 transition-all duration-300 overflow-hidden">
+                        <img src="" alt="PEC Logo" class="w-full h-full object-contain p-2" style="display: none;">
+                        <span class="text-primary-400 text-2xl font-bold">PEC</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">PEC</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Professional Engineers Council of Philippines</p>
+                </div>
+
+                <!-- ISO Certification -->
+                <div class="group bg-white rounded-2xl border border-gray-200 p-8 hover:border-maroon-300 hover:shadow-xl transition-all duration-300 text-center">
+                    <!-- Logo Placeholder -->
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:from-blue-200 group-hover:to-blue-100 transition-all duration-300 overflow-hidden">
+                        <img src="" alt="ISO Logo" class="w-full h-full object-contain p-2" style="display: none;">
+                        <span class="text-blue-400 text-xl font-bold">ISO 9001</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">ISO 9001</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Quality Management System Certified</p>
+                </div>
+
+                <!-- AACSB Recognition -->
+                <div class="group bg-white rounded-2xl border border-gray-200 p-8 hover:border-maroon-300 hover:shadow-xl transition-all duration-300 text-center">
+                    <!-- Logo Placeholder -->
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:from-purple-200 group-hover:to-purple-100 transition-all duration-300 overflow-hidden">
+                        <img src="" alt="AACSB Logo" class="w-full h-full object-contain p-2" style="display: none;">
+                        <span class="text-purple-400 text-xl font-bold">AACSB</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">AACSB</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Association to Advance Collegiate Schools</p>
+                </div>
+            </div>
+
+            <!-- Achievement Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mt-16 sm:mt-20 pt-16 sm:pt-20 border-t border-gray-200">
+                <div class="text-center">
+                    <div class="text-4xl sm:text-5xl font-black text-maroon-600 mb-2">15+</div>
+                    <p class="text-sm text-gray-600 font-medium">Years Excellence</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl sm:text-5xl font-black text-primary-600 mb-2">95%</div>
+                    <p class="text-sm text-gray-600 font-medium">Graduate Rate</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl sm:text-5xl font-black text-blue-600 mb-2">5000+</div>
+                    <p class="text-sm text-gray-600 font-medium">Alumni Network</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl sm:text-5xl font-black text-purple-600 mb-2">8</div>
+                    <p class="text-sm text-gray-600 font-medium">Program Degrees</p>
+                </div>
             </div>
         </div>
     </section>

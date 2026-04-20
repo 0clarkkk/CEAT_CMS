@@ -5,9 +5,9 @@
         <div class="absolute inset-0 bg-mesh-pattern opacity-20"></div>
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('view.research') }}" class="inline-flex items-center gap-2 text-primary-300 hover:text-primary-200 mb-6 transition-colors text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                Back to Research Centers
+            <a href="{{ route('view.academics.research') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40 mb-6">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                <span>Back to Research Centers</span>
             </a>
 
             <div class="flex flex-wrap gap-3 mb-4">
@@ -48,12 +48,11 @@
                 @if (!empty($researchAreas) && count($researchAreas) > 0)
                 <div class="card-premium p-8 animate-fade-in-up animation-delay-100">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center text-primary-700">🔬</span>
                         Research Areas
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach ($researchAreas as $item)
-                        <div class="flex items-start gap-3 p-4 bg-gradient-to-r from-maroon-50 to-maroon-50/50 rounded-xl border-l-4 border-maroon-500">
+                        <div class="flex items-start gap-3 p-4 rounded-xl border-l-4 border-maroon-500">
                             <span class="w-2 h-2 rounded-full bg-maroon-500 shrink-0 mt-1"></span>
                             <div>
                                 <p class="text-gray-900 font-semibold text-sm">{{ is_array($item) ? ($item['area'] ?? '') : $item }}</p>
@@ -71,7 +70,6 @@
                 @if ($researchCenter->facilities)
                 <div class="card-premium p-8 animate-fade-in-up animation-delay-200">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-maroon-50 rounded-xl flex items-center justify-center text-maroon-600">◼</span>
                         Facilities & Equipment
                     </h2>
                     <div class="bg-gray-50 rounded-2xl p-6">
@@ -176,6 +174,30 @@
 
             <!-- Sidebar -->
             <div class="space-y-6">
+                <!-- Details Card -->
+                <div class="card-premium p-6 animate-fade-in-right">
+                    <h3 class="font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-maroon-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Details
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Department -->
+                        @if ($researchCenter->department)
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Department</p>
+                            <p class="text-sm font-semibold text-maroon-600">{{ $researchCenter->department->name }}</p>
+                        </div>
+                        @endif
+
+                        <!-- Published Date -->
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Published</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ $researchCenter->published_at?->format('M d, Y') ?? $researchCenter->created_at->format('M d, Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Contact -->
                 <div class="card-premium p-6 animate-fade-in-right">
                     <h3 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
@@ -192,24 +214,6 @@
                     @else
                     <p class="text-gray-500 text-sm">No contact information available</p>
                     @endif
-                </div>
-
-                <!-- Related Links -->
-                <div class="card-premium p-6 animate-fade-in-right animation-delay-100">
-                    <h3 class="font-bold text-gray-900 mb-5 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-maroon-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                        Related
-                    </h3>
-                    <div class="space-y-2">
-                        <a href="{{ route('view.departments.show', $researchCenter->department) }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-maroon-50 transition-colors group">
-                            <span class="w-8 h-8 bg-maroon-100 rounded-lg flex items-center justify-center text-maroon-600 text-sm">◆</span>
-                            <span class="text-sm font-medium text-gray-700 group-hover:text-maroon-600 transition-colors">Department</span>
-                        </a>
-                        <a href="{{ route('view.research') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-maroon-50 transition-colors group">
-                            <span class="w-8 h-8 bg-maroon-100 rounded-lg flex items-center justify-center text-maroon-600 text-sm">⬢</span>
-                            <span class="text-sm font-medium text-gray-700 group-hover:text-maroon-600 transition-colors">All Research Centers</span>
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>

@@ -15,12 +15,19 @@ class PublicResearchController extends Controller
     public function academy(): View
     {
         $allResearch = ResearchCenter::with('researchers')
-            ->orderBy('featured_order', 'asc')
-            ->orderBy('name', 'asc')
+            ->where(function ($query) {
+                $query->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+            })
+            ->orderByRaw("COALESCE(published_at, created_at) DESC")
             ->get();
 
         $featuredResearch = ResearchCenter::with('researchers', 'department')
             ->where('is_featured', true)
+            ->where(function ($query) {
+                $query->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+            })
             ->orderBy('featured_order', 'asc')
             ->limit(3)
             ->get();
@@ -34,8 +41,11 @@ class PublicResearchController extends Controller
     public function index(): View
     {
         $research = ResearchCenter::with('researchers')
-            ->orderBy('featured_order', 'asc')
-            ->orderBy('name', 'asc')
+            ->where(function ($query) {
+                $query->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+            })
+            ->orderByRaw("COALESCE(published_at, created_at) DESC")
             ->paginate(12);
 
         return view('public.research.index', [
@@ -45,6 +55,9 @@ class PublicResearchController extends Controller
 
     public function show(ResearchCenter $researchCenter): View
     {
+        if ($researchCenter->published_at !== null && $researchCenter->published_at > now()) {
+            abort(404);
+        }
         $researchCenter->load('researchers', 'department');
         return view('public.research.show', [
             'researchCenter' => $researchCenter,

@@ -39,38 +39,57 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     @foreach ($upcomingEvents as $index => $item)
                         <a href="{{ route('view.news.show', $item) }}" class="group" style="animation: fadeInUp 0.6s ease-out {{ $index * 0.08 }}s both">
-                            <article class="card-premium h-full">
-                                <div class="h-1.5 bg-gradient-to-r from-primary-500 to-primary-400 rounded-t-2xl"></div>
+                            <article class="group relative bg-white rounded-2xl overflow-visible border border-gray-200 hover:border-maroon-400 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+                                
+                                <!-- Fixed Image Container -->
+                                <div class="relative h-64 bg-gradient-to-br from-maroon-500 to-maroon-600 overflow-hidden block">
+                                    @if ($item->getFeaturedImageUrl())
+                                        <img src="{{ $item->getFeaturedImageUrl() }}" 
+                                             alt="{{ $item->title }}"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <div class="text-5xl">📰</div>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                </div>
 
-                                @if ($item->getFeaturedImageUrl())
-                                    <div class="relative h-52 overflow-hidden">
-                                        <img src="{{ $item->getFeaturedImageUrl() }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                <!-- Date Badge Overlapping Image and Content -->
+                                <div class="absolute top-56 left-0 bg-maroon-600 rounded-xl px-4 py-2 text-sm font-bold text-white uppercase tracking-widest whitespace-nowrap shadow-lg z-20">
+                                    {{ $item->published_at?->format('M d, Y') ?? $item->created_at->format('M d, Y') }}
+                                </div>
+
+                                <!-- Content -->
+                                <div class="p-6 flex-1 flex flex-col pt-6">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div>
+                                            @if($item->department)
+                                                <p class="text-xs font-bold text-maroon-600 uppercase tracking-widest mb-1">
+                                                    {{ $item->department->name }}
+                                                </p>
+                                            @endif
+                                            <h3 class="text-xl font-bold text-gray-900 hover:text-maroon-600 transition-colors cursor-pointer block">
+                                                {{ $item->title }}
+                                            </h3>
+                                        </div>
                                     </div>
-                                @else
-                                    <div class="relative h-52 bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center overflow-hidden">
-                                        <div class="absolute inset-0 hero-pattern opacity-30"></div>
-                                        <div class="relative text-5xl group-hover:scale-110 transition-transform duration-500">◈</div>
-                                    </div>
-                                @endif
 
-                                <div class="p-6">
-                                    <div class="flex items-center gap-3 mb-4">
-                                        <span class="badge badge-success">Event</span>
-                                        @if ($item->event_date)
-                                            <span class="text-xs text-gray-400 font-medium">{{ $item->event_date->format('M d, Y') }}</span>
-                                        @endif
-                                    </div>
+                                    <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                                        {{ $item->excerpt }}
+                                    </p>
 
-                                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">{{ $item->title }}</h3>
-                                    <p class="text-sm text-gray-500 mb-3 font-medium">{{ $item->department->name }}</p>
-                                    <p class="text-gray-500 text-sm line-clamp-3 mb-5 leading-relaxed">{{ $item->excerpt }}</p>
+                                    <span class="inline-block px-3 py-1 bg-maroon-100 text-maroon-600 text-xs font-bold rounded-full mb-4">{{ ucfirst($item->type) }}</span>
 
-                                    <div class="flex items-center justify-between text-primary-600 font-semibold text-sm pt-4 border-t border-gray-100">
-                                        <span>Read More</span>
-                                        <svg class="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                    <!-- Read More Link - Pushed to Bottom -->
+                                    <div class="mt-auto pt-4 border-t border-gray-100 text-center">
+                                        <span class="text-xs font-bold text-gray-500 hover:text-maroon-600 transition-colors uppercase tracking-widest cursor-pointer inline-block">
+                                            Read More
+                                        </span>
                                     </div>
                                 </div>
+
+                                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-maroon-500/10 to-transparent rounded-full blur-2xl group-hover:from-maroon-500/20 transition-all"></div>
                             </article>
                         </a>
                     @endforeach
@@ -95,38 +114,57 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 @foreach ($latestNews as $index => $item)
                     <a href="{{ route('view.news.show', $item) }}" class="group" style="animation: fadeInUp 0.6s ease-out {{ $index * 0.08 }}s both">
-                        <article class="card-premium h-full">
-                            <div class="h-1.5 bg-gradient-to-r from-maroon-500 to-maroon-400 rounded-t-2xl"></div>
+                        <article class="group relative bg-white rounded-2xl overflow-visible border border-gray-200 hover:border-maroon-400 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+                            
+                            <!-- Fixed Image Container -->
+                            <div class="relative h-64 bg-gradient-to-br from-maroon-500 to-maroon-600 overflow-hidden block">
+                                @if ($item->getFeaturedImageUrl())
+                                    <img src="{{ $item->getFeaturedImageUrl() }}" 
+                                         alt="{{ $item->title }}"
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <div class="text-5xl">📰</div>
+                                    </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            </div>
 
-                            @if ($item->getFeaturedImageUrl())
-                                <div class="relative h-52 overflow-hidden">
-                                    <img src="{{ $item->getFeaturedImageUrl() }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                            <!-- Date Badge Overlapping Image and Content -->
+                            <div class="absolute top-56 left-0 bg-maroon-600 rounded-xl px-4 py-2 text-sm font-bold text-white uppercase tracking-widest whitespace-nowrap shadow-lg z-20">
+                                {{ $item->published_at?->format('M d, Y') ?? $item->created_at->format('M d, Y') }}
+                            </div>
+
+                            <!-- Content -->
+                            <div class="p-6 flex-1 flex flex-col pt-6">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        @if($item->department)
+                                            <p class="text-xs font-bold text-maroon-600 uppercase tracking-widest mb-1">
+                                                {{ $item->department->name }}
+                                            </p>
+                                        @endif
+                                        <h3 class="text-xl font-bold text-gray-900 hover:text-maroon-600 transition-colors cursor-pointer block">
+                                            {{ $item->title }}
+                                        </h3>
+                                    </div>
                                 </div>
-                            @else
-                                <div class="relative h-52 bg-gradient-to-br from-maroon-600 to-maroon-700 flex items-center justify-center overflow-hidden">
-                                    <div class="absolute inset-0 hero-pattern opacity-30"></div>
-                                    <div class="relative text-5xl group-hover:scale-110 transition-transform duration-500">▬</div>
-                                </div>
-                            @endif
 
-                            <div class="p-6">
-                                <div class="flex items-center gap-3 mb-4">
-                                    <span class="badge badge-maroon">{{ ucfirst($item->type) }}</span>
-                                    @if ($item->published_at)
-                                        <span class="text-xs text-gray-400 font-medium">{{ $item->published_at->format('M d, Y') }}</span>
-                                    @endif
-                                </div>
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                                    {{ $item->excerpt }}
+                                </p>
 
-                                <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-maroon-600 transition-colors line-clamp-2">{{ $item->title }}</h3>
-                                <p class="text-sm text-gray-500 mb-3 font-medium">{{ $item->department->name }}</p>
-                                <p class="text-gray-500 text-sm line-clamp-3 mb-5 leading-relaxed">{{ $item->excerpt }}</p>
+                                <span class="inline-block px-3 py-1 bg-maroon-100 text-maroon-600 text-xs font-bold rounded-full mb-4">{{ ucfirst($item->type) }}</span>
 
-                                <div class="flex items-center justify-between text-maroon-600 font-semibold text-sm pt-4 border-t border-gray-100">
-                                    <span>Read More</span>
-                                    <svg class="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                <!-- Read More Link - Pushed to Bottom -->
+                                <div class="mt-auto pt-4 border-t border-gray-100 text-center">
+                                    <span class="text-xs font-bold text-gray-500 hover:text-maroon-600 transition-colors uppercase tracking-widest cursor-pointer inline-block">
+                                        Read More
+                                    </span>
                                 </div>
                             </div>
+
+                            <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-maroon-500/10 to-transparent rounded-full blur-2xl group-hover:from-maroon-500/20 transition-all"></div>
                         </article>
                     </a>
                 @endforeach
