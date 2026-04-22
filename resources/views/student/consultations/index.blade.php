@@ -1,221 +1,270 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <!-- Header Section -->
-        <div class="mb-12">
-            <div class="flex justify-between items-start">
-                <div class="flex items-center gap-4">
-                    <div class="h-12 w-1 bg-gradient-to-b from-indigo-500 to-indigo-600 rounded-full"></div>
-                    <div>
-                        <h1 class="text-4xl font-bold text-gray-900 dark:text-white">My Consultations</h1>
-                        <p class="text-gray-600 dark:text-gray-400 mt-2">Manage your consultation requests and scheduled appointments</p>
-                    </div>
-                </div>
-                <a href="{{ route('student.consultations.create') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    New Request
-                </a>
-            </div>
-        </div>
-
-        <!-- Filter Tabs -->
-        <div class="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
-            <nav class="flex flex-wrap md:flex-nowrap" aria-label="Tabs">
-                <a href="{{ route('student.consultations.index') }}" class="flex-1 px-4 py-4 text-center @if(!$selectedStatus) border-b-4 border-indigo-500 text-indigo-600 dark:text-indigo-400 font-semibold @else border-b-4 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 @endif transition-all">
-                    <span class="flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6z"></path></svg>
-                        All
-                    </span>
-                </a>
-                <a href="{{ route('student.consultations.index', ['status' => 'pending']) }}" class="flex-1 px-4 py-4 text-center @if($selectedStatus === 'pending') border-b-4 border-yellow-500 text-yellow-600 dark:text-yellow-400 font-semibold @else border-b-4 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 @endif transition-all">
-                    <span class="flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        Pending
-                    </span>
-                </a>
-                <a href="{{ route('student.consultations.index', ['status' => 'approved']) }}" class="flex-1 px-4 py-4 text-center @if($selectedStatus === 'approved') border-b-4 border-blue-500 text-blue-600 dark:text-blue-400 font-semibold @else border-b-4 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 @endif transition-all">
-                    <span class="flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        Approved
-                    </span>
-                </a>
-                <a href="{{ route('student.consultations.index', ['status' => 'scheduled']) }}" class="flex-1 px-4 py-4 text-center @if($selectedStatus === 'scheduled') border-b-4 border-green-500 text-green-600 dark:text-green-400 font-semibold @else border-b-4 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 @endif transition-all">
-                    <span class="flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"></path></svg>
-                        Scheduled
-                    </span>
-                </a>
-                <a href="{{ route('student.consultations.index', ['status' => 'completed']) }}" class="flex-1 px-4 py-4 text-center @if($selectedStatus === 'completed') border-b-4 border-purple-500 text-purple-600 dark:text-purple-400 font-semibold @else border-b-4 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 @endif transition-all">
-                    <span class="flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm9.172 6a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L16 9.586l-1.828-1.828z" clip-rule="evenodd"></path></svg>
-                        Completed
-                    </span>
-                </a>
-            </nav>
-        </div>
-
-        <!-- Consultations List -->
-        <div class="space-y-4">
-            @forelse($consultations as $consultation)
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <div class="p-6">
-                    <div class="flex justify-between items-start gap-4">
-                        <!-- Left Section -->
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start gap-3">
-                                <!-- Status Badge -->
-                                <div class="flex-shrink-0 mt-1">
-                                    <span class="inline-flex items-center justify-center h-2.5 w-2.5 rounded-full
-                                        @switch($consultation->status)
-                                            @case('pending')
-                                                bg-yellow-500
-                                                @break
-                                            @case('approved')
-                                                bg-blue-500
-                                                @break
-                                            @case('scheduled')
-                                                bg-green-500
-                                                @break
-                                            @case('completed')
-                                                bg-purple-500
-                                                @break
-                                            @case('rejected')
-                                                bg-red-500
-                                                @break
-                                            @default
-                                                bg-gray-500
-                                        @endswitch
-                                    "></span>
-                                </div>
-                                <!-- Title and Info -->
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-3 flex-wrap">
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ $consultation->title }}</h3>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
-                                            @switch($consultation->status)
-                                                @case('pending')
-                                                    bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200
-                                                    @break
-                                                @case('approved')
-                                                    bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200
-                                                    @break
-                                                @case('scheduled')
-                                                    bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200
-                                                    @break
-                                                @case('completed')
-                                                    bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200
-                                                    @break
-                                                @case('rejected')
-                                                    bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200
-                                                    @break
-                                                @default
-                                                    bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200
-                                            @endswitch
-                                        ">
-                                            {{ ucfirst($consultation->status) }}
-                                        </span>
-                                    </div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{{ $consultation->description }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Details Grid -->
-                            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Advisor</p>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $consultation->advisor->name }}</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 6a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5z"></path></svg>
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Category</p>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white capitalize">{{ $consultation->category }}</p>
-                                    </div>
-                                </div>
-                                @if($consultation->scheduled_at)
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"></path></svg>
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Scheduled</p>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $consultation->scheduled_at->format('M d, Y \a\t h:i A') }}</p>
-                                    </div>
-                                </div>
-                                @endif
-                                @if($consultation->location)
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Location</p>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $consultation->location }}</p>
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
-
-                            <!-- Rejection Reason -->
-                            @if($consultation->status === 'rejected' && $consultation->rejection_reason)
-                            <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded">
-                                <p class="text-xs font-semibold text-red-800 dark:text-red-200">Rejection Reason:</p>
-                                <p class="text-sm text-red-700 dark:text-red-300 mt-1">{{ $consultation->rejection_reason }}</p>
-                            </div>
-                            @endif
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="flex flex-col gap-2 ml-4">
-                            <a href="{{ route('student.consultations.show', $consultation->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 rounded-lg font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-all whitespace-nowrap">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                View
-                            </a>
-                            @if($consultation->canBeCancelled())
-                            <button onclick="if(confirm('Are you sure you want to cancel this consultation?')) { document.getElementById('cancel-form-{{ $consultation->id }}').submit(); }" class="inline-flex items-center justify-center px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg font-medium hover:bg-red-100 dark:hover:bg-red-900/40 transition-all whitespace-nowrap">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                Cancel
-                            </button>
-                            <form id="cancel-form-{{ $consultation->id }}" action="{{ route('student.consultations.cancel', $consultation->id) }}" method="POST" class="hidden">
-                                @csrf
-                            </form>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @empty
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-12 text-center">
-                <div class="flex justify-center mb-4">
-                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-full">
-                        <svg class="h-12 w-12 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-                <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-white">No consultations found</h3>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">You haven't requested any consultations yet.</p>
-                <div class="mt-6">
-                    <a href="{{ route('student.consultations.create') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Request Your First Consultation
-                    </a>
-                </div>
-            </div>
-            @endforelse
-        </div>
-
-        <!-- Pagination -->
-        @if($consultations->hasPages())
-        <div class="mt-8 flex justify-center">
-            {{ $consultations->links() }}
-        </div>
-        @endif
+{{-- =============================================================== --}}
+{{-- HERO HEADER --}}
+{{-- =============================================================== --}}
+<section class="relative overflow-hidden"
+    style="background: linear-gradient(135deg, #FF6B00 0%, #E55D00 40%, #1F2937 100%);">
+    {{-- Subtle mesh overlay --}}
+    <div class="absolute inset-0 opacity-10"
+        style="background-image: url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.4%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
     </div>
+    {{-- Glow orbs --}}
+    <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-3xl" style="background: rgba(255,255,255,0.08);">
+    </div>
+    <div class="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-3xl" style="background: rgba(255,107,0,0.15);">
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-24">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
+            <div>
+                <span
+                    class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
+                    style="background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.25);">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Student Portal
+                </span>
+                <h1 class="mt-5 text-4xl sm:text-5xl font-black tracking-tight leading-tight" style="color: #ffffff;">
+                    My Consultations
+                </h1>
+                <p class="mt-3 text-base sm:text-lg max-w-xl leading-relaxed" style="color: rgba(255,255,255,0.8);">
+                    View, manage, and track every consultation request in one place.
+                </p>
+            </div>
+
+            <a href="{{ route('student.consultations.create') }}"
+                class="group inline-flex items-center gap-3 rounded-xl px-7 py-3.5 text-sm font-bold shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:scale-95"
+                style="background: #ffffff; color: #E55D00;">
+                <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                        d="M11.25 4.5a.75.75 0 011.5 0v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5z" />
+                </svg>
+                New Request
+            </a>
+        </div>
+    </div>
+</section>
+
+{{-- =============================================================== --}}
+{{-- FLOATING FILTER BAR --}}
+{{-- =============================================================== --}}
+<div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-7" style="margin-top: 20px;">
+    <div class="rounded-2xl bg-white shadow-xl ring-1 ring-black/5 p-2 flex flex-wrap items-center gap-1.5">
+        @php
+        $filters = [
+        ['label' => 'All', 'slug' => null],
+        ['label' => 'Pending', 'slug' => 'pending'],
+        ['label' => 'Approved', 'slug' => 'approved'],
+        ['label' => 'Scheduled', 'slug' => 'scheduled'],
+        ['label' => 'Completed', 'slug' => 'completed'],
+        ];
+        @endphp
+        @foreach($filters as $filter)
+        <a href="{{ route('student.consultations.index', $filter['slug'] ? ['status' => $filter['slug']] : []) }}"
+            @class([ 'rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-200'
+            , 'bg-tangerine-600 text-white shadow-md'=> $selectedStatus === $filter['slug'],
+            'text-slate-500 hover:bg-slate-100 hover:text-slate-700' => $selectedStatus !== $filter['slug'],
+            ])>
+            {{ $filter['label'] }}
+        </a>
+        @endforeach
+    </div>
+</div>
+
+{{-- =============================================================== --}}
+{{-- CONSULTATION LIST --}}
+{{-- =============================================================== --}}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" style="margin-top: 20px;">
+    <div class="space-y-4">
+        @forelse($consultations as $consultation)
+        @php
+        $statusMap = [
+        'pending' => ['dot' => '#f59e0b', 'bg' => '#fffbeb', 'text' => '#92400e', 'ring' => '#fde68a', 'border' =>
+        '#f59e0b'],
+        'approved' => ['dot' => '#0ea5e9', 'bg' => '#f0f9ff', 'text' => '#0c4a6e', 'ring' => '#bae6fd', 'border' =>
+        '#0ea5e9'],
+        'scheduled' => ['dot' => '#10b981', 'bg' => '#ecfdf5', 'text' => '#064e3b', 'ring' => '#a7f3d0', 'border' =>
+        '#10b981'],
+        'completed' => ['dot' => '#8b5cf6', 'bg' => '#f5f3ff', 'text' => '#4c1d95', 'ring' => '#c4b5fd', 'border' =>
+        '#8b5cf6'],
+        'rejected' => ['dot' => '#ef4444', 'bg' => '#fef2f2', 'text' => '#7f1d1d', 'ring' => '#fecaca', 'border' =>
+        '#ef4444'],
+        'cancelled' => ['dot' => '#94a3b8', 'bg' => '#f8fafc', 'text' => '#475569', 'ring' => '#e2e8f0', 'border' =>
+        '#94a3b8'],
+        ];
+        $s = $statusMap[$consultation->status] ?? $statusMap['pending'];
+        @endphp
+
+        <article
+            class="group bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-[2px] overflow-hidden"
+            style="border-left: 5px solid {{ $s['border'] }};">
+            {{-- Main clickable area --}}
+            <a href="{{ route('student.consultations.show', $consultation->id) }}" class="block p-5 sm:p-6">
+                {{-- Row 1: Badge + Timestamp --}}
+                <div class="flex items-center justify-between mb-3">
+                    <span
+                        class="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
+                        style="background: {{ $s['bg'] }}; color: {{ $s['text'] }}; box-shadow: inset 0 0 0 1px {{ $s['ring'] }};">
+                        <span class="w-1.5 h-1.5 rounded-full" style="background: {{ $s['dot'] }};"></span>
+                        {{ $consultation->status }}
+                    </span>
+                    <span class="text-xs text-slate-400 font-medium">
+                        {{ $consultation->created_at->diffForHumans() }}
+                    </span>
+                </div>
+
+                {{-- Row 2: Title --}}
+                <h2
+                    class="text-lg font-bold text-slate-900 group-hover:text-tangerine-600 transition-colors duration-200 line-clamp-1">
+                    {{ $consultation->title }}
+                </h2>
+
+                {{-- Row 3: Description --}}
+                @if($consultation->description)
+                <p class="mt-1 text-sm text-slate-500 line-clamp-2 leading-relaxed">
+                    {{ $consultation->description }}
+                </p>
+                @endif
+
+                {{-- Row 4: Metadata chips --}}
+                <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                    {{-- Advisor --}}
+                    <div class="inline-flex items-center gap-2 min-w-0">
+                        <span
+                            class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black text-white"
+                            style="background: #FF6B00;">
+                            {{ strtoupper(substr($consultation->advisor->name, 0, 2)) }}
+                        </span>
+                        <span class="font-semibold text-slate-700 truncate">{{ $consultation->advisor->name }}</span>
+                    </div>
+
+                    <span class="hidden sm:inline text-slate-300">|</span>
+
+                    {{-- Category --}}
+                    <div class="inline-flex items-center gap-1.5 min-w-0">
+                        <svg class="w-4 h-4 flex-shrink-0 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd"
+                                d="M5.25 2.25a3 3 0 00-3 3v4.318a3 3 0 00.879 2.121l9.58 9.581c.92.92 2.39.92 3.298 0l4.318-4.317a2.332 2.332 0 000-3.298L10.745 4.125A3 3 0 008.623 3.25H5.25zM4.5 7.5a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="capitalize">{{ $consultation->category }}</span>
+                    </div>
+
+                    <span class="hidden sm:inline text-slate-300">|</span>
+
+                    {{-- Date --}}
+                    <div class="inline-flex items-center gap-1.5 min-w-0">
+                        <svg class="w-4 h-4 flex-shrink-0 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd"
+                                d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v10.5a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9H3.75v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span>{{ optional($consultation->scheduled_at)->format('M d, Y') ?? 'TBA' }}</span>
+                    </div>
+
+                    {{-- Location --}}
+                    @if($consultation->location)
+                    <span class="hidden sm:inline text-slate-300">|</span>
+                    <div class="inline-flex items-center gap-1.5 min-w-0">
+                        <svg class="w-4 h-4 flex-shrink-0 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd"
+                                d="M11.545 20.91c-.008.007-.015.015-.022.022a1.2 1.2 0 01-1.612 0c-.007-.007-.014-.015-.022-.022-1.041-1.03-3.04-3.046-4.333-4.34a8.73 8.73 0 01-1.251-1.503C3.39 13.554 3 11.83 3 10c0-4.97 4.03-9 9-9s9 4.03 9 9c0 1.83-.39 3.554-1.307 5.067a8.73 8.73 0 01-1.251 1.503c-1.293 1.294-3.292 3.31-4.333 4.34zM12 13a3 3 0 100-6 3 3 0 000 6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="truncate">{{ $consultation->location }}</span>
+                    </div>
+                    @endif
+                </div>
+
+                {{-- Rejection note --}}
+                @if($consultation->status === 'rejected' && $consultation->rejection_reason)
+                <div class="mt-4 flex items-start gap-2.5 rounded-lg p-3"
+                    style="background: #fef2f2; border: 1px solid #fecaca;">
+                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color: #ef4444;" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.401 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="text-xs leading-relaxed" style="color: #991b1b;">{{
+                        Str::limit($consultation->rejection_reason, 150) }}</p>
+                </div>
+                @endif
+            </a>
+
+            {{-- Footer action bar --}}
+            <div class="flex items-center justify-between border-t border-slate-100 px-5 sm:px-6 py-3"
+                style="background: #f8fafc;">
+                <a href="{{ route('student.consultations.show', $consultation->id) }}"
+                    class="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors text-tangerine-600 hover:text-tangerine-700">
+                    View Details
+                    <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M12.97 3.97a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 11-1.06-1.06l6.22-6.22H3a.75.75 0 010-1.5h16.19l-6.22-6.22a.75.75 0 010-1.06z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </a>
+
+                @if($consultation->canBeCancelled())
+                <div>
+                    <button type="button"
+                        onclick="if(confirm('Are you sure you want to cancel this consultation?')){document.getElementById('cancel-form-{{ $consultation->id }}').submit()}"
+                        class="text-sm font-medium transition-colors" style="color: #ef4444;">
+                        Cancel
+                    </button>
+                    <form id="cancel-form-{{ $consultation->id }}"
+                        action="{{ route('student.consultations.cancel', $consultation->id) }}" method="POST"
+                        class="hidden">
+                        @csrf
+                    </form>
+                </div>
+                @endif
+            </div>
+        </article>
+        @empty
+        {{-- ========== EMPTY STATE ========== --}}
+        <div class="flex flex-col items-center justify-center py-28">
+            <div class="relative">
+                <div class="absolute inset-0 rounded-3xl blur-2xl" style="background: rgba(255,107,0,0.1);"></div>
+                <div class="relative w-20 h-20 rounded-3xl flex items-center justify-center"
+                    style="background: linear-gradient(135deg, #FFF5EB, #FFE6CC);">
+                    <svg class="w-9 h-9 text-tangerine-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v10.5a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9H3.75v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+            <h2 class="mt-8 text-2xl font-bold text-slate-800">No consultations yet</h2>
+            <p class="mt-3 text-sm text-slate-500 max-w-sm text-center leading-relaxed">
+                You haven't made any consultation requests{{ $selectedStatus ? ' with status "' . $selectedStatus . '"'
+                : '' }}. Start by requesting a new one!
+            </p>
+            <a href="{{ route('student.consultations.create') }}"
+                class="mt-8 inline-flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 bg-tangerine-600 hover:bg-tangerine-700"
+                style="padding: 10px;">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M11.25 4.5a.75.75 0 011.5 0v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5z" />
+                </svg>
+                Create Request
+            </a>
+        </div>
+        @endforelse
+    </div>
+
+    {{-- Pagination --}}
+    @if($consultations->hasPages())
+    <div class="mt-10">
+        {{ $consultations->links() }}
+    </div>
+    @endif
 </div>
 @endsection

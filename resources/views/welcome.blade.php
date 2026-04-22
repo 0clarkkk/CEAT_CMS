@@ -1,3 +1,8 @@
+{{-- Landing Page
+     The primary public entry point for CEAT.
+     Features a hero carousel, recent news, featured research, and a CTA section.
+     Themed with tangerine, white, and gray.
+--}}
 @extends('layouts.public')
 
 @php
@@ -8,7 +13,8 @@
     [x-cloak] { display: none !important; }
     
     .gradient-mesh {
-        background: linear-gradient(-45deg, rgba(154, 52, 57, 0.05), rgba(255, 199, 0, 0.05), rgba(154, 52, 57, 0.03));
+        /* Tangerine tinted mesh background */
+        background: linear-gradient(-45deg, rgba(255, 107, 0, 0.05), rgba(204, 82, 0, 0.05), rgba(255, 138, 51, 0.03));
         background-size: 400% 400%;
         animation: mesh 15s ease infinite;
     }
@@ -28,7 +34,7 @@
     }
 
     .accent-line::before {
-        @apply absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-primary-500 to-maroon-600 transition-all duration-500 group-hover:w-full;
+        @apply absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-tangerine-400 to-tangerine-600 transition-all duration-500 group-hover:w-full;
         content: '';
     }
 </style>
@@ -55,7 +61,8 @@
     }" x-init="init()" class="relative bg-gray-100 pt-24 pb-0 w-full">
         <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl" style="will-change: opacity; height: 500px;" :style="{ height: window.innerWidth >= 1024 ? '700px' : window.innerWidth >= 640 ? '600px' : '500px' }">
-                <!-- News Carousel Slides -->
+                
+                {{-- Carousel Slides --}}
                 @forelse($latestNews as $index => $news)
                     <div x-show="currentSlide === {{ $index }}" class="absolute inset-0 w-full h-full bg-gray-900 flex items-center justify-center" style="position: relative; will-change: opacity;">
                         @if($news->getFeaturedImageUrl())
@@ -64,9 +71,10 @@
                             <!-- Clear image with contain and padding -->
                             <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" style="z-index: 10; position: relative; object-fit: contain; padding: 0.5rem; max-width: 100%; max-height: 100%; width: auto; height: auto;">
                         @else
-                            <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center z-0">
+                            {{-- Fallback Slide Background: Gray gradient instead of maroon --}}
+                            <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center z-0">
                                 <div class="text-center text-white">
-                                    <div class="text-6xl mb-4">◈</div>
+                                    <div class="text-6xl mb-4 text-tangerine-500">◈</div>
                                     <p class="text-xl font-semibold">{{ $news->title }}</p>
                                 </div>
                             </div>
@@ -75,10 +83,10 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" style="z-index: 20;"></div>
                     </div>
                 @empty
-                    <!-- Fallback Slide -->
-                    <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                    <!-- Fallback Slide when no news -->
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
                         <div class="text-center text-white">
-                            <div class="text-6xl mb-4">◈</div>
+                            <div class="text-6xl mb-4 text-tangerine-500">◈</div>
                             <p class="text-xl font-semibold">Welcome to CEAT</p>
                         </div>
                     </div>
@@ -86,21 +94,23 @@
 
                 <!-- Navigation Buttons -->
                 @if(count($latestNews) > 1)
-                    <button type="button" @click="goToSlide((currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }})" class="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='rgb(147, 51, 54)'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
+                    {{-- Left Button --}}
+                    <button type="button" @click="goToSlide((currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }})" class="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='#FF6B00'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button type="button" @click="goToSlide((currentSlide + 1) % {{ count($latestNews) }})" class="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='rgb(147, 51, 54)'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
+                    {{-- Right Button --}}
+                    <button type="button" @click="goToSlide((currentSlide + 1) % {{ count($latestNews) }})" class="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='#FF6B00'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
 
-                    <!-- Dots -->
+                    <!-- Dots (Active dot is tangerine) -->
                     <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-2">
                         @for($i = 0; $i < count($latestNews); $i++)
-                            <button type="button" @click="goToSlide({{ $i }})" :class="currentSlide === {{ $i }} ? 'bg-primary-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
+                            <button type="button" @click="goToSlide({{ $i }})" :class="currentSlide === {{ $i }} ? 'bg-tangerine-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
                         @endfor
                     </div>
                 @endif
@@ -110,7 +120,8 @@
 
     <!-- News & Events Section -->
     <section class="py-24 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"></div>
+        {{-- Decorative Blob --}}
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-tangerine-500/5 rounded-full blur-3xl"></div>
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Section Header -->
@@ -136,7 +147,7 @@
                                         <img src="{{ $featured->getFeaturedImageUrl() }}" alt="{{ $featured->title }}" style="z-index: 10; position: relative; object-fit: contain; padding: 0.5rem; max-width: 100%; max-height: 100%; width: auto; height: auto; transition: transform 0.5s ease;" class="group-hover:scale-105">
                                     </div>
                                 @else
-                                    <div class="h-80 bg-gradient-to-br from-maroon-600 to-maroon-800 flex items-center justify-center">
+                                    <div class="h-80 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
                                         <div class="text-6xl text-white/30">◈</div>
                                     </div>
                                 @endif
@@ -144,10 +155,10 @@
                                     <div class="text-gray-600 text-base font-semibold mb-2">
                                         {{ $featured->published_at?->format('F d, Y') }}
                                     </div>
-                                    <h3 class="text-2xl font-bold text-gray-900 mb-3 hover:text-maroon-700 transition-colors line-clamp-3">{{ $featured->title }}</h3>
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-3 hover:text-tangerine-600 transition-colors line-clamp-3">{{ $featured->title }}</h3>
                                     <p class="text-gray-600 text-base line-clamp-4 flex-grow">{{ $featured->excerpt ?? Str::limit(strip_tags($featured->content), 200) }}</p>
                                     <div class="pt-4 mt-4 border-t border-gray-100">
-                                        <span class="inline-flex items-center text-gray-500 font-semibold text-sm hover:text-maroon-600 transition-colors cursor-pointer">
+                                        <span class="inline-flex items-center text-gray-500 font-semibold text-sm hover:text-tangerine-600 transition-colors cursor-pointer">
                                             READ MORE →
                                         </span>
                                     </div>
@@ -160,12 +171,13 @@
                     <div class="space-y-4">
                         @foreach($newsCards->skip(1)->take(3) as $news)
                             <a href="{{ route('view.news.show', $news) }}" class="group block">
-                                <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 p-4 hover:border-maroon-200" style="border-top: 4px solid #933336; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                {{-- Changed border-top to tangerine --}}
+                                <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 p-4 hover:border-tangerine-200" style="border-top: 4px solid #FF6B00; border-top-left-radius: 12px; border-top-right-radius: 12px;">
                                     <div class="text-gray-600 text-base font-semibold mb-2">
                                         {{ $news->published_at?->format('F d, Y') }}
                                     </div>
-                                    <h4 class="text-lg font-bold text-gray-900 mb-2 hover:text-maroon-700 transition-colors line-clamp-2">{{ $news->title }}</h4>
-                                    <span class="inline-flex items-center text-gray-500 font-semibold text-xs hover:text-maroon-600 transition-colors cursor-pointer">
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2 hover:text-tangerine-600 transition-colors line-clamp-2">{{ $news->title }}</h4>
+                                    <span class="inline-flex items-center text-gray-500 font-semibold text-xs hover:text-tangerine-600 transition-colors cursor-pointer">
                                         READ MORE →
                                     </span>
                                 </div>
@@ -191,7 +203,8 @@
             </div>
 
             <div class="text-center">
-                <a href="{{ route('view.news') }}" class="inline-flex items-center px-8 py-3 font-bold rounded-xl transition-all duration-300" style="background-color: transparent; border: 2px solid #000000; color: #000000; display: inline-flex; align-items: center;" onmouseover="this.style.backgroundColor='#933336'; this.style.borderColor='#933336'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#000000'; this.style.color='#000000';">
+                {{-- View All News CTA — swaps to tangerine when hovered --}}
+                <a href="{{ route('view.news') }}" class="inline-flex items-center px-8 py-3 font-bold rounded-xl transition-all duration-300" style="background-color: transparent; border: 2px solid #000000; color: #000000; display: inline-flex; align-items: center;" onmouseover="this.style.backgroundColor='#FF6B00'; this.style.borderColor='#FF6B00'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#000000'; this.style.color='#000000';">
                     View All News →
                 </a>
             </div>
@@ -199,9 +212,9 @@
     </section>
 
     <!-- Featured Research Section -->
-    <section class="py-24 bg-gradient-to-br from-maroon-900 via-maroon-800 to-maroon-700 relative overflow-hidden">
+    <section class="py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 relative overflow-hidden">
         <!-- Modern Gradient Overlays -->
-        <div class="absolute top-0 right-0 w-1/3 h-96 bg-gradient-to-b from-primary-500/20 to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute top-0 right-0 w-1/3 h-96 bg-gradient-to-b from-tangerine-500/20 to-transparent rounded-full blur-3xl"></div>
         <div class="absolute bottom-0 left-0 w-1/3 h-96 bg-gradient-to-t from-white/10 to-transparent rounded-full blur-3xl"></div>
         
         <!-- Animated Grid Pattern -->
@@ -221,11 +234,6 @@
             featuredItems: @json($allFeaturedResearch),
             debug: true
         }" x-cloak>
-            <!-- DEBUG: Show data structure -->
-            <div style="background: #1f2937; color: #10b981; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; margin-top: 20px; border: 1px solid #059669;" x-show="debug">
-                <button @click="debug = !debug" style="background: #059669; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">Toggle Debug</button>
-                <pre x-text="'Items count: ' + featuredItems.length + '\nFirst item: ' + JSON.stringify(featuredItems[0], null, 2)"></pre>
-            </div>
             @if($allFeaturedResearch->isNotEmpty())
                 <!-- Section Header -->
                 <div class="text-center mb-16">
@@ -264,7 +272,7 @@
                                      onerror="this.style.display='none'">
                                 
                                 <!-- Fallback Gradient -->
-                                <div id="mainFeatureGradient" class="absolute inset-0 w-full h-full bg-gradient-to-br from-primary-500 to-maroon-600 flex items-center justify-center relative">
+                                <div id="mainFeatureGradient" class="absolute inset-0 w-full h-full bg-gradient-to-br from-tangerine-500 to-gray-800 flex items-center justify-center relative">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                                     <div class="text-center relative z-10">
                                         <div class="text-7xl mb-4 animate-bounce">⚗️</div>
@@ -280,7 +288,7 @@
                                         <button data-index="{{ $index }}" 
                                                 @click="currentGalleryImage = {{ $index }}; updateToResearch({{ $index }})" 
                                                 class="flex-1 aspect-square rounded-lg overflow-hidden border-2 transition-colors duration-300 min-w-0"
-                                                style="border-color: {{ $index === 0 ? '#FCD34D' : 'rgba(255, 255, 255, 0.3)' }}">
+                                                style="border-color: {{ $index === 0 ? '#FF6B00' : 'rgba(255, 255, 255, 0.3)' }}">
                                             @if($research->featured_image)
                                                 <img src="/storage/{{ $research->featured_image }}" 
                                                      alt="Gallery {{ $index + 1 }}" 
@@ -306,8 +314,8 @@
                     <div class="flex flex-col justify-center space-y-6">
                         <!-- Department Tag -->
                         <div class="inline-flex items-center gap-3 w-fit">
-                            <div class="w-3 h-3 bg-gradient-to-r from-primary-400 to-primary-500 rounded-full"></div>
-                            <span class="text-sm font-bold text-primary-300 uppercase tracking-widest" 
+                            <div class="w-3 h-3 bg-gradient-to-r from-tangerine-400 to-tangerine-500 rounded-full"></div>
+                            <span class="text-sm font-bold text-tangerine-300 uppercase tracking-widest" 
                                   id="featureDept">
                                 @if($featuredResearch?->department)
                                     {{ $featuredResearch->department->name }}
@@ -316,8 +324,8 @@
                                 @endif
                             </span>
                             <div class="flex-grow flex gap-1">
-                                <div class="w-1 h-1 bg-primary-400 rounded-full"></div>
-                                <div class="w-1 h-1 bg-primary-400 rounded-full opacity-50"></div>
+                                <div class="w-1 h-1 bg-tangerine-400 rounded-full"></div>
+                                <div class="w-1 h-1 bg-tangerine-400 rounded-full opacity-50"></div>
                             </div>
                         </div>
 
@@ -345,14 +353,14 @@
 
                         <!-- Modern Info Cards -->
                         <div class="grid grid-cols-2 gap-4 mt-6">
-                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-primary-400/50 transition-all duration-300">
-                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider">Director</div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-tangerine-400/50 transition-all duration-300">
+                                <div class="text-xs font-bold text-tangerine-300 mb-2 uppercase tracking-wider">Director</div>
                                 <p class="text-sm text-white font-semibold truncate" id="featureDirector">
                                     {{ $featuredResearch?->director ?? 'N/A' }}
                                 </p>
                             </div>
-                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-primary-400/50 transition-all duration-300">
-                                <div class="text-xs font-bold text-primary-300 mb-2 uppercase tracking-wider">Email</div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 hover:bg-white/15 hover:border-tangerine-400/50 transition-all duration-300">
+                                <div class="text-xs font-bold text-tangerine-300 mb-2 uppercase tracking-wider">Email</div>
                                 <p class="text-sm text-white font-semibold truncate" id="featureEmail">
                                     {{ $featuredResearch?->contact_email ?? 'N/A' }}
                                 </p>
@@ -361,7 +369,7 @@
 
                         <!-- CTA Buttons - Modern Design -->
                         <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                            <a href="javascript:void(0)" onclick="exploreResearch(currentGalleryImage)" class="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-primary-500/40 hover:scale-105 transition-all duration-300 text-center border border-primary-400/50 group relative overflow-hidden cursor-pointer">
+                            <a href="javascript:void(0)" onclick="exploreResearch(currentGalleryImage)" class="px-8 py-4 bg-gradient-to-r from-tangerine-500 to-tangerine-600 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-tangerine-500/40 hover:scale-105 transition-all duration-300 text-center border border-tangerine-400/50 group relative overflow-hidden cursor-pointer">
                                 <span class="relative z-10 flex items-center justify-center gap-2">
                                     Explore Research
                                     <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,7 +383,7 @@
                         </div>
 
                         <!-- Accent Line -->
-                        <div class="h-1 w-16 bg-gradient-to-r from-primary-500 to-transparent rounded-full mt-4"></div>
+                        <div class="h-1 w-16 bg-gradient-to-r from-tangerine-500 to-transparent rounded-full mt-4"></div>
                     </div>
                 </div>
             @else
@@ -410,21 +418,12 @@
                 .trim();
         }
         
-        // Function to get the main image source
-        function getMainImageSrc() {
-            if (!featuredResearchData || !featuredResearchData[currentGalleryIndex]) {
-                return '';
-            }
-            const item = featuredResearchData[currentGalleryIndex];
-            return item.featured_image ? `/storage/${item.featured_image}` : '';
-        }
-        
         // Function to update featured research content when thumbnail is clicked
         function updateToResearch(index) {
             // Update thumbnail borders
             const thumbnails = document.querySelectorAll('#galleryThumbnails button');
             thumbnails.forEach((btn, idx) => {
-                btn.style.borderColor = idx === index ? '#FCD34D' : 'rgba(255, 255, 255, 0.3)';
+                btn.style.borderColor = idx === index ? '#FF6B00' : 'rgba(255, 255, 255, 0.3)';
             });
             
             // Update Alpine component's currentGalleryImage
@@ -489,9 +488,9 @@
     </script>
 
     <!-- CTA Section -->
-    <section class="py-24 bg-gradient-to-r from-maroon-700 via-maroon-600 to-maroon-800 relative overflow-hidden">
+    <section class="py-24 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-tangerine-500/5 rounded-full blur-3xl"></div>
 
         <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl sm:text-5xl font-black text-white mb-6 leading-tight">
@@ -501,7 +500,8 @@
                 Join our community of innovators and become part of UPHSD DALTA's College of Engineering, Architecture, and Technology legacy.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('register') }}" style="padding: 14px 32px; background: #8b0000; color: white; font-weight: 600; border-radius: 8px; text-decoration: none; display: inline-block; transition: all 0.3s ease; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(139, 0, 0, 0.2);" onmouseover="this.style.background='#6b0000'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(139, 0, 0, 0.3)';" onmouseout="this.style.background='#8b0000'; this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(139, 0, 0, 0.2)';">
+                {{-- CTA Enroll button uses bold tangerine style --}}
+                <a href="{{ route('register') }}" style="padding: 14px 32px; background: #FF6B00; color: white; font-weight: 600; border-radius: 8px; text-decoration: none; display: inline-block; transition: all 0.3s ease; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 107, 0, 0.2);" onmouseover="this.style.background='#E55D00'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(255, 107, 0, 0.3)';" onmouseout="this.style.background='#FF6B00'; this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(255, 107, 0, 0.2)';">
                     Enroll Now
                 </a>
                 <a href="{{ route('view.programs') }}" class="px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/30 hover:shadow-2xl hover:shadow-white/20 transition-all duration-300 border border-white/30 hover:border-white hover:scale-110">

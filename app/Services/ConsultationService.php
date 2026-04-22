@@ -7,7 +7,7 @@ namespace App\Services;
 use App\Models\Consultation;
 use App\Models\AdvisorAvailabilitySlot;
 use App\Models\User;
-use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
 use Exception;
 
@@ -26,12 +26,28 @@ class ConsultationService
     ): Consultation {
         // Validate advisor exists and is faculty with active consultation schedules
         $advisor = User::findOrFail($advisorId);
+        
+        \Log::info('Creating consultation', [
+            'student_id' => $studentId,
+            'advisor_id' => $advisorId,
+            'advisor_role' => $advisor->role,
+            'advisor_name' => $advisor->name,
+        ]);
+        
         if ($advisor->role !== 'faculty') {
+            \Log::error('Advisor is not faculty', ['advisor_id' => $advisorId, 'role' => $advisor->role]);
             throw new Exception("User {$advisorId} is not a faculty member.");
         }
         
         // Verify advisor has active consultation slots
-        if (!$advisor->availabilitySlots()->where('status', 'available')->exists()) {
+        $availableSlots = $advisor->availabilitySlots()->where('status', 'available')->count();
+        \Log::info('Checking advisor availability slots', [
+            'advisor_id' => $advisorId,
+            'available_slots' => $availableSlots,
+        ]);
+        
+        if ($availableSlots === 0) {
+            \Log::error('Advisor has no available slots', ['advisor_id' => $advisorId]);
             throw new Exception("Advisor {$advisorId} has no available consultation slots.");
         }
 
@@ -277,7 +293,7 @@ class ConsultationService
     /**
      * Get all consultations for a student with pagination.
      */
-    public function getStudentConsultations(int $studentId, ?string $status = null, int $perPage = 15): Paginator
+    public function getStudentConsultations(int $studentId, ?string $status = null, int $perPage = 15): LengthAwarePaginator
     {
         $query = Consultation::forStudent($studentId)
             ->with(['advisor', 'student', 'rejectedBy'])
@@ -293,7 +309,7 @@ class ConsultationService
     /**
      * Get all consultations for an advisor with pagination.
      */
-    public function getAdvisorConsultations(int $advisorId, ?string $status = null, int $perPage = 15): Paginator
+    public function getAdvisorConsultations(int $advisorId, ?string $status = null, int $perPage = 15): LengthAwarePaginator
     {
         $query = Consultation::forAdvisor($advisorId)
             ->with(['advisor', 'student', 'rejectedBy'])

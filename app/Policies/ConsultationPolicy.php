@@ -27,8 +27,8 @@ class ConsultationPolicy
             return true;
         }
 
-        // Advisor can view consultations assigned to them
-        if ($user->id === $consultation->advisor_id && $user->hasRole('advisor')) {
+        // Advisor (faculty with active slots) can view consultations assigned to them
+        if ($user->id === $consultation->advisor_id && $user->role === 'faculty') {
             return true;
         }
 
@@ -95,7 +95,7 @@ class ConsultationPolicy
     {
         // Only the assigned advisor can approve
         return $user->id === $consultation->advisor_id 
-            && $user->hasRole('advisor')
+            && $user->role === 'faculty'
             && $consultation->isPending();
     }
 
@@ -106,7 +106,7 @@ class ConsultationPolicy
     {
         // Only the assigned advisor can reject
         return $user->id === $consultation->advisor_id 
-            && $user->hasRole('advisor')
+            && $user->role === 'faculty'
             && $consultation->isPending();
     }
 
@@ -117,7 +117,7 @@ class ConsultationPolicy
     {
         // Only the assigned advisor can schedule
         return $user->id === $consultation->advisor_id 
-            && $user->hasRole('advisor')
+            && $user->role === 'faculty'
             && $consultation->isApproved();
     }
 
@@ -128,7 +128,7 @@ class ConsultationPolicy
     {
         // Only the assigned advisor can reschedule
         return $user->id === $consultation->advisor_id 
-            && $user->hasRole('advisor')
+            && $user->role === 'faculty'
             && $consultation->canBeRescheduled();
     }
 
@@ -144,7 +144,7 @@ class ConsultationPolicy
 
         // Advisor can cancel their consultations
         if ($user->id === $consultation->advisor_id 
-            && $user->hasRole('advisor')
+            && $user->role === 'faculty'
             && $consultation->canBeCancelled()) {
             return true;
         }
@@ -159,7 +159,7 @@ class ConsultationPolicy
     {
         // Only the assigned advisor can mark as completed
         return $user->id === $consultation->advisor_id 
-            && $user->hasRole('advisor')
+            && $user->role === 'faculty'
             && $consultation->isScheduled();
     }
 }

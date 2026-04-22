@@ -47,10 +47,6 @@ class ProfileController extends Controller
             'education' => 'nullable|string',
             'research_interests' => 'nullable|string',
             'publications' => 'nullable|string',
-            'advisor_bio' => 'nullable|string|max:1000',
-            'default_consultation_duration' => 'nullable|integer|in:15,30,45,60',
-            'cancellation_deadline_hours' => 'nullable|integer|in:1,2,4,24,48',
-            'is_advisor_visible' => 'nullable|boolean',
         ]);
 
         // Handle photo upload

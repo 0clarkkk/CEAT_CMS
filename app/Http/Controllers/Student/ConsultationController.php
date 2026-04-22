@@ -66,6 +66,10 @@ class ConsultationController extends Controller
         
         $query = User::where('role', 'faculty')
             ->where('is_active', true)
+            ->whereHas('facultyMember', function($q) {
+                $q->where('is_advisor', true)
+                  ->where('is_advisor_visible', true);
+            })
             ->whereHas('availabilitySlots', fn($q) => 
                 $q->where('status', 'available')
                   ->where('start_time', '>=', now())
@@ -98,6 +102,10 @@ class ConsultationController extends Controller
         $advisors = User::where('role', 'faculty')
             ->where('is_active', true)
             ->with(['facultyMember.department'])
+            ->whereHas('facultyMember', function($q) {
+                $q->where('is_advisor', true)
+                  ->where('is_advisor_visible', true);
+            })
             ->whereHas('availabilitySlots', fn($q) => 
                 $q->where('status', 'available')
                   ->where('start_time', '>=', now())
@@ -126,6 +134,12 @@ class ConsultationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        \Log::info('Consultation store request received', [
+            'advisor_id' => $request->input('advisor_id'),
+            'title' => $request->input('title'),
+            'student_id' => auth()->id(),
+        ]);
+
         $validated = $request->validate([
             'advisor_id' => 'required|integer|exists:users,id',
             'title' => 'required|string|max:255',
@@ -133,6 +147,8 @@ class ConsultationController extends Controller
             'category' => 'required|in:academic,career,personal,technical,thesis,other',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        \Log::info('Consultation validation passed', $validated);
 
         try {
             $consultation = $this->consultationService->createConsultationRequest(
@@ -144,10 +160,17 @@ class ConsultationController extends Controller
                 notes: $validated['notes'] ?? null,
             );
 
+            \Log::info('Consultation created successfully', ['consultation_id' => $consultation->id]);
+
             return redirect()
                 ->route('student.consultations.show', $consultation->id)
                 ->with('success', 'Consultation request submitted successfully!');
         } catch (\Exception $e) {
+            \Log::error('Consultation creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return back()
                 ->withInput()
                 ->with('error', $e->getMessage());

@@ -6,12 +6,10 @@ namespace App\Http\Controllers\Faculty;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consultation;
-use App\Models\FacultyMember;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Carbon\Carbon;
-use Illuminate\Pagination\Paginator;
 
 class ConsultationController extends Controller
 {
@@ -21,23 +19,9 @@ class ConsultationController extends Controller
     public function index(Request $request): View
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
-
-        if (!$faculty) {
-            return view('faculty.consultations.index', [
-                'consultations' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15, 1),
-                'stats' => [
-                    'total' => 0,
-                    'pending' => 0,
-                    'approved' => 0,
-                    'scheduled' => 0,
-                    'completed' => 0,
-                    'rejected' => 0,
-                ],
-            ]);
-        }
-
-        $query = Consultation::where('advisor_id', $faculty->id);
+        
+        // Query consultations where the advisor_id matches the current user's ID
+        $query = Consultation::where('advisor_id', $user->id);
 
         // Filter by status if provided
         if ($request->has('status') && $request->status) {
@@ -50,12 +34,12 @@ class ConsultationController extends Controller
 
         // Get statistics
         $stats = [
-            'total' => Consultation::where('advisor_id', $faculty->id)->count(),
-            'pending' => Consultation::where('advisor_id', $faculty->id)->where('status', 'pending')->count(),
-            'approved' => Consultation::where('advisor_id', $faculty->id)->where('status', 'approved')->count(),
-            'scheduled' => Consultation::where('advisor_id', $faculty->id)->where('status', 'scheduled')->count(),
-            'completed' => Consultation::where('advisor_id', $faculty->id)->where('status', 'completed')->count(),
-            'rejected' => Consultation::where('advisor_id', $faculty->id)->where('status', 'rejected')->count(),
+            'total' => Consultation::where('advisor_id', $user->id)->count(),
+            'pending' => Consultation::where('advisor_id', $user->id)->where('status', 'pending')->count(),
+            'approved' => Consultation::where('advisor_id', $user->id)->where('status', 'approved')->count(),
+            'scheduled' => Consultation::where('advisor_id', $user->id)->where('status', 'scheduled')->count(),
+            'completed' => Consultation::where('advisor_id', $user->id)->where('status', 'completed')->count(),
+            'rejected' => Consultation::where('advisor_id', $user->id)->where('status', 'rejected')->count(),
         ];
 
         return view('faculty.consultations.index', [
@@ -70,10 +54,9 @@ class ConsultationController extends Controller
     public function show(Consultation $consultation): View
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
         // Check if this consultation belongs to the faculty member
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -90,9 +73,8 @@ class ConsultationController extends Controller
     public function rejectForm(Consultation $consultation): View
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -107,9 +89,8 @@ class ConsultationController extends Controller
     public function reject(Consultation $consultation, Request $request): RedirectResponse
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -120,7 +101,7 @@ class ConsultationController extends Controller
         $consultation->update([
             'status' => 'rejected',
             'rejection_reason' => $validated['rejection_reason'],
-            'rejected_by' => $faculty->id,
+            'rejected_by' => $user->id,
             'rejected_at' => now(),
         ]);
 
@@ -135,9 +116,8 @@ class ConsultationController extends Controller
     public function approveForm(Consultation $consultation): View
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -152,9 +132,8 @@ class ConsultationController extends Controller
     public function approve(Consultation $consultation, Request $request): RedirectResponse
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -173,9 +152,8 @@ class ConsultationController extends Controller
     public function scheduleForm(Consultation $consultation): View
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -190,9 +168,8 @@ class ConsultationController extends Controller
     public function schedule(Consultation $consultation, Request $request): RedirectResponse
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -225,9 +202,8 @@ class ConsultationController extends Controller
     public function rescheduleForm(Consultation $consultation): View
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -242,9 +218,8 @@ class ConsultationController extends Controller
     public function reschedule(Consultation $consultation, Request $request): RedirectResponse
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -276,9 +251,8 @@ class ConsultationController extends Controller
     public function complete(Consultation $consultation, Request $request): RedirectResponse
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
@@ -298,9 +272,8 @@ class ConsultationController extends Controller
     public function cancel(Consultation $consultation): RedirectResponse
     {
         $user = auth()->user();
-        $faculty = FacultyMember::where('user_id', $user->id)->first();
 
-        if (!$faculty || $consultation->advisor_id !== $faculty->id) {
+        if ($consultation->advisor_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 

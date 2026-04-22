@@ -16,6 +16,21 @@ export default {
                 display: ['Inter', 'Figtree', ...defaultTheme.fontFamily.sans],
             },
             colors: {
+                // Tangerine palette — new primary brand color (orange)
+                'tangerine': {
+                    50:  '#FFF5EB',
+                    100: '#FFE8D1',
+                    200: '#FFD1A3',
+                    300: '#FFB066',
+                    400: '#FF8A33',
+                    500: '#FF6B00',
+                    600: '#E55D00',
+                    700: '#CC5200',
+                    800: '#993D00',
+                    900: '#662900',
+                    950: '#331400',
+                },
+                // Legacy maroon palette — kept for authenticated views
                 'maroon': {
                     50: '#fdf2f2',
                     100: '#fce4e4',

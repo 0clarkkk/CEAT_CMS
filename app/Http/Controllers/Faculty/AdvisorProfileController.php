@@ -35,10 +35,14 @@ class AdvisorProfileController extends Controller
     {
         $validated = $request->validate([
             'is_advisor' => 'required|boolean',
+            'is_advisor_visible' => 'nullable|boolean',
             'consultation_info' => 'nullable|string|max:1000',
             'office_location' => 'nullable|string|max:255',
             'office_hours' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:20',
+            'advisor_bio' => 'nullable|string|max:1000',
+            'default_consultation_duration' => 'nullable|integer|in:15,30,45,60',
+            'cancellation_deadline_hours' => 'nullable|integer|in:1,2,4,24,48',
         ]);
 
         $faculty = FacultyMember::where('email', auth()->user()->email)->firstOrFail();
@@ -50,7 +54,6 @@ class AdvisorProfileController extends Controller
             $request->validate([
                 'consultation_info' => 'required|string|max:1000',
                 'office_location' => 'required|string|max:255',
-                'office_hours' => 'required|string|max:255',
             ]);
         }
 
