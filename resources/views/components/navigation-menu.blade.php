@@ -8,8 +8,8 @@ Theme: Orange & Black .
     :class="isScrolled ? 'shadow-lg' : ''">
 
     <!-- Top Bar: News Ticker & Socials -->
-    <div class="nav-top-bar flex items-center justify-between px-4 sm:px-6 lg:px-8"
-        style="background-color: #000000; height: 34px; border-bottom: 1px solid #222; z-index: 50;">
+    <div class="nav-top-bar flex items-center justify-between px-4 sm:px-6 lg:px-8 "
+        style="background-color: #000104E6; height: 34px; border-bottom: 1px solid #222; z-index: 50;">
         <div class="flex-1 flex items-center h-full relative overflow-hidden">
             <div class="news-tab"
                 style="background-color: #f05a22; color: white; padding: 0 35px 0 20px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 10px; clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%); position: absolute; left: 0; top: 0; z-index: 20;">

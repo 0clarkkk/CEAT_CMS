@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Login;
+use App\Filament\Http\Responses\LogoutResponse;
 use App\Http\Middleware\FilamentAdminAuthorize;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -27,15 +28,16 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login( Login::class)
+            ->login(Login::class)
             ->colors([
-                'primary' => '#9a3439', // Maroon color
+                'primary' => '#9a3439', 
                 'secondary' => '#ffc700',
                 'success' => '#10b981',
-                'warning' => '#ffc700', // Yellow
+                'warning' => '#ffc700', 
                 'danger' => '#ef4444',
                 'gray' => '#6b7280',
             ])
+            
             ->brandName('College of Engineering')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

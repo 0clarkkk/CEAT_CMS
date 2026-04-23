@@ -115,4 +115,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\AdvisorAvailabilitySlot::class, 'advisor_id');
     }
+
+    /**
+     * Get the user's notification preferences
+     */
+    public function notificationPreferences()
+    {
+        return $this->hasMany(NotificationPreference::class);
+    }
 }

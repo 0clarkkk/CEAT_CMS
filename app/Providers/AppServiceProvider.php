@@ -7,6 +7,8 @@ use App\Models\Consultation;
 use App\Observers\DownloadableFormObserver;
 use App\Policies\ConsultationPolicy;
 use App\View\Composers\NavigationComposer;
+use App\Filament\Http\Responses\LogoutResponse;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-    //
+        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
     /**

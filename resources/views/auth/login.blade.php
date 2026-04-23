@@ -530,7 +530,7 @@
                 </form>
 
                 <p style="text-align: center; font-size: 14px; color: #6b7280; margin-top: 30px;">
-                    Don't have an account?
+                    Don't have an account? 
                     <a href="{{ route('register') }}" style="color: #fb923c; text-decoration: none; font-weight: 600;">Sign up here</a>
                 </p>
             </div>

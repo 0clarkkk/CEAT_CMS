@@ -20,6 +20,13 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
+        // Get archived news (4 news items after the latest 3)
+        $archivedNews = NewsEvent::where('status', 'published')
+            ->orderBy('published_at', 'desc')
+            ->skip(3)
+            ->limit(3)
+            ->get();
+
         $featuredResearch = ResearchCenter::where('is_featured', true)
             ->with('department')
             ->orderBy('featured_order', 'asc')
@@ -35,6 +42,7 @@ class HomeController extends Controller
         return view('welcome', [
             'latestNews' => $latestNews,
             'newsCards' => $newsCards,
+            'archivedNews' => $archivedNews,
             'featuredResearch' => $featuredResearch,
             'allFeaturedResearch' => $allFeaturedResearch,
         ]);

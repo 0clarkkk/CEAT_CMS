@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Pages\Auth\Login as BaseLogin;
+use Filament\Pages\SimplePage;
 use Illuminate\Contracts\Support\Htmlable;
 
-class Login extends BaseLogin
+class Login extends SimplePage
 {
     protected static string $view = 'auth.login';
 

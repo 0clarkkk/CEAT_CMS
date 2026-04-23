@@ -60,6 +60,18 @@ class Consultation extends Model
     ];
 
     /**
+     * Boot the model.
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::created(function (self $consultation) {
+            \App\Events\Consultations\ConsultationCreated::dispatch($consultation);
+        });
+    }
+
+    /**
      * Get the activity log options.
      */
     public function getActivitylogOptions(): LogOptions
@@ -256,5 +268,48 @@ class Consultation extends Model
     public function isPastDue(): bool
     {
         return $this->status === 'scheduled' && $this->scheduled_at < now();
+    }
+
+    /**
+     * Dispatch event when consultation is approved.
+     */
+    public function markAsApproved(): void
+    {
+        $this->status = 'approved';
+        $this->save();
+        \App\Events\Consultations\ConsultationApproved::dispatch($this);
+    }
+
+    /**
+     * Dispatch event when consultation is rejected.
+     */
+    public function markAsRejected(string $reason): void
+    {
+        $this->status = 'rejected';
+        $this->rejection_reason = $reason;
+        $this->rejected_at = now();
+        $this->rejected_by = auth()->id();
+        $this->save();
+        \App\Events\Consultations\ConsultationRejected::dispatch($this);
+    }
+
+    /**
+     * Dispatch event when consultation is scheduled.
+     */
+    public function markAsScheduled(): void
+    {
+        $this->status = 'approved';
+        $this->save();
+        \App\Events\Consultations\ConsultationScheduled::dispatch($this);
+    }
+
+    /**
+     * Dispatch event when consultation is completed.
+     */
+    public function markAsCompleted(): void
+    {
+        $this->status = 'completed';
+        $this->save();
+        \App\Events\Consultations\ConsultationCompleted::dispatch($this);
     }
 }

@@ -41,79 +41,28 @@
 
 @section('content')
 
-    <!-- Carousel Section -->
-    <section x-data="{ 
-        currentSlide: 0, 
-        intervalId: null,
-        init() { 
-            this.startAutoplay();
-        },
-        startAutoplay() {
-            if (this.intervalId) clearInterval(this.intervalId);
-            this.intervalId = setInterval(() => { 
-                this.currentSlide = (this.currentSlide + 1) % {{ count($latestNews) > 0 ? count($latestNews) : 1 }} 
-            }, 3000); 
-        },
-        goToSlide(index) {
-            this.currentSlide = index;
-            this.startAutoplay();
-        }
-    }" x-init="init()" class="relative bg-gray-100 pt-24 pb-0 w-full">
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl" style="will-change: opacity; height: 500px;" :style="{ height: window.innerWidth >= 1024 ? '700px' : window.innerWidth >= 640 ? '600px' : '500px' }">
-                
-                {{-- Carousel Slides --}}
-                @forelse($latestNews as $index => $news)
-                    <div x-show="currentSlide === {{ $index }}" class="absolute inset-0 w-full h-full bg-gray-900 flex items-center justify-center" style="position: relative; will-change: opacity;">
-                        @if($news->getFeaturedImageUrl())
-                            <!-- Blurred background image - scaled to avoid empty edges -->
-                            <img src="{{ $news->getFeaturedImageUrl() }}" alt="" class="absolute inset-0 w-full h-full object-cover" style="filter: blur(25px) brightness(0.6); z-index: 0; transform: scale(1.15);">
-                            <!-- Clear image with contain and padding -->
-                            <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" style="z-index: 10; position: relative; object-fit: contain; padding: 0.5rem; max-width: 100%; max-height: 100%; width: auto; height: auto;">
-                        @else
-                            {{-- Fallback Slide Background: Gray gradient instead of maroon --}}
-                            <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center z-0">
-                                <div class="text-center text-white">
-                                    <div class="text-6xl mb-4 text-tangerine-500">◈</div>
-                                    <p class="text-xl font-semibold">{{ $news->title }}</p>
-                                </div>
-                            </div>
-                        @endif
-                        <!-- Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" style="z-index: 20;"></div>
-                    </div>
-                @empty
-                    <!-- Fallback Slide when no news -->
-                    <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                        <div class="text-center text-white">
-                            <div class="text-6xl mb-4 text-tangerine-500">◈</div>
-                            <p class="text-xl font-semibold">Welcome to CEAT</p>
-                        </div>
-                    </div>
-                @endforelse
-
-                <!-- Navigation Buttons -->
-                @if(count($latestNews) > 1)
-                    {{-- Left Button --}}
-                    <button type="button" @click="goToSlide((currentSlide - 1 + {{ count($latestNews) }}) % {{ count($latestNews) }})" class="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='#FF6B00'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    {{-- Right Button --}}
-                    <button type="button" @click="goToSlide((currentSlide + 1) % {{ count($latestNews) }})" class="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 text-white p-3 rounded-lg transition-all duration-300 hover:scale-110" style="cursor: pointer;" @mouseenter="$el.style.backgroundColor='#FF6B00'" @mouseleave="$el.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-
-                    <!-- Dots (Active dot is tangerine) -->
-                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-2">
-                        @for($i = 0; $i < count($latestNews); $i++)
-                            <button type="button" @click="goToSlide({{ $i }})" :class="currentSlide === {{ $i }} ? 'bg-tangerine-500' : 'bg-white/50'" class="w-3 h-3 rounded-full transition-colors"></button>
-                        @endfor
-                    </div>
-                @endif
+    <!-- Video Hero Section -->
+    <section class="relative w-full bg-black" style="margin-top: 0; padding: 0;">
+        <div style="position: relative; width: 100%; height: 700px; display: flex; align-items: center; justify-content: center;">
+            <!-- Video Background -->
+            <video 
+                autoplay 
+                muted 
+                loop 
+                playsinline
+                controls
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block;">
+                <source src="{{ asset('videos/ceat-vid.mp4') }}" type="video/mp4">
+                <p>Your browser doesn't support HTML5 video. Here is a <a href="{{ asset('videos/ceat-vid.mp4') }}">link to the video</a> instead.</p>
+            </video>
+            
+            <!-- Overlay Gradient -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.3), transparent); z-index: 10;"></div>
+            
+            <!-- Content Overlay -->
+            <div style="position: relative; z-index: 20; text-align: center; color: white;">
+                <h1 style="font-size: 3.75rem; font-weight: 900; margin-bottom: 1rem;">Welcome to CEAT</h1>
+                <p style="font-size: 1.5rem; color: rgba(255,255,255,0.9); margin: 0 auto; max-width: 42rem;">Center of Excellence in Advanced Technology</p>
             </div>
         </div>
     </section>
@@ -123,86 +72,97 @@
         {{-- Decorative Blob --}}
         <div class="absolute top-0 left-1/4 w-96 h-96 bg-tangerine-500/5 rounded-full blur-3xl"></div>
 
+        <!-- Dark background positioned left, extending 70% to right -->
+        <div class="absolute left-0" style="background-color: rgba(0, 1, 4, 0.9); border-radius:0 30px 30px 0; width: 70%; height: 350px; top: 180px;"></div>
+
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Section Header -->
-            <div class="text-center mb-16">
-                <h2 class="text-4xl sm:text-5xl font-black text-gray-900 mb-6">
-                    Latest News & Events
+            <!-- Section Title - Centered Full Width -->
+            <div class="text-center mb-12">
+                <h2 class="text-4xl sm:text-5xl font-black text-gray-900">
+                    Recent News
                 </h2>
             </div>
+        </div>
 
-            <!-- News Cards -->
-            <div class="grid lg:grid-cols-3 gap-8 mb-12">
-                <!-- Featured News (Left - Large Card) -->
+        <!-- News Cards Section - Outside the centered container to align left -->
+        <div class="relative z-10 pl-12 sm:pl-16 lg:pl-20 pt-8 pr-4 sm:pr-6 lg:pr-8"> 
+            <div class="flex gap-8 items-start" style="width: 100%; max-width: none;">
+                <!-- Recent News Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3" style="width: 75%; gap: 60px;">
                 @if($newsCards->isNotEmpty())
-                    @php $featured = $newsCards->first(); @endphp
-                    <div class="lg:col-span-2">
-                        <a href="{{ route('view.news.show', $featured) }}" class="group block">
-                            <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 h-full flex flex-col">
-                                @if($featured->getFeaturedImageUrl())
-                                    <div class="h-80 overflow-hidden relative bg-gray-900 flex items-center justify-center">
-                                        <!-- Blurred background image - scaled to avoid empty edges -->
-                                        <img src="{{ $featured->getFeaturedImageUrl() }}" alt="" class="absolute inset-0 w-full h-full object-cover" style="filter: blur(25px) brightness(0.6); z-index: 0; transform: scale(1.15);">
-                                        <!-- Clear image with contain and padding -->
-                                        <img src="{{ $featured->getFeaturedImageUrl() }}" alt="{{ $featured->title }}" style="z-index: 10; position: relative; object-fit: contain; padding: 0.5rem; max-width: 100%; max-height: 100%; width: auto; height: auto; transition: transform 0.5s ease;" class="group-hover:scale-105">
+                    @foreach($newsCards->take(3) as $index => $news)
+                        <a href="{{ route('view.news.show', $news) }}" class="group block h-full">
+                            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-tangerine-200 flex flex-col" style="border-right: 4px solid #FF6B00; border-top-left-radius: 12px; border-top-right-radius: 12px; height: 280px; width: 260px;">
+                                <!-- Image Section -->
+                                @if($news->getFeaturedImageUrl())
+                                    <div class="h-24 overflow-hidden relative bg-gray-900 flex items-center justify-center">
+                                        <img src="{{ $news->getFeaturedImageUrl() }}" alt="{{ $news->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                     </div>
                                 @else
-                                    <div class="h-80 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                                        <div class="text-6xl text-white/30">◈</div>
+                                    <div class="h-24 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                                        <div class="text-4xl text-white/30">◈</div>
                                     </div>
                                 @endif
-                                <div class="p-8 flex flex-col flex-grow">
-                                    <div class="text-gray-600 text-base font-semibold mb-2">
-                                        {{ $featured->published_at?->format('F d, Y') }}
+                                <!-- Content Section -->
+                                <div class="p-4 flex-grow flex flex-col">
+                                    <div class="text-gray-600 text-sm font-semibold mb-2">
+                                        {{ $news->published_at?->format('F d, Y') }}
                                     </div>
-                                    <h3 class="text-2xl font-bold text-gray-900 mb-3 hover:text-tangerine-600 transition-colors line-clamp-3">{{ $featured->title }}</h3>
-                                    <p class="text-gray-600 text-base line-clamp-4 flex-grow">{{ $featured->excerpt ?? Str::limit(strip_tags($featured->content), 200) }}</p>
-                                    <div class="pt-4 mt-4 border-t border-gray-100">
-                                        <span class="inline-flex items-center text-gray-500 font-semibold text-sm hover:text-tangerine-600 transition-colors cursor-pointer">
-                                            READ MORE →
-                                        </span>
-                                    </div>
+                                    <h4 class="text-base font-bold text-gray-900 hover:text-tangerine-600 transition-colors line-clamp-2">{{ $news->title }}</h4>
                                 </div>
                             </div>
                         </a>
-                    </div>
-
-                    <!-- News List (Right - Vertical Cards) -->
-                    <div class="space-y-4">
-                        @foreach($newsCards->skip(1)->take(3) as $news)
-                            <a href="{{ route('view.news.show', $news) }}" class="group block">
-                                {{-- Changed border-top to tangerine --}}
-                                <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 p-4 hover:border-tangerine-200" style="border-top: 4px solid #FF6B00; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                                    <div class="text-gray-600 text-base font-semibold mb-2">
-                                        {{ $news->published_at?->format('F d, Y') }}
-                                    </div>
-                                    <h4 class="text-lg font-bold text-gray-900 mb-2 hover:text-tangerine-600 transition-colors line-clamp-2">{{ $news->title }}</h4>
-                                    <span class="inline-flex items-center text-gray-500 font-semibold text-xs hover:text-tangerine-600 transition-colors cursor-pointer">
-                                        READ MORE →
-                                    </span>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
+                    @endforeach
                 @else
-                    <!-- Fallback when no news -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 h-96 flex items-center justify-center">
-                            <div class="text-center">
-                                <div class="text-6xl text-gray-300 mb-4">◈</div>
-                                <p class="text-gray-500 font-semibold">No News Available</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-                            <p class="text-gray-500 text-sm">Check back soon for latest updates</p>
-                        </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center md:col-span-3">
+                        <p class="text-gray-500 text-sm">Check back soon for latest updates</p>
                     </div>
                 @endif
-            </div>
+                </div>
 
-            <div class="text-center">
+                <!-- Archived News Section (Right Gap) -->
+@if($archivedNews->isNotEmpty())
+    <div style="width: 25%; flex-shrink: 0; margin-top: -50px;">
+        
+        <!-- Single Container -->
+        <div class="bg-gray-100 rounded-lg shadow-md overflow-hidden" style="border-top: 6px solid #FF6B00;">
+            
+            @foreach($archivedNews as $index => $news)
+                <a href="{{ route('view.news.show', $news) }}" class="block group">
+                    
+                    <div class="p-6">
+                        <!-- Date -->
+                        <div class="text-orange-400 text-sm italic mb-3">
+                            {{ $news->published_at?->format('F d, Y') }}
+                        </div>
+
+                        <!-- Title -->
+                        <h5 class="text-base font-bold text-gray-900 leading-snug group-hover:text-orange-600 transition-colors">
+                            {{ $news->title }}
+                        </h5>
+
+                        <!-- Read More -->
+                        <div class="mt-3 text-orange-500 text-sm font-semibold tracking-wide">
+                            READ MORE →
+                        </div>
+                    </div>
+
+                    <!-- Divider (except last item) -->
+                    @if(!$loop->last)
+                        <div class="border-t border-gray-300 mx-6"></div>
+                    @endif
+
+                </a>
+            @endforeach
+
+        </div>
+    </div>
+@endif
+            </div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center" style="margin-top: 1rem;">
                 {{-- View All News CTA — swaps to tangerine when hovered --}}
                 <a href="{{ route('view.news') }}" class="inline-flex items-center px-8 py-3 font-bold rounded-xl transition-all duration-300" style="background-color: transparent; border: 2px solid #000000; color: #000000; display: inline-flex; align-items: center;" onmouseover="this.style.backgroundColor='#FF6B00'; this.style.borderColor='#FF6B00'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#000000'; this.style.color='#000000';">
                     View All News →
