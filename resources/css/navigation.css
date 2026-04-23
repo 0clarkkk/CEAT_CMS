@@ -164,6 +164,195 @@ nav * {
     transition-timing-function: ease;
 }
 
+/* --- New Triple-Layer Navigation Styles --- */
+
+/* Top Bar & News Ticker */
+.nav-top-bar {
+    background-color: #121212;
+    height: 40px;
+    overflow: hidden;
+    position: relative;
+}
+
+@media (max-width: 1024px) {
+    .nav-top-bar {
+        display: flex !important;
+        height: 34px;
+    }
+    
+    .news-ticker-container {
+        padding-left: 100px !important;
+    }
+    
+    .news-tab {
+        font-size: 10px !important;
+        padding: 0 25px 0 15px !important;
+    }
+}
+
+.news-tab-container {
+    height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.news-tab {
+    background-color: #f05a22; /* Orange */
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 0 35px 0 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%);
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.news-tab:hover {
+    background-color: #ffc700;
+    color: #7f1416;
+}
+
+.news-ticker-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 120px; /* Space for the tab */
+}
+
+.news-ticker-content {
+    white-space: nowrap;
+    display: inline-block;
+    animation: ticker-animation 30s linear infinite;
+    color: #e5e7eb;
+    font-size: 13px;
+    font-style: italic;
+}
+
+@keyframes ticker-animation {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.social-icons-container {
+    display: flex;
+    height: 100%;
+}
+
+.social-icon-box {
+    background-color: #1a1a1a;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    border-left: 1px solid #333;
+    transition: all 0.2s ease;
+}
+
+.social-icon-box:hover {
+    background-color: #7f1416;
+    color: white;
+}
+
+/* Brand Bar */
+.brand-bar {
+    background-color: white;
+    padding: 15px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.nav-search-container {
+    position: relative;
+    width: 280px;
+}
+
+.nav-search-input {
+    width: 100%;
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 9999px;
+    padding: 8px 16px 8px 40px;
+    font-size: 14px;
+    color: #4b5563;
+    transition: all 0.3s ease;
+}
+
+.nav-search-input:focus {
+    background-color: #e5e7eb;
+    box-shadow: 0 0 0 2px rgba(127, 20, 22, 0.1);
+    outline: none;
+}
+
+.nav-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+/* Main Nav Bar */
+.main-nav-bar {
+    background-color: #f05a22; /* Orange */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.nav-menu-item {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.nav-menu-item:hover, .nav-menu-item.active {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.nav-menu-item svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0.8;
+}
+
+/* Dropdown styling for the new layout */
+.nav-dropdown-menu {
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #f05a22;
+    min-width: 220px;
+}
+
+.nav-dropdown-item {
+    color: #374151;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-dropdown-item:hover {
+    background-color: #f9fafb;
+    color: #7f1416;
+    padding-left: 24px;
+}
+
 /* Dropdown arrow rotation animation */
 .nav-link svg,
 nav button svg {

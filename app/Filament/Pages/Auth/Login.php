@@ -9,6 +9,8 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class Login extends BaseLogin
 {
+    protected static string $view = 'auth.login';
+
     public function getTitle(): string | Htmlable
     {
         return 'Admin Portal';

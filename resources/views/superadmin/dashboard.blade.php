@@ -63,19 +63,31 @@
                         User Management
                     </h3>
                     <div class="space-y-2">
-                        @foreach([
-                            ['route' => 'users.index', 'icon' => '👤', 'label' => 'Manage All Users', 'bg' => 'bg-maroon-100'],
-                            ['route' => 'admins.index', 'icon' => '🛡️', 'label' => 'Manage Administrators', 'bg' => 'bg-primary-100'],
-                            ['route' => 'roles.index', 'icon' => '🔑', 'label' => 'Manage Roles', 'bg' => 'bg-violet-100'],
-                            ['route' => 'permissions.index', 'icon' => '🔒', 'label' => 'Manage Permissions', 'bg' => 'bg-emerald-100'],
-                        ] as $item)
-                        <a href="{{ route($item['route']) ?? '#' }}" class="flex items-center justify-between p-3 rounded-xl hover:bg-maroon-50/50 transition-all duration-300 group">
+                        @php
+                            $userMgmtLinks = [
+                                ['url' => url('/admin/users'),           'icon' => '👤', 'label' => 'Manage All Users',       'bg' => 'bg-maroon-100', 'active' => true],
+                                ['url' => url('/admin/administrators'),   'icon' => '🛡️', 'label' => 'Manage Administrators',   'bg' => 'bg-primary-100', 'active' => true],
+                                ['url' => '#',                           'icon' => '🔑', 'label' => 'Manage Roles',            'bg' => 'bg-violet-100', 'active' => false],
+                                ['url' => '#',                           'icon' => '🔒', 'label' => 'Manage Permissions',      'bg' => 'bg-emerald-100', 'active' => false],
+                            ];
+                        @endphp
+                        @foreach($userMgmtLinks as $item)
+                        @if($item['active'])
+                        <a href="{{ $item['url'] }}" class="flex items-center justify-between p-3 rounded-xl hover:bg-maroon-50/50 transition-all duration-300 group">
                             <div class="flex items-center gap-3">
                                 <span class="w-7 h-7 {{ $item['bg'] }} rounded-lg flex items-center justify-center text-xs">{{ $item['icon'] }}</span>
                                 <span class="text-sm font-medium text-gray-700 group-hover:text-maroon-600 transition-colors">{{ $item['label'] }}</span>
                             </div>
                             <svg class="w-4 h-4 text-gray-300 group-hover:text-maroon-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
+                        @else
+                        <div class="flex items-center justify-between p-3 rounded-xl opacity-50 cursor-not-allowed">
+                            <div class="flex items-center gap-3">
+                                <span class="w-7 h-7 {{ $item['bg'] }} rounded-lg flex items-center justify-center text-xs">{{ $item['icon'] }}</span>
+                                <span class="text-sm font-medium text-gray-400">{{ $item['label'] }} <span class="text-xs">(Coming Soon)</span></span>
+                            </div>
+                        </div>
+                        @endif
                         @endforeach
                     </div>
                 </div>
@@ -111,22 +123,81 @@
                         System Settings
                     </h3>
                     <div class="space-y-2">
-                        @foreach([
-                            ['route' => 'settings.index', 'icon' => '⚙️', 'label' => 'Global Settings', 'bg' => 'bg-gray-100'],
-                            ['route' => 'backups.index', 'icon' => '💾', 'label' => 'Database Backups', 'bg' => 'bg-emerald-100'],
-                            ['route' => 'logs.index', 'icon' => '📝', 'label' => 'System Logs', 'bg' => 'bg-amber-100'],
-                            ['route' => 'audit.index', 'icon' => '🔍', 'label' => 'Audit Trail', 'bg' => 'bg-violet-100'],
-                        ] as $item)
-                        <a href="{{ route($item['route']) ?? '#' }}" class="flex items-center justify-between p-3 rounded-xl hover:bg-maroon-50/50 transition-all duration-300 group">
+                        @php
+                            $systemLinks = [
+                                ['url' => '#', 'icon' => '⚙️', 'label' => 'Global Settings',   'bg' => 'bg-gray-100',    'active' => false],
+                                ['url' => '#', 'icon' => '💾', 'label' => 'Database Backups',   'bg' => 'bg-emerald-100', 'active' => false],
+                                ['url' => '#', 'icon' => '📝', 'label' => 'System Logs',         'bg' => 'bg-amber-100',   'active' => false],
+                                ['url' => '#', 'icon' => '🔍', 'label' => 'Audit Trail',         'bg' => 'bg-violet-100',  'active' => false],
+                            ];
+                        @endphp
+                        @foreach($systemLinks as $item)
+                        <div class="flex items-center justify-between p-3 rounded-xl opacity-50 cursor-not-allowed">
                             <div class="flex items-center gap-3">
                                 <span class="w-7 h-7 {{ $item['bg'] }} rounded-lg flex items-center justify-center text-xs">{{ $item['icon'] }}</span>
-                                <span class="text-sm font-medium text-gray-700 group-hover:text-maroon-600 transition-colors">{{ $item['label'] }}</span>
+                                <span class="text-sm font-medium text-gray-400">{{ $item['label'] }} <span class="text-xs">(Coming Soon)</span></span>
                             </div>
-                            <svg class="w-4 h-4 text-gray-300 group-hover:text-maroon-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </a>
+                        </div>
                         @endforeach
                     </div>
                 </div>
+            </div>
+
+            <!-- Recent Administrators -->
+            <div class="bg-white rounded-2xl shadow-card p-6 border border-gray-100 mb-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <span class="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center text-sm">🛡️</span>
+                        Recent Administrators
+                    </h3>
+                    <a href="{{ url('/admin/administrators') }}"
+                       class="text-xs font-semibold text-maroon-600 hover:text-maroon-800 hover:underline transition-colors">
+                        View all →
+                    </a>
+                </div>
+
+                @if(isset($recentAdmins) && $recentAdmins->count())
+                    <div class="divide-y divide-gray-50">
+                        @foreach($recentAdmins as $admin)
+                        <div class="flex items-center justify-between py-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 bg-gradient-to-br from-maroon-400 to-maroon-600 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                                    {{ strtoupper(substr($admin->name, 0, 2)) }}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-800">{{ $admin->name }}</p>
+                                    <p class="text-xs text-gray-400">{{ $admin->email }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                @if($admin->is_active)
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Active
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600">
+                                        <span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span> Inactive
+                                    </span>
+                                @endif
+                                <a href="{{ url('/admin/administrators/' . $admin->id . '/edit') }}"
+                                   class="p-1.5 rounded-lg hover:bg-maroon-50 text-gray-400 hover:text-maroon-600 transition-colors"
+                                   title="Edit">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-8">
+                        <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3 text-xl">🛡️</div>
+                        <p class="text-sm text-gray-400">No administrators yet.</p>
+                        <a href="{{ url('/admin/administrators/create') }}"
+                           class="mt-2 inline-block text-xs font-semibold text-maroon-600 hover:underline">Create the first admin →</a>
+                    </div>
+                @endif
             </div>
 
             <!-- System Health -->
@@ -141,11 +212,11 @@
                         ['label' => 'Cache Status', 'status' => 'Active', 'color' => 'emerald'],
                         ['label' => 'Queue Status', 'status' => 'Running', 'color' => 'emerald'],
                     ] as $health)
-                    <div class="flex items-center gap-3 p-4 bg-{{ $health['color'] }}-50/50 rounded-xl border border-{{ $health['color'] }}-100">
-                        <span class="w-3 h-3 bg-{{ $health['color'] }}-500 rounded-full animate-pulse"></span>
+                    <div class="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                        <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
                         <div>
                             <p class="text-xs text-gray-500 font-medium">{{ $health['label'] }}</p>
-                            <p class="text-sm font-bold text-{{ $health['color'] }}-700">✓ {{ $health['status'] }}</p>
+                            <p class="text-sm font-bold text-emerald-700">✓ {{ $health['status'] }}</p>
                         </div>
                     </div>
                     @endforeach

@@ -1,111 +1,120 @@
 {{-- Navigation Menu Component
-     Contains the desktop and mobile navigation header for the public pages.
-     Handles layout, dropdown behavior, scroll-based transparency, and CTA links.
-     Color scheme: tangerine (orange/white/gray).
+Contains the desktop and mobile navigation header for the public pages.
+Handles layout, dropdown behavior, scroll-based transparency, and CTA links.
+Theme: Orange & Black .
 --}}
-<!-- Multi-level Navigation Component -->
-<nav x-data="navigationMenu()" 
-     x-init="initScrollListener()"
-     class="fixed top-0 w-full z-50 transition-all duration-300"
-     {{-- Scrolled state: dark gray background instead of maroon; Unscrolled: white --}}
-     :style="`${isScrolled ? 'background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.85) 100%); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25); border-bottom: 1px solid rgba(255, 255, 255, 0.1);' : 'background: rgba(255, 255, 255, 0.98); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 107, 0, 0.1);'}; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);`">
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-4 lg:py-0 lg:h-24">
-            
+<header x-data="navigationMenu()" x-init="initScrollListener()"
+    class="fixed top-0 w-full z-50 transition-all duration-300" style="z-index: 9999;"
+    :class="isScrolled ? 'shadow-lg' : ''">
+
+    <!-- Top Bar: News Ticker & Socials -->
+    <div class="nav-top-bar flex items-center justify-between px-4 sm:px-6 lg:px-8"
+        style="background-color: #000000; height: 34px; border-bottom: 1px solid #222; z-index: 50;">
+        <div class="flex-1 flex items-center h-full relative overflow-hidden">
+            <div class="news-tab"
+                style="background-color: #f05a22; color: white; padding: 0 35px 0 20px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 10px; clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%); position: absolute; left: 0; top: 0; z-index: 20;">
+                NEWS</div>
+            <div class="news-ticker-container"
+                style="flex: 1; padding-left: 110px; overflow: hidden; display: flex; align-items: center; height: 100%;">
+                <div class="news-ticker-content"
+                    style="white-space: nowrap; display: inline-block; animation: ticker-animation 35s linear infinite; color: #ffffff; font-size: 11px; font-weight: 500; font-style: italic;">
+                    @php
+                    $tickerNews = \App\Models\NewsEvent::latest()->take(3)->get();
+                    @endphp
+                    @if($tickerNews->count() > 0)
+                    @foreach($tickerNews as $news)
+                    <span class="mx-10">{{ $news->title }} • {{ $news->created_at->format('M d, Y') }}</span>
+                    @endforeach
+                    @else
+                    <span class="mx-10">Welcome to the College of Engineering, Architecture and Technology.</span>
+                    <span class="mx-10">New academic programs for the upcoming semester are now open for
+                        application.</span>
+                    <span class="mx-10">CEAT Research Symposium 2026: Call for papers is now active.</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="social-icons-container hidden sm:flex h-full">
+            <a href="#" class="social-icon-box"
+                style="width: 36px; height: 100%; display: flex; align-items: center; justify-content: center; color: #ffffff; border-left: 1px solid #222; transition: all 0.2s ease;"><i
+                    class="fab fa-facebook-f text-[10px]"></i></a>
+            <a href="#" class="social-icon-box"
+                style="width: 36px; height: 100%; display: flex; align-items: center; justify-content: center; color: #ffffff; border-left: 1px solid #222; transition: all 0.2s ease;"><i
+                    class="fab fa-twitter text-[10px]"></i></a>
+            <a href="#" class="social-icon-box"
+                style="width: 36px; height: 100%; display: flex; align-items: center; justify-content: center; color: #ffffff; border-left: 1px solid #222; transition: all 0.2s ease;"><i
+                    class="fab fa-linkedin-in text-[10px]"></i></a>
+        </div>
+    </div>
+
+    <!-- Brand Bar: Logo & Search -->
+    <div class="brand-bar px-4 sm:px-6 lg:px-8 transition-all duration-300"
+        style="border-bottom: 1px solid rgba(0,0,0,0.05); z-index: 40;"
+        :style="isScrolled ? 'background-color: rgba(255,255,255,1); padding-top: 8px; padding-bottom: 8px;' : 'background-color: rgba(255,255,255,0.9); backdrop-filter: blur(8px); padding-top: 15px; padding-bottom: 15px;'">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
             <!-- Logo Section -->
-            <a href="{{ route('home') }}" class="flex items-center gap-3 group flex-shrink-0 z-10">
-                <img src="{{ asset('images/coe-logo.png') }}" alt="CEAT Logo" class="h-16 w-auto group-hover:scale-110 transition-transform duration-300">
-                <div class="hidden sm:block">
-                    {{-- Logo Text: white when scrolled, dark gray (not maroon) when not --}}
-                    <h1 :style="`color: ${isScrolled ? 'white' : '#1F2937'};`" class="font-bold text-sm lg:text-base tracking-tight leading-tight transition-colors duration-300">COLLEGE OF ENGINEERING,</h1>
-                    <h1 :style="`color: ${isScrolled ? 'white' : '#1F2937'};`" class="font-bold text-sm lg:text-base tracking-tight leading-tight transition-colors duration-300">ARCHITECTURE & TECHNOLOGY</h1>
+            <a href="{{ route('home') }}" class="flex items-center gap-4 group">
+                <img src="{{ asset('images/coe-logo.png') }}" alt="CEAT Logo"
+                    class="transition-all duration-300 group-hover:scale-105"
+                    style="object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));"
+                    :style="isScrolled ? 'height: 42px;' : 'height: 60px;'">
+                <div class="flex flex-col">
+                    <span class="font-black tracking-tighter leading-none transition-all duration-300 uppercase"
+                        style="display: block; color: #000000;"
+                        :style="`font-size: ${isScrolled ? '1rem' : '1.4rem'}; text-shadow: 0 1px 1px rgba(255,255,255,0.5);`"
+                        class="text-gray-900">College of Engineering,</span>
+                    <span class="font-black tracking-tighter leading-none transition-all duration-300 uppercase"
+                        style="display: block; color: #000000;"
+                        :style="`font-size: ${isScrolled ? '1rem' : '1.4rem'}; text-shadow: 0 1px 1px rgba(255,255,255,0.5);`"
+                        class="text-gray-900"> Architecture and Technology</span>
                 </div>
             </a>
 
-            <!-- Desktop Menu with Dropdowns -->
-            <div class="hidden lg:flex items-center gap-0 flex-1 justify-center">
-                @foreach($navigationItems as $itemKey => $item)
-                    @if($item['hasDropdown'])
-                        <!-- Dropdown Menu Item -->
-                        <div @mouseenter="openDropdown('{{ $itemKey }}')" 
-                             @mouseleave="closeDropdown()" 
-                             class="relative">
-                            <button class="nav-link flex items-center gap-2 px-4 py-6 font-medium text-sm transition-all duration-300 rounded-none hover:no-underline"
-                                    {{-- Active/hover state uses subtle white/gray instead of maroon --}}
-                                    :style="`color: ${isScrolled ? 'white' : '#1F2937'}; background-color: ${activeDropdown === '{{ $itemKey }}' ? (isScrolled ? 'rgba(255, 255, 255, 0.15)' : 'rgba(31, 41, 55, 0.05)') : 'transparent'};`"
-                                    @click.prevent>
-                                <span>{{ $item['label'] }}</span>
-                                <svg class="w-4 h-4 transition-transform duration-300" 
-                                     :class="activeDropdown === '{{ $itemKey }}' ? 'rotate-180' : ''" 
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                </svg>
-                            </button>
-                            
-                            <!-- Dropdown Content -->
-                            <div x-show="activeDropdown === '{{ $itemKey }}' && !isScrolling" 
-                                 x-transition:enter="transition ease-out duration-150"
-                                 x-transition:enter-start="opacity-0 -translate-y-2"
-                                 x-transition:enter-end="opacity-100 translate-y-0"
-                                 x-transition:leave="transition ease-in duration-150"
-                                 x-transition:leave-start="opacity-100 translate-y-0"
-                                 x-transition:leave-end="opacity-0 -translate-y-2"
-                                 @click.away="closeDropdown()"
-                                 class="absolute left-0 top-full mt-0 w-56 shadow-2xl overflow-hidden z-50 dropdown-content"
-                                 {{-- Scrolled dropdown bg is dark gray, normal is white with tangerine border --}}
-                                 :style="`${isScrolled ? 'background: linear-gradient(135deg, rgba(31, 41, 55, 0.98) 0%, rgba(17, 24, 39, 0.95) 100%);' : 'background: white; border: 1px solid rgba(255, 107, 0, 0.1);'}; ${(activeDropdown === '{{ $itemKey }}' && !isScrolling) ? 'visibility: visible; opacity: 1;' : 'visibility: hidden; opacity: 0;'}`">
-                                
-                                @foreach($item['items'] as $subItem)
-                                    <a href="{{ $subItem['url'] }}" 
-                                       class="dropdown-link block px-6 py-3 text-sm font-medium transition-all duration-200 border-l-4 border-transparent"
-                                       :style="`color: ${isScrolled ? 'white' : '#1F2937'}; background-color: ${isScrolled ? 'rgba(255, 255, 255, 0.05)' : 'transparent'};`"
-                                       {{-- Hover state uses tangerine line highlight instead of gold/maroon --}}
-                                       @mouseenter="`this.style.borderLeftColor = '#FF6B00'; this.style.backgroundColor = '${isScrolled ? 'rgba(255, 107, 0, 0.1)' : 'rgba(31, 41, 55, 0.05)'}';`"
-                                       @mouseleave="`this.style.borderLeftColor = 'transparent'; this.style.backgroundColor = '${isScrolled ? 'rgba(255, 255, 255, 0.05)' : 'transparent'}';`">
-                                        {{ $subItem['label'] }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @else
-                        <!-- Single Link -->
-                        <a href="{{ $item['url'] }}" 
-                           class="nav-link px-4 py-6 font-medium text-sm transition-all duration-300 rounded-none"
-                           :style="`color: ${isScrolled ? 'white' : '#1F2937'}; background-color: transparent;`">
-                            {{ $item['label'] }}
-                        </a>
-                    @endif
-                @endforeach
-            </div>
+            <!-- Search and Auth Section -->
+            <div class="hidden lg:flex items-center gap-6">
+                <!-- Smaller, More Visible Search Bar -->
+                <div class="nav-search-container" style="position: relative; width: 280px;">
+                    <span class="nav-search-icon"
+                        style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #1a1a1a; z-index: 10;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </span>
+                    <input type="text" placeholder="Search..." class="nav-search-input"
+                        style="width: 100%; background-color: #ffffff; border: 1.5px solid #1a1a1a; border-radius: 9999px; padding: 7px 15px 7px 40px; font-size: 13px; font-weight: 600; color: #1a1a1a; transition: all 0.3s ease;">
+                </div>
 
-            <!-- Auth Buttons (right side) -->
-            <div class="hidden lg:flex items-center gap-3 ml-auto">
-                @auth
+                <!-- Balanced Auth Buttons -->
+                <div class="flex items-center gap-4">
+                    @auth
                     @php
-                        $dashboardUrl = route('dashboard');
-                        if (auth()->user()->role === 'faculty') {
-                            $dashboardUrl = route('faculty.dashboard');
-                        } elseif (auth()->user()->role === 'student') {
-                            $dashboardUrl = route('student.dashboard');
-                        } elseif (auth()->user()->role === 'superadmin') {
-                            $dashboardUrl = route('superadmin.dashboard');
-                        }
+                    $dashboardUrl = route('dashboard');
+                    if (auth()->user()->role === 'faculty') $dashboardUrl = route('faculty.dashboard');
+                    elseif (auth()->user()->role === 'student') $dashboardUrl = route('student.dashboard');
+                    elseif (auth()->user()->role === 'superadmin') $dashboardUrl = route('superadmin.dashboard');
                     @endphp
-                    {{-- Dashboard button: bold tangerine --}}
-                    <a href="{{ $dashboardUrl }}" class="btn-primary px-5 py-2 font-bold text-sm text-white rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105 border border-tangerine-500" style="background-color: #FF6B00;">Dashboard</a>
-                @else
-                    {{-- Login button --}}
-                    <a href="{{ route('login') }}" class="btn-secondary px-4 py-2 font-semibold text-sm rounded-lg transition-all duration-300"
-                       :style="`color: ${isScrolled ? 'white' : '#1F2937'};`">Sign In</a>
-                    {{-- Register button: bold tangerine --}}
-                    <a href="{{ route('register') }}" class="btn-primary px-5 py-2 font-bold text-sm text-white rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105 border border-tangerine-500" style="background-color: #FF6B00;">Register</a>
-                @endauth
+                    <a href="{{ $dashboardUrl }}"
+                        class="px-5 py-2 bg-[#f05a22] text-white text-xs font-black rounded-full hover:bg-black transition-all shadow-md uppercase tracking-wide">
+                        Dashboard
+                    </a>
+                    @else
+                    <a href="{{ route('login') }}"
+                        class="text-xs font-black text-slate-900 hover:text-[#f05a22] transition-all px-4 py-2 border border-transparent hover:border-gray-200 hover:bg-gray-50 rounded-full uppercase tracking-wide shadow-sm"
+                        style="background-color: rgba(255,255,255,0.8); backdrop-filter: blur(4px);">
+                        Sign In
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="px-6 py-2 bg-[#f05a22] text-white text-xs font-black rounded-full hover:bg-black transition-all shadow-md hover:shadow-lg uppercase tracking-wide border border-[#e04e1a]">
+                        Join Now
+                    </a>
+                    @endauth
+                </div>
             </div>
 
-            <!-- Mobile Menu Button -->
-            <button @click="mobileOpen = !mobileOpen" class="lg:hidden p-2 rounded-lg transition-colors duration-300 z-10"
-                    :style="`color: ${isScrolled ? 'white' : '#1F2937'};`">
+            <!-- Mobile Menu Toggle -->
+            <button @click="mobileOpen = !mobileOpen"
+                class="lg:hidden p-2 rounded-xl bg-gray-100 text-black hover:bg-gray-200 transition-colors">
                 <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -114,239 +123,139 @@
                 </svg>
             </button>
         </div>
+    </div>
 
-        <!-- Mobile Menu with Collapsible Dropdowns -->
-        <div x-show="mobileOpen" 
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 -translate-y-4"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             class="lg:hidden w-full pb-4 overflow-y-auto max-h-96"
-             :style="`border-top: 1px solid ${isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(31, 41, 55, 0.1)'}; color: ${isScrolled ? 'white' : '#1F2937'};`">
-            
-            @foreach($navigationItems as $itemKey => $item)
-                @if($item['hasDropdown'])
-                    <!-- Mobile Dropdown -->
-                    <div>
-                        <button @click="toggleMobileDropdown('{{ $itemKey }}')" 
-                                class="w-full text-left flex items-center justify-between py-3 px-4 border-b font-medium text-sm transition-colors duration-200"
-                                :style="`border-color: ${isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(31, 41, 55, 0.1)'}; background-color: ${openMobileDropdowns['{{ $itemKey }}'] ? (isScrolled ? 'rgba(255, 255, 255, 0.05)' : 'rgba(31, 41, 55, 0.05)') : 'transparent'};`">
-                            <span>{{ $item['label'] }}</span>
-                            <svg class="w-4 h-4 transition-transform duration-300" 
-                                 :class="openMobileDropdowns['{{ $itemKey }}'] ? 'rotate-180' : ''"
-                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    <!-- Main Navigation Bar -->
+    <nav class="main-nav-bar hidden lg:block transition-all duration-300"
+        style="background-color: #f05a22; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 30;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                @foreach($navigationItems as $itemKey => $item)
+                <div class="flex-1 flex justify-center border-r border-white/20 last:border-r-0">
+                    @if($item['hasDropdown'])
+                    <div class="relative w-full group" @mouseenter="openDropdown('{{ $itemKey }}')"
+                        @mouseleave="closeDropdown()">
+                        <button class="nav-menu-item w-full"
+                            style="color: white; font-size: 13px; font-weight: 800; text-transform: uppercase; padding: 14px 10px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease; letter-spacing: 0.6px;"
+                            :class="activeDropdown === '{{ $itemKey }}' && 'active'"
+                            :style="activeDropdown === '{{ $itemKey }}' ? 'background-color: rgba(0,0,0,0.2);' : ''">
+                            {{ $item['label'] }}
+                            <svg class="w-3.5 h-3.5 opacity-100 transition-transform duration-300"
+                                :class="activeDropdown === '{{ $itemKey }}' && 'rotate-180'" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
-                        
-                        <!-- Mobile Dropdown Items -->
-                        <div x-show="openMobileDropdowns['{{ $itemKey }}']" 
-                             x-transition:enter="transition ease-out duration-150"
-                             x-transition:enter-start="opacity-0 -translate-y-2"
-                             x-transition:enter-end="opacity-100 translate-y-0">
+                        <!-- Dropdown Menu (Orange Background, White Text) -->
+                        <div x-show="activeDropdown === '{{ $itemKey }}'" x-cloak x-transition
+                            class="absolute top-full left-0 nav-dropdown-menu"
+                            style="background-color: #f05a22; border-radius: 0 0 8px 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); border-top: 2px solid rgba(255,255,255,0.3); min-width: 240px; z-index: 100; padding: 8px 0;">
                             @foreach($item['items'] as $subItem)
-                                <a href="{{ $subItem['url'] }}" 
-                                   {{-- Changed border-l-4 from yellow to tangerine --}}
-                                   class="dropdown-mobile-link block py-3 px-8 text-sm font-medium border-l-4 border-tangerine-500 transition-all duration-200"
-                                   :style="`background-color: ${isScrolled ? 'rgba(255, 255, 255, 0.03)' : 'rgba(31, 41, 55, 0.02)'};`">
-                                    {{ $subItem['label'] }}
-                                </a>
+                            <a href="{{ $subItem['url'] }}" class="block nav-dropdown-item"
+                                style="color: white; padding: 12px 24px; font-size: 13px; font-weight: 700; transition: all 0.2s ease; border-left: 4px solid transparent;"
+                                onmouseenter="this.style.backgroundColor='rgba(0,0,0,0.15)'; this.style.borderLeftColor='white';"
+                                onmouseleave="this.style.backgroundColor='transparent'; this.style.borderLeftColor='transparent';">
+                                {{ $subItem['label'] }}
+                            </a>
                             @endforeach
                         </div>
                     </div>
-                @else
-                    <!-- Mobile Single Link -->
-                    <a href="{{ $item['url'] }}" 
-                       class="mobile-link block py-3 px-4 text-sm font-medium border-b transition-all duration-200"
-                       :style="`border-color: ${isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(31, 41, 55, 0.1)'}; background-color: transparent;`">
+                    @else
+                    <a href="{{ $item['url'] }}" class="nav-menu-item w-full"
+                        style="color: white; font-size: 13px; font-weight: 800; text-transform: uppercase; padding: 14px 10px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; letter-spacing: 0.6px;"
+                        onmouseenter="this.style.backgroundColor='rgba(0,0,0,0.2)';"
+                        onmouseleave="this.style.backgroundColor='transparent';">
                         {{ $item['label'] }}
                     </a>
-                @endif
+                    @endif
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div x-show="mobileOpen" x-cloak x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+        class="lg:hidden absolute top-full left-0 w-full bg-white shadow-2xl border-t border-gray-100 py-6 px-4 z-50 max-h-[85vh] overflow-y-auto">
+        <div class="flex flex-col gap-1">
+            <a href="{{ route('home') }}"
+                class="px-5 py-4 text-lg font-extrabold text-gray-900 hover:bg-orange-50 rounded-2xl transition-colors">Home</a>
+
+            @foreach($navigationItems as $itemKey => $item)
+            @if($item['hasDropdown'])
+            <div x-data="{ open: false }">
+                <button @click="open = !open"
+                    class="w-full flex items-center justify-between px-5 py-4 text-lg font-extrabold text-gray-900 hover:bg-orange-50 rounded-2xl transition-colors">
+                    {{ $item['label'] }}
+                    <svg class="w-5 h-5 transition-transform" :class="open && 'rotate-180'" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open" class="bg-orange-500 rounded-2xl mx-2 my-1 overflow-hidden border border-orange-600">
+                    @foreach($item['items'] as $subItem)
+                    <a href="{{ $subItem['url'] }}"
+                        class="block px-8 py-3.5 text-white font-bold hover:bg-orange-600 transition-all">{{
+                        $subItem['label'] }}</a>
+                    @endforeach
+                </div>
+            </div>
+            @else
+            <a href="{{ $item['url'] }}"
+                class="px-5 py-4 text-lg font-extrabold text-gray-900 hover:bg-orange-50 rounded-2xl transition-colors">{{
+                $item['label'] }}</a>
+            @endif
             @endforeach
 
-            <!-- Mobile Auth Section -->
-            <div class="flex flex-col gap-3 pt-4 px-4"
-                 :style="`border-top: 1px solid ${isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(31, 41, 55, 0.1)'};`">
+            <hr class="my-6 border-gray-100">
+
+            <div class="flex flex-col gap-4 px-4 pb-4">
                 @auth
-                    @php
-                        $dashboardUrl = route('dashboard');
-                        if (auth()->user()->role === 'faculty') {
-                            $dashboardUrl = route('faculty.dashboard');
-                        } elseif (auth()->user()->role === 'student') {
-                            $dashboardUrl = route('student.dashboard');
-                        } elseif (auth()->user()->role === 'superadmin') {
-                            $dashboardUrl = route('superadmin.dashboard');
-                        }
-                    @endphp
-                    <a href="{{ $dashboardUrl }}" class="btn-primary px-4 py-2 font-bold text-sm text-center text-white rounded-lg border border-tangerine-500 transition-all duration-300" style="background-color: #FF6B00;">Dashboard</a>
+                @php
+                $dashboardUrl = route('dashboard');
+                if (auth()->user()->role === 'faculty') $dashboardUrl = route('faculty.dashboard');
+                elseif (auth()->user()->role === 'student') $dashboardUrl = route('student.dashboard');
+                elseif (auth()->user()->role === 'superadmin') $dashboardUrl = route('superadmin.dashboard');
+                @endphp
+                <a href="{{ $dashboardUrl }}"
+                    class="w-full py-4 bg-[#f05a22] text-white text-center font-black rounded-2xl shadow-md">DASHBOARD</a>
                 @else
-                    <a href="{{ route('login') }}" class="btn-secondary px-4 py-2 font-semibold text-sm text-center rounded-lg transition-all duration-300"
-                       :style="`color: ${isScrolled ? 'white' : '#1F2937'}; border: 1px solid currentColor;`">Sign In</a>
-                    <a href="{{ route('register') }}" class="btn-primary px-4 py-2 font-bold text-sm text-center text-white rounded-lg border border-tangerine-500 transition-all duration-300" style="background-color: #FF6B00;">Register</a>
+                <a href="{{ route('login') }}"
+                    class="w-full py-4 border-2 border-gray-200 text-gray-800 text-center font-black rounded-2xl">SIGN
+                    IN</a>
+                <a href="{{ route('register') }}"
+                    class="w-full py-4 bg-[#1a1a1a] text-white text-center font-black rounded-2xl shadow-lg">JOIN
+                    NOW</a>
                 @endauth
             </div>
         </div>
     </div>
-</nav>
+</header>
 
-<!-- Alpine.js Navigation Controller -->
 <script>
-function navigationMenu() {
-    return {
-        mobileOpen: false,
-        isScrolled: false,
-        activeDropdown: null,
-        openMobileDropdowns: {},
-        lastScrollY: 0,
-        isScrolling: false,
-        scrollTimeout: null,
-        scrollListener: null,
-        
-        initScrollListener() {
-            // Remove any existing listener
-            if (this.scrollListener) {
-                window.removeEventListener('scroll', this.scrollListener);
-            }
-            
-            // Create new scroll listener with proper context
-            this.scrollListener = () => {
-                const scrollY = window.scrollY;
-                
-                // Update scroll state for background color (only if threshold crossed)
-                const wasScrolled = this.isScrolled;
-                const nowScrolled = scrollY > 100;
-                if (wasScrolled !== nowScrolled) {
-                    this.isScrolled = nowScrolled;
-                }
-                
-                // Mark as scrolling
-                this.isScrolling = true;
-                
-                // CRITICAL: Close dropdown on any scroll movement
-                if (scrollY !== this.lastScrollY) {
-                    this.activeDropdown = null;
-                }
-                
-                this.lastScrollY = scrollY;
-                
-                // Reset scrolling flag after scroll ends
-                clearTimeout(this.scrollTimeout);
-                this.scrollTimeout = setTimeout(() => {
-                    this.isScrolling = false;
-                }, 300);
-            };
-            
-            // Attach listener with passive flag for better performance
-            window.addEventListener('scroll', this.scrollListener, { passive: true });
-        },
-        
-        openDropdown(name) {
-            // Don't open dropdown while scrolling
-            if (!this.isScrolling) {
+    function navigationMenu() {
+        return {
+            mobileOpen: false,
+            isScrolled: false,
+            activeDropdown: null,
+            scrollListener: null,
+
+            initScrollListener() {
+                this.scrollListener = () => {
+                    this.isScrolled = window.scrollY > 30;
+                };
+                window.addEventListener('scroll', this.scrollListener, { passive: true });
+            },
+
+            openDropdown(name) {
                 this.activeDropdown = name;
+            },
+
+            closeDropdown() {
+                this.activeDropdown = null;
             }
-        },
-        
-        closeDropdown() {
-            this.activeDropdown = null;
-        },
-        
-        toggleMobileDropdown(name) {
-            this.$nextTick(() => {
-                this.openMobileDropdowns[name] = !this.openMobileDropdowns[name];
-            });
-        },
-        
-        destroy() {
-            if (this.scrollListener) {
-                window.removeEventListener('scroll', this.scrollListener);
-            }
-            clearTimeout(this.scrollTimeout);
-        }
-    };
-}
+        };
+    }
 </script>
-
-<style>
-/* Navigation Link Styles */
-.nav-link {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-}
-
-.nav-link:hover {
-    text-decoration: none;
-}
-
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    /* Tangerine animated underline */
-    background: linear-gradient(90deg, transparent, #FF6B00, transparent);
-    transform: translateX(-50%);
-    transition: width 0.3s ease;
-}
-
-.nav-link:hover::after {
-    width: 80%;
-}
-
-.nav-link:hover svg {
-    transform: rotate(-180deg);
-}
-
-.dropdown-link {
-    text-decoration: none;
-    display: block;
-    transition: all 0.2s ease;
-}
-
-.dropdown-link:hover {
-    text-decoration: none;
-    border-left-color: #FF6B00 !important;
-}
-
-.mobile-link,
-.dropdown-mobile-link {
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.mobile-link:hover,
-.dropdown-mobile-link:hover {
-    text-decoration: none;
-}
-
-/* Button Styles */
-.btn-primary {
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-primary:hover {
-    text-decoration: none;
-}
-
-.btn-secondary {
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-secondary:hover {
-    text-decoration: none;
-}
-
-/* Ensure no link underlines appear */
-a {
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: none;
-}
-</style>

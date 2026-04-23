@@ -14,8 +14,9 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="font-sans antialiased bg-white text-gray-900 custom-scrollbar pt-24 lg:pt-28">
+<body class="font-sans antialiased bg-white text-gray-900 custom-scrollbar" style="padding-top: 140px;">
     <div class="min-h-screen flex flex-col">
         <!-- Multi-level Navigation Menu Component -->
         <x-navigation-menu />
